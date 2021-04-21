@@ -10,6 +10,7 @@ class InputText extends StatefulWidget {
   final bool? obscureText;
   final TextInputType textInputType;
   final int? maxLines;
+  final String? initialValue;
   InputText({
     Key? key,
     required this.name,
@@ -19,7 +20,8 @@ class InputText extends StatefulWidget {
     this.obscureText,
     this.validator,
     this.autofillHints,
-    this.maxLines
+    this.maxLines,
+    this.initialValue
     });
   
   @override
@@ -35,6 +37,7 @@ class _InputTextState extends State<InputText> {
         elevation: 2.0,
         borderRadius: BorderRadius.all(Radius.circular(30)),
         child: TextFormField(
+          initialValue: widget.initialValue,
           keyboardType: widget.textInputType,
           maxLines:  widget.maxLines,
           obscureText: widget.obscureText ?? false,

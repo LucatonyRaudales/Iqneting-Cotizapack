@@ -1,4 +1,5 @@
 import 'package:cotizapack/common/headerPaint.dart';
+import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/profile/profile_ctrl.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -115,7 +116,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               leading: Icon(LineIcons.userCheck, color: color700),
               trailing: InkWell(
-                onTap: ()=> print('Editar'),
+                onTap: ()=> Get.to(EditMyDataPage(), transition: Transition.rightToLeftWithFade),
                 child: Icon(LineIcons.cog, color: color700),
               ),
               subtitle: Column(

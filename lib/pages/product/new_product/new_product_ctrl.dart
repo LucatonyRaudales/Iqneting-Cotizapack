@@ -15,6 +15,7 @@ class NewProductCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
   late File image;
   ProductModel product = ProductModel();
+  
   final picker = ImagePicker();
   late MyFile myFile;
   @override

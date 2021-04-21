@@ -23,9 +23,11 @@ class MyStorage extends ChangeNotifier{
     Response result;
     try {
       result = await storage.createFile(
-    file: await MultipartFile.fromFile(file.path, filename: file.path),
-    read: [],
-    write: [],
+    file: await MultipartFile.fromFile(
+      file.path, 
+      filename: file.path.split("/").last),
+    read: ["*"],
+    write: ["user:fndjk54453"],
   );
   return result;
     } catch (e) {

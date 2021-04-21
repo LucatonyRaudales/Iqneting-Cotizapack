@@ -1,3 +1,18 @@
+class ProductList{
+  late final List<ProductModel>? products;
+  ProductList({
+     this.products
+  });
+
+  factory ProductList.fromJson(List<dynamic> parsedJson) {
+
+    List<ProductModel> products = parsedJson.map((i)=>ProductModel.fromJson(i)).toList();
+
+    return new ProductList(
+      products: products,
+    );
+  }
+}
 
 class ProductModel {
     ProductModel({
@@ -8,9 +23,11 @@ class ProductModel {
         this.clientPrice,
         this.image,
         this.userId,
+        this.collection
     });
 
     String? id;
+    String? collection;
     String? name;
     String? description;
     double? price;
@@ -20,12 +37,13 @@ class ProductModel {
 
     factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["\u0024id"],
+        collection: json["collection"],
         name: json["name"],
         description: json["description"],
         price: json["price"].toDouble(),
         clientPrice: json["client_price"].toDouble(),
         image: json["image"],
-        userId: json["user_id"],
+        userId: json["user_id"].toString(),
     );
 
     Map<String, dynamic> toJson() => {

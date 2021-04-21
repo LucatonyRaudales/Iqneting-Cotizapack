@@ -29,4 +29,6 @@ class ProfileCtrl extends GetxController{
     } catch (e) {
     }
   }
+
+  
 }

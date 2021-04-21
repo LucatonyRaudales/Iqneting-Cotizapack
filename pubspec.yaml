@@ -17,6 +17,8 @@ dependencies:
     git:
       url: https://github.com/joaovvrodrigues/flutter_rounded_loading_button
   bottom_navy_bar: ^6.0.0
+  transparent_image: ^2.0.0
+  flutter_spinkit: ^5.0.0
   animate_do: ^2.0.0
   get: ^4.1.4
   get_storage: ^2.0.2
