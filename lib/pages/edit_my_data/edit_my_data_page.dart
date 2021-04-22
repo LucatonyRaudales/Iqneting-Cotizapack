@@ -88,7 +88,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                     name: 'Nombre del CEO',
                     textInputType: TextInputType.name,
                     prefixIcon: Icon(LineIcons.userEdit),
-                    onChanged: (val)=> print('nombres: $val'),
+                    onChanged: (val)=> _ctrl.userData.ceoName = val,
                   ),
                   SizedBox(
                     height: 20,
@@ -97,7 +97,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                     name: 'Razón social o nombre del grupo',
                     textInputType: TextInputType.name,
                     prefixIcon: Icon(LineIcons.building),
-                    onChanged: (val)=> print('Apellidos: $val'),  
+                    onChanged: (val)=> _ctrl.userData.businessName = val,  
                   ),
                   SizedBox(
                     height: 25,
@@ -106,7 +106,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                     name: 'Numero telefónico',
                     textInputType: TextInputType.phone,
                     prefixIcon: Icon(LineIcons.phone),
-                    onChanged: (val)=> print('Edad: $val'),  
+                    onChanged: (val)=> _ctrl.userData.phone = val,  
                   ),
                   SizedBox(
                     height: 25,
@@ -115,7 +115,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                     name: 'Dirección',
                     textInputType: TextInputType.streetAddress,
                     prefixIcon: Icon(LineIcons.streetView),
-                    onChanged: (val)=> print('Edad: $val'),  
+                    onChanged: (val)=>_ctrl.userData.address = val,  
                   ),
                   SizedBox(
                     height: 25,
@@ -123,22 +123,25 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                   FadeInUp(
                     child:InkWell(
                     onTap: ()=> _ctrl.showPicker(context),
-                    child: Material(
-                      elevation: 2.0,
-                      borderRadius: BorderRadius.all(Radius.circular(30)),
-                      child:  ListTile(
-                        leading: new Icon(LineIcons.tag),
-                        title: new Text('Títulom', style: subtitulo,),
-                        subtitle: new Text('este es una breve descripcíon del título', style: body1,),
+                    child: Container(
+                      height: 70,
+                      child:  Material(
+                        elevation: 2.0,
+                        borderRadius: BorderRadius.all(Radius.circular(30)),
+                        child:  ListTile(
+                        trailing: new Icon(Icons.arrow_drop_down),
+                        title: new Text(_ctrl.userData.category.name, style: subtitulo),
+                        subtitle: new Text(_ctrl.userData.category.description, style: body1, overflow: TextOverflow.ellipsis,),
                         )
                       )
                     ),
+                    )
                   ),
                   SizedBox(
                     height: 25,
                   ),
                   Button(
-                    function: _ctrl.editMyData,
+                    function: _ctrl.saveMyData,
                     btnController: _ctrl.btnController,
                     name: 'Guardar'),
                 ]),

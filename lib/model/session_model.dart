@@ -1,6 +1,5 @@
 class Session {
     Session({
-        this.id,
         this.userId,
         this.expire,
         this.ip,
@@ -9,7 +8,6 @@ class Session {
         this.current,
     });
 
-    String? id;
     String? userId;
     int? expire;
     String? ip;
@@ -18,8 +16,7 @@ class Session {
     bool? current;
 
     factory Session.fromJson(Map<String, dynamic> json) => Session(
-        id: json["\u0024id"],
-        userId: json["userId"],
+        userId: json["\u0024id"],
         expire: json["expire"],
         ip: json["ip"],
         countryCode: json["countryCode"],
@@ -28,7 +25,6 @@ class Session {
     );
 
     Map<String, dynamic> toJson() => {
-        "\u0024id": id,
         "userId": userId,
         "expire": expire,
         "ip": ip,

@@ -23,11 +23,11 @@ class UserCategory {
       required  this.enable,
     });
 
-    String id;
-    String collection;
-    String name;
-    String description;
-    bool enable;
+    String id = "";
+    String collection  = "";
+    String name  = "Seleccionar categoría";
+    String description  = "La categoría determinará tu sector";
+    bool enable = true;
 
     factory UserCategory.fromJson(Map<String, dynamic> json) => UserCategory(
         id: json["\u0024id"],
@@ -40,6 +40,7 @@ class UserCategory {
     Map<String, dynamic> toJson() => {
         "\u0024id": id,
         "\u0024collection": collection,
+        "\u0024permissions": {"read": ["*"], "write":  ["*"]},
         "name": name,
         "description": description,
         "enable": enable,

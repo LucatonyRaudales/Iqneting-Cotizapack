@@ -1,9 +1,9 @@
 import 'package:appwrite/appwrite.dart';
-import 'package:cotizapack/common/categories.dart';
+import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 
 class CategoriesRepository{
-  final String collectionID = "60804a662d7e3";
+  final String collectionID = "6080dd81ddf52";
   late Database database;
   UserCategoryList categories = UserCategoryList();
 

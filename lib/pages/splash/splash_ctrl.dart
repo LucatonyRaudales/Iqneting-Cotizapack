@@ -2,14 +2,12 @@ import 'dart:async';
 
 import 'package:cotizapack/pages/login/login_page.dart';
 import 'package:cotizapack/repository/user.dart';
-import 'package:cotizapack/settings/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
 import '../home_page.dart';
 
 class SplashCtrl extends GetxController{
-  MyGetStorage _storage = MyGetStorage();
   @override
   void onInit() {
     islogin();
