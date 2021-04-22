@@ -1,6 +1,6 @@
 class Validators {
-  static phoneValidator(value) {
-    if (value.isEmpty) {
+  static String? phoneValidator(String? value) {
+    if (value!.isEmpty) {
       return 'Campo obligatorio';
     }
     if (value.length < 8) {
@@ -37,6 +37,16 @@ class Validators {
     }
     if (!RegExp(r'[A-Z0-9a-z]*').hasMatch(value)) {
       return 'Contraseña muy débil';
+    }
+  }
+
+
+  static String? addressValidator (value) {
+    if (value.isEmpty) {
+      return 'Campo obligatorio';
+    }
+    if(value.length < 10){
+      return "ingrese una dirección más exacta";
     }
   }
 }

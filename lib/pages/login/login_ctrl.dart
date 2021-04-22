@@ -23,12 +23,13 @@ class LoginCtrl extends GetxController{
         switch(value?.statusCode){
           case 201:
             btnController.success();
-            MyAlert.showMyDialog(title: '¡Bienvenid@!', message: 'Disfruta de CotizaPack', color: Colors.green);
+            MyAlert.showMyDialog(title: '¡Bienvenid@!', message: 'espera un momento, estamos cargando tus datos', color: Colors.green);
             _session = Session.fromJson(value!.data);
-            await MyGetStorage().saveData(key: 'session', data: _session);
-            Timer(Duration(seconds: 3), (){
-              Get.offAll(HomePage(), transition: Transition.rightToLeftWithFade);
-            });
+            _userRepository.chargeUserData(userID: _session.userId!)
+              .then((value)async{
+                await MyGetStorage().saveData(key: 'userData', data: value);
+                Get.offAll(HomePage(), transition: Transition.rightToLeftWithFade);
+              });
           break;
           case 500:
             btnController.error();

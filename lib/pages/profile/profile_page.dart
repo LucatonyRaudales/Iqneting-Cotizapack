@@ -109,6 +109,16 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),*/
             _buildDivider(),
+            _ctrl.userData.userID == "" ?
+            Center(
+              child: Column(children: [
+                new Text('Datos vacíos', style: subtitulo,),
+                ElevatedButton(
+              child: Text("Agregar mis datos", style: subtituloblanco),
+              onPressed:()=> Get.to(EditMyDataPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":false, "data": null}),
+            )
+              ],)
+            ) :
             ListTile(
               title: Text(
                 "Mi información",
@@ -116,26 +126,34 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               leading: Icon(LineIcons.userCheck, color: color700),
               trailing: InkWell(
-                onTap: ()=> Get.to(EditMyDataPage(), transition: Transition.rightToLeftWithFade),
+                onTap: ()=> Get.to(EditMyDataPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": _ctrl.userData}),
                 child: Icon(LineIcons.cog, color: color700),
               ),
               subtitle: Column(
                 children:[
                   ListTile(
-                    title: Text("Tony Roney", style: body1),
-                    leading:  Text("Nombre(s):", style: body2),
+                    title: Text(_ctrl.userData.ceoName!, style: body1),
+                    leading:  Text("Nombre:", style: body2),
                   ),
                   ListTile(
-                    title: Text("34 años", style: body1),
-                    leading: Text("Apellido(s):", style: body2),
+                    title: Text(_ctrl.userData.businessName!, style: body1),
+                    leading: Text("R. Social:", style: body2),
                   ),
                   ListTile(
-                    title: Text("34 años", style: body1),
-                    leading: Text("Edad:", style: body2),
+                    title: Text(_ctrl.userData.address!, style: body1),
+                    leading: Text("Dirección:", style: body2),
                   ),
                   ListTile(
-                    title: Text("Tony es un golden boy", style: body1),
-                    leading: Text("Descripción:", style: body2),
+                    title: Text(_ctrl.userData.phone!, style: body1),
+                    leading: Text("Teléfono:", style: body2),
+                  ),
+                  ListTile(
+                    title: Text(_ctrl.userData.category.name, style: body1),
+                    leading: Text("Categoría:", style: body2),
+                  ),
+                  ListTile(
+                    title: Text(_ctrl.userData.nickname!, style: body1),
+                    leading: Text("Nick name:", style: body2),
                   ),
                 ]
               ),

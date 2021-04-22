@@ -106,4 +106,38 @@ class UserRepository {
       return userData;
     }
   }
+
+  Future<Response?> updateMyData({required UserData data})async{
+    try{
+      database = Database(AppwriteSettings.initAppwrite());
+      Response response = await  database.updateDocument(
+        collectionId: userCollectionID,
+        documentId: data.id.toString(),
+        data: data.toJson(),
+        read: ["*"], write: ["user:${data.userID}"]);
+      return response;
+    }catch(e){
+      print(e);
+      return null;
+    }
+  }
+
+  Future<UserData?> chargeUserData({required String userID})async{
+    try {
+      database = Database(AppwriteSettings.initAppwrite());
+      Response response = await database.listDocuments(
+        collectionId: userCollectionID,
+        filters: ["userID=$userID"],
+        limit: 1
+      );
+      var data = response.data["documents"][0];
+      if(data != null){
+        userData = UserData.fromJson(data);
+        return userData;
+      }
+    } catch (e) {
+      print('Error charge Data $e');
+      return null;
+    }
+  }
 }

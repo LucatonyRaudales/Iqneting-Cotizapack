@@ -6,6 +6,7 @@ import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
+import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/cupertino.dart';
@@ -29,16 +30,32 @@ class EditMyDataCtrl extends GetxController{
     collection: "",
     id: ""
   );
-  late UserData userData = UserData(category: userCategory) ;
-  var  category = "seleccionar categoría";
-  String info = 'edit my data';
+  late UserData userData = UserData(
+    ceoName: "",
+    nickname: "",
+    businessName: "",
+    logo: "",
+    giro: "",
+    userID: "",
+    category: userCategory
+  ) ;
+  var arguments = Get.arguments;
+  bool isUpdate = false;
 
   @override
   void onInit() {
+    _init();
+    super.onInit();
+  }
+  _init(){
+    if(arguments["editData"]){
+      isUpdate = true;
+      if(arguments["data"] != null){
+        userData = arguments["data"];
+      }
+    }
     getUserCategories();
     getSession();
-    print('Edit my data');
-    super.onInit();
   }
 
   void getSession()async{
@@ -51,16 +68,18 @@ class EditMyDataCtrl extends GetxController{
     .then((value){
       btnController.success();
       MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido guardados satisfactoriamente', color: Colors.green);
-      Timer(Duration(seconds:3), ()=>Get.off(HomePage(), transition: Transition.rightToLeftWithFade));
+      Timer(Duration(seconds:3), ()=>Get.off(HomePage(), transition: Transition.leftToRightWithFade));
     });
   }
 
     void updateMyData()async{
       try{
-    _userRepository.saveMyData(data: this.userData.toJson())
+    _userRepository.updateMyData(data: this.userData)
     .then((value){
-      MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido guardados satisfactoriamente', color: Colors.green);
-      Get.off(HomePage(), transition: Transition.rightToLeftWithFade);
+      btnController.success();
+      MyGetStorage().replaceData(key: "userData", data: this.userData);
+      MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
+      Timer(Duration(seconds:3), ()=>Get.off(HomePage(), transition: Transition.leftToRightWithFade));
     });
       }catch(e){
         print('Error update: $e');
