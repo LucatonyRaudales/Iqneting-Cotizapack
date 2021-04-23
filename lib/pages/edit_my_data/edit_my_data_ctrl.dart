@@ -38,7 +38,7 @@ class EditMyDataCtrl extends GetxController{
     giro: "",
     userID: "",
     category: userCategory
-  ) ;
+  );
   var arguments = Get.arguments;
   bool isUpdate = false;
 
@@ -67,7 +67,8 @@ class EditMyDataCtrl extends GetxController{
     _userRepository.saveMyData(data: this.userData.toJson())
     .then((value){
       btnController.success();
-      MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido guardados satisfactoriamente', color: Colors.green);
+      MyGetStorage().replaceData(key: "userData", data: this.userData);
+      MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
       Timer(Duration(seconds:3), ()=>Get.off(HomePage(), transition: Transition.leftToRightWithFade));
     });
   }
@@ -100,7 +101,7 @@ class EditMyDataCtrl extends GetxController{
   }
 
     void showPicker(BuildContext ctx) {
-       showModalBottomSheet(
+      showModalBottomSheet(
         context: ctx,
         builder: (context) {
           return Container(

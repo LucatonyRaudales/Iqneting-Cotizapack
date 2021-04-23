@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/pages/login/login_page.dart';
+import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:get/get.dart';
@@ -12,6 +14,7 @@ import '../home_page.dart';
 class SplashCtrl extends GetxController{
   UserRepository _userRepository = UserRepository();
   Session _session = Session();
+  AccountRepository _accountRepository = AccountRepository();
   
   @override
   void onInit() {
@@ -54,6 +57,17 @@ class SplashCtrl extends GetxController{
     }catch(e){
       print('Error: $e');
       return false;
+    }
+  }
+
+  Future checkMyAccount()async{
+    MyAccount myAccount = MyAccount();
+    if(MyGetStorage().haveData(key: 'accountData')){
+      return null;
+    }else{
+    myAccount = (await _accountRepository.getAccount())!;
+    MyGetStorage().saveData(key: 'accountData', data: myAccount);
+    return null;
     }
   }
 }

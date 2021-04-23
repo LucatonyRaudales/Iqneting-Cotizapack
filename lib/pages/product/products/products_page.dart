@@ -38,7 +38,22 @@ class ProductsPage extends StatelessWidget {
         },
       ),
           body: SafeArea(
-            child: (_ctrl.productList.products == null || _ctrl.productList.products!.isEmpty) ?
+            child: _ctrl.haveProducts == false ?
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25),
+              child:new Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children:[
+                new Icon(LineIcons.cryingFace, size: 50, color: color500),
+                SizedBox(height: 20,),
+                Text(
+                'No tienes productos o servicios almacenados, presiona (+) para agregar uno nuevo.',
+                style: subtitulo,
+                textAlign: TextAlign.center,
+              ) 
+              ])
+            ) : 
+            (_ctrl.productList.products == null || _ctrl.productList.products!.isEmpty) ?
             Center(
               child: spinkit 
             ) : ListView.builder(

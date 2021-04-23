@@ -1,3 +1,5 @@
+import 'package:cotizapack/model/product_category.dart';
+
 class ProductList{
   late final List<ProductModel>? products;
   ProductList({
@@ -23,7 +25,8 @@ class ProductModel {
         this.clientPrice,
         this.image,
         this.userId,
-        this.collection
+        this.collection,
+        required this.category,
     });
 
     String? id;
@@ -34,6 +37,7 @@ class ProductModel {
     double? clientPrice;
     String? image;
     String? userId;
+    ProductCategory? category;
 
     factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["\u0024id"],
@@ -44,6 +48,7 @@ class ProductModel {
         clientPrice: json["client_price"].toDouble(),
         image: json["image"],
         userId: json["user_id"].toString(),
+        category:  ProductCategory.fromJson(json["category"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -54,5 +59,6 @@ class ProductModel {
         "client_price": clientPrice,
         "image": image,
         "user_id": userId,
+        "category": category!.toJson(),
     };
 }

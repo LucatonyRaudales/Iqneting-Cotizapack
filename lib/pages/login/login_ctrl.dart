@@ -23,12 +23,12 @@ class LoginCtrl extends GetxController{
         switch(value?.statusCode){
           case 201:
             btnController.success();
-            MyAlert.showMyDialog(title: '¡Bienvenid@!', message: 'espera un momento, estamos cargando tus datos', color: Colors.green);
+            MyAlert.showMyDialog(title: '¡Bienvenid@!', message: 'estamos cargando tus datos', color: Colors.green);
             _session = Session.fromJson(value!.data);
             _userRepository.chargeUserData(userID: _session.userId!)
               .then((value)async{
                 await MyGetStorage().saveData(key: 'userData', data: value);
-                Get.offAll(HomePage(), transition: Transition.rightToLeftWithFade);
+                Timer(Duration(seconds:2), ()=> Get.offAll(HomePage(), transition: Transition.rightToLeftWithFade));
               });
           break;
           case 500:
@@ -40,7 +40,7 @@ class LoginCtrl extends GetxController{
           break;
           default:
           btnController.error();
-          MyAlert.showMyDialog(title: 'Error inesperado', message: 'desconocemos el motivo. Por favor, intenta de nuevo', color: Colors.red);
+          MyAlert.showMyDialog(title: 'Credenciales incorrectas', message: 'por favor, revisa las credenciales ingresadas o crea un nuevo perfíl', color: Colors.red);
             Timer(Duration(seconds: 3), (){
                 btnController.reset();
             });

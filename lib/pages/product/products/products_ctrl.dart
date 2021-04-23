@@ -10,7 +10,8 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 
 class ProductsCtrl extends GetxController{
   ProductRepository _productRepository = ProductRepository();
-   ProductList productList = ProductList();
+  ProductList productList = ProductList();
+  bool haveProducts = true;
 
   @override
   void onInit() {
@@ -23,7 +24,11 @@ class ProductsCtrl extends GetxController{
     try{
       _productRepository.getProducts()
       .then((value){
-        switch(value!.statusCode){
+        if(value == null){
+          this.haveProducts = false;
+          return update();
+        }
+        switch(value.statusCode){
           case 200:
           productList = ProductList.fromJson( value.data["documents"]);// value.data["documents"].map((i)=>ProductModel.fromJson(i)).toList(); 
           update();

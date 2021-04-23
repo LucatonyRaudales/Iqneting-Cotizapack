@@ -18,6 +18,7 @@ class _ProfilePageState extends State<ProfilePage> {
     return GetBuilder<ProfileCtrl>(
       init: ProfileCtrl(),
       builder:(_ctrl)=> Scaffold(
+        resizeToAvoidBottomInset: false,
         backgroundColor: Colors.white,
         body: ListView(
           children: [
@@ -75,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: Column(children: [
               ListTile(
                 title: Text(
-                "tonyraudalesdev@iqneting.com.mx",
+                _ctrl.myAccount.email.toString(),
                 style: body1,
               ),
             ),
@@ -85,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 style: body1,
               ),
               trailing: InkWell(
-                onTap: ()=> print('cambiar mi constraseña'),
+                onTap: ()=> _ctrl.updatePassword(context),
                 child: Icon(LineIcons.cog, color: color700),
               )
             ),
@@ -112,11 +113,15 @@ class _ProfilePageState extends State<ProfilePage> {
             _ctrl.userData.userID == "" ?
             Center(
               child: Column(children: [
+                SizedBox(height: 25),
                 new Text('Datos vacíos', style: subtitulo,),
+                SizedBox(height: 15),
                 ElevatedButton(
-              child: Text("Agregar mis datos", style: subtituloblanco),
-              onPressed:()=> Get.to(EditMyDataPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":false, "data": null}),
-            )
+                  style: ButtonStyle(backgroundColor: MaterialStateProperty.all<Color>(color500)),
+                  child: Text("Agregar mis datos", style: subtituloblanco),
+                  onPressed:()=> Get.to(EditMyDataPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":false, "data": null}),
+                ),
+                SizedBox(height: 25),
               ],)
             ) :
             ListTile(

@@ -63,18 +63,6 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                                         ),),
                                         )
                                   ),
-                                  Align(
-                                    alignment: Alignment(1.5,1.5),
-                                    child: MaterialButton(
-                                      minWidth: 0,
-                                      child: Icon(Icons.camera_alt),
-                                      onPressed: (){},
-                                      textColor: Colors.white,
-                                      color: color400,
-                                      elevation: 0,
-                                      shape: CircleBorder(),
-                                    ),
-                                  )
                                 ],
                               ),
                             ),
@@ -164,7 +152,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                         }
                         if(_ctrl.userData.category.id == ""){
                           _ctrl.btnController.reset();
-                          return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'elige una categoría para guardar tus dats', color: Colors.red);
+                          return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'elige una categoría para guardar tus datos', color: Colors.red);
                         }
                         if(_ctrl.isUpdate){
                           return _ctrl.updateMyData();
@@ -174,6 +162,11 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                       btnController: _ctrl.btnController,
                       name: 'Guardar'),
                   ]),
+                ),
+                SizedBox(height: 12,),
+                TextButton(
+                  child: Text("Cancelar", style: body1,),
+                  onPressed:()=> Navigator.pop(context),
                 ),
                 SizedBox(height: 20,),
               ],)

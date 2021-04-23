@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/file.dart';
 import 'package:cotizapack/model/product.dart';
+import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
@@ -14,13 +15,22 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 class NewProductCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
   late File image;
-  ProductModel product = ProductModel();
+  
+  ProductModel product = ProductModel(category: ProductCategory(
+    name: "Seleccionar Categoría", 
+    description: "", 
+    enable: true,
+    collection: "",
+    id: "",
+    ));
+  ProductRepository _productRepository = ProductRepository();
+  ListProductCategory listProductCategory = ListProductCategory();
   
   final picker = ImagePicker();
   late MyFile myFile;
   @override
   void onInit() {
-    print('new Product');
+    getProductCategory();
     super.onInit();
   }
 
@@ -36,10 +46,9 @@ class NewProductCtrl extends GetxController{
 
 
   void saveData()async{
-    btnController.reset();
     try {
-      /*var imgres = await MyStorage().postFile(file: image);
-      if(imgres.statusCode == 201){
+      var imgres = await MyStorage().postFile(file: image);
+      if(imgres != null){
         myFile = MyFile.fromJson(imgres.data);
       }else{
         btnController.error();
@@ -48,9 +57,9 @@ class NewProductCtrl extends GetxController{
                 btnController.reset();
             });
         return print('culiao');
-      }*/
+      }
       product.image = "llorapormi";
-      ProductRepository().saveDocument(data: product.toJson())
+      _productRepository.saveDocument(data: product.toJson())
       .then((value){
         switch(value!.statusCode){
           case 201:
@@ -64,5 +73,17 @@ class NewProductCtrl extends GetxController{
     } catch (e) {
       print('Error: $e');
     }
+  }
+
+  void getProductCategory(){
+    _productRepository.getProductsCategories()
+    .then((value){
+      if(value == null){
+        MyAlert.showMyDialog(title: 'Error!', message: 'hubo un problema al obtener algunos datos necesario, intenta de nuevo', color: Colors.red);
+        return Timer(Duration(seconds: 3), ()=> Get.back());
+      }
+      listProductCategory = value;
+      update();
+    });
   }
 }
