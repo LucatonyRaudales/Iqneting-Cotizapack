@@ -73,7 +73,7 @@ class NewProductPage extends StatelessWidget {
                   ),
                   FadeInUp(
                       child:InkWell(
-                      onTap: ()=> print('_ctrl.showPicker(context)'),
+                      onTap: ()=>_ctrl.showPicker(context),
                       child: Container(
                         height: 70,
                         child:  Material(
@@ -133,9 +133,9 @@ class NewProductPage extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(30))
                         ),
                         child: Center(
-                          child://_ctrl.image.path != '' ? 
+                          child:_ctrl.image.path == '' ? 
                           Icon(LineIcons.plusCircle, size: 45, color: Colors.white70,) 
-                          //: Image.file(_ctrl.image),
+                          : Image.file(_ctrl.image),
                         )
                       ),
                     ),

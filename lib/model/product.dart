@@ -35,7 +35,7 @@ class ProductModel {
     String? description;
     double? price;
     double? clientPrice;
-    String? image;
+    List<String>? image;
     String? userId;
     ProductCategory? category;
 
@@ -45,9 +45,9 @@ class ProductModel {
         name: json["name"],
         description: json["description"],
         price: json["price"].toDouble(),
-        clientPrice: json["client_price"].toDouble(),
-        image: json["image"],
-        userId: json["user_id"].toString(),
+        clientPrice: json["clientPrice"].toDouble(),
+        image: List<String>.from(json["images"].map((x) => x)),
+        userId: json["userID"].toString(),
         category:  ProductCategory.fromJson(json["category"]),
     );
 
@@ -56,9 +56,9 @@ class ProductModel {
         "name": name,
         "description": description,
         "price": price,
-        "client_price": clientPrice,
-        "image": image,
-        "user_id": userId,
+        "clientPrice": clientPrice,
+        "images": List<dynamic>.from(image!.map((x) => x)),
+        "userID": userId,
         "category": category!.toJson(),
     };
 }

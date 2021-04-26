@@ -66,7 +66,7 @@ class SplashCtrl extends GetxController{
       return null;
     }else{
     myAccount = (await _accountRepository.getAccount())!;
-    MyGetStorage().saveData(key: 'accountData', data: myAccount);
+    MyGetStorage().saveData(key: 'accountData', data: myAccount.toJson());
     return null;
     }
   }

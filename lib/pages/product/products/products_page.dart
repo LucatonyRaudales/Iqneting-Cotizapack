@@ -1,19 +1,78 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/pages/product/new_product/new_product_page.dart';
-import 'package:cotizapack/pages/product/product_detail/product_detail_page.dart';
 import 'package:cotizapack/pages/product/products/products_ctrl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/routes/default_transitions.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:transparent_image/transparent_image.dart';
 import '../../../styles/colors.dart';
 import '../../../styles/typography.dart';
 
 class ProductsPage extends StatelessWidget {
+
+void showProductDetail(BuildContext context, ProductModel product){
+    MyBottomSheet().show(context, Get.height/1.09, 
+    ListView(
+        children: <Widget>[
+          InkWell(
+            onTap: (){
+              Navigator.pop(context);
+            },
+                      child: Padding(
+              padding: EdgeInsets.only(left: 20),
+                        child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(Icons.arrow_back_ios)),
+            ),
+          ),
+          Hero(
+            tag: 'widget.id.toString()',
+                      child: Container(
+            width: Get.width,
+            height: 250,
+            decoration: BoxDecoration(
+              image: DecorationImage(image: AssetImage('assets/images/logo_colors.png'),fit: BoxFit.fitHeight)
+            ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
+            child:Column(children: [
+          new Text(product.name!, style: subtitulo),
+          SizedBox(height: 10,),
+          new Text(product.description!, style: body1),
+            ],)
+          ),
+          InkWell(
+            onTap: (){
+              // your add cart function here
+            },
+                      child: Padding(padding: EdgeInsets.only(left: 20,right: 20),
+            child: Container(
+              height: 50,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: primary,
+                borderRadius: BorderRadius.circular(30)
+              ),
+              child: Center(
+                child: Text("ADD TO CART",style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+
+                ),),
+              ),
+            ),),
+          )
+        ],
+      ),
+    );
+}
+
   @override
   Widget build(BuildContext context) {
   final spinkit = SpinKitPulse(
@@ -59,14 +118,14 @@ class ProductsPage extends StatelessWidget {
             ) : ListView.builder(
               itemCount:  _ctrl.productList.products!.length,
               itemBuilder: (context, index){
-                return myCards(product: _ctrl.productList.products![index], index: index);
+                return myCards(product: _ctrl.productList.products![index], index: index, context:context);
               })),
         );
       },
     );
   }
 
-  Widget myCards({required ProductModel product, required int index}){
+  Widget myCards({required ProductModel product, required int index, required BuildContext context}){
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
       child: Slidable(
@@ -77,7 +136,7 @@ class ProductsPage extends StatelessWidget {
           color: Colors.white,
           elevation: 4,
           child: InkWell(
-          onTap: ()=> Get.to(ProductDetail(), arguments: product),
+          onTap: ()=> showProductDetail(context),//Get.to(ProductDetail(), arguments: product),
                       child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: color200,

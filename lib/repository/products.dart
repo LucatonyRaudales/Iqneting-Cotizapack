@@ -1,20 +1,24 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/product_category.dart';
+import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 
 class ProductRepository {
-  final String collectionID = "6075e8a23227d";
+    MyAccount myAccount = MyAccount();
+  final String collectionID = "608222f2ca95c";
   final String productCategoriesCollectionID = '60822a3365a96';
   late Database database;
 
   Future<Response?> saveDocument({required Map<dynamic, dynamic> data})async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
+    myAccount = (await AccountRepository().getAccount())!;
     Response result = await database.createDocument(
     collectionId: collectionID,
     data: data,
-    read: ["user:607a2389ca8b7"],
-    write: ["user:607a2389ca8b7"],
+    read: ["*"],
+    write: ["user:${myAccount.id}"],
   );
   return result;
     } catch (e) {

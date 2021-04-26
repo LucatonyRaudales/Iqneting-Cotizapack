@@ -2,21 +2,27 @@ import 'dart:async';
 import 'dart:io';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/file.dart';
+import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/product_category.dart';
+import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/settings/get_storage.dart';
+import 'package:cotizapack/styles/colors.dart';
+import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
 class NewProductCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
-  late File image;
-  
-  ProductModel product = ProductModel(category: ProductCategory(
+    File image = File('');
+  ProductModel product = ProductModel(image: [], category: ProductCategory(
     name: "Seleccionar Categoría", 
     description: "", 
     enable: true,
@@ -30,16 +36,55 @@ class NewProductCtrl extends GetxController{
   late MyFile myFile;
   @override
   void onInit() {
+    readUserData();
     getProductCategory();
     super.onInit();
+  }
+
+  void readUserData()async{
+    MyAccount myAccount;
+    if(MyGetStorage().haveData(key: 'accountData')){
+      myAccount = MyAccount.fromJson(MyGetStorage().readData(key: 'accountData'));
+    }else{
+      myAccount = (await AccountRepository().getAccount())!;
+    }
+      product.userId = myAccount.id;
+      print('ID del usuario ${myAccount.id}');
+  }
+
+  Future<File?> _cropImage({required String sourcePath}) async {
+    File? croppedFile = await ImageCropper.cropImage(
+        sourcePath: sourcePath,
+        compressFormat: ImageCompressFormat.jpg,
+        compressQuality: 100,
+        aspectRatioPresets: [
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio3x2,
+              ],
+        androidUiSettings: AndroidUiSettings(
+            toolbarTitle: 'Editar imagen',
+            toolbarColor: color700,
+            toolbarWidgetColor: Colors.white,
+            initAspectRatio: CropAspectRatioPreset.original,
+            lockAspectRatio: false),
+        iosUiSettings: IOSUiSettings(
+          title: 'Editar imagen',
+        ));
+    if (croppedFile != null) {
+      return croppedFile;
+    }
   }
 
   Future getImage({required ImageSource source}) async {
     final pickedFile = await picker.getImage(source: source);
 
       if (pickedFile != null) {
-        image = File(pickedFile.path);
+        var img = await _cropImage(sourcePath: pickedFile.path);
+        if(img != null){
+          image = img;
         update();
+        }
       }
       Get.back();
   }
@@ -58,12 +103,14 @@ class NewProductCtrl extends GetxController{
             });
         return print('culiao');
       }
-      product.image = "llorapormi";
+      product.image!.add(myFile.id!);
       _productRepository.saveDocument(data: product.toJson())
       .then((value){
         switch(value!.statusCode){
           case 201:
+            this.btnController.success();
             MyAlert.showMyDialog(title: 'Guardado exitósamente', message: '${product.name} fué añadido sin problemas', color: Colors.green);
+            Timer(Duration(seconds: 3), ()=> Get.back());
           break;
           default:
           MyAlert.showMyDialog(title: 'Error al guardar los datos', message: 'por favor, intenta de nuevo', color: Colors.red);
@@ -71,7 +118,7 @@ class NewProductCtrl extends GetxController{
         }
       });
     } catch (e) {
-      print('Error: $e');
+      print('Error save data: $e');
     }
   }
 
@@ -85,5 +132,46 @@ class NewProductCtrl extends GetxController{
       listProductCategory = value;
       update();
     });
+  }
+
+
+
+    void showPicker(BuildContext ctx) {
+      showModalBottomSheet(
+        context: ctx,
+        builder: (context) {
+          return Container(
+            color: Color(0xFF737373),
+            height: 180,
+            child: Container(
+              child: listProductCategory.listProductCategory!.isNotEmpty ? ListView.builder(
+                    itemCount: listProductCategory.listProductCategory!.length,
+                    itemBuilder: (ctx, index){
+                      return InkWell(
+                        onTap: (){
+                          product.category = listProductCategory.listProductCategory![index];
+                          update();
+                          Navigator.pop(context);
+                          },
+                        child: ListTile(
+                          trailing: new Icon(LineIcons.plus, color: color500,),
+                          title: new Text(listProductCategory.listProductCategory![index].name, style: subtitulo,),
+                          subtitle: new Text(listProductCategory.listProductCategory![index].description, style: body2,),
+                        ),
+                      );
+                    })
+                    : new Center(
+                      child: new Text('Cargando')
+                    ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                ),
+              ),
+            ),
+          );
+        });
   }
 }

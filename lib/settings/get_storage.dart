@@ -9,7 +9,7 @@ class MyGetStorage{
     return box.write(key, data);
   }
 
-  Future<dynamic> readData({required String key})async{
+  Map<String, dynamic> readData({required String key}){
     print('reading key: $key');
     return box.read(key);
   }

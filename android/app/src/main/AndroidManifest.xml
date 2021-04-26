@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cotizapack.cotizapack">
+    <uses-permission android:name="android.permission.INTERNET"/>
    <application
         android:label="cotizapack"
         android:icon="@mipmap/ic_launcher">
@@ -41,6 +42,10 @@
             <data android:scheme="appwrite-callback-6075d900ebefa" />
           </intent-filter>
         </activity>
+        <activity
+          android:name="com.yalantis.ucrop.UCropActivity"
+          android:screenOrientation="portrait"
+          android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data
