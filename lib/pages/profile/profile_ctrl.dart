@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/button.dart';
@@ -6,15 +7,19 @@ import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
 import 'package:cotizapack/model/categories.dart';
+import 'package:cotizapack/model/file.dart';
 import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/repository/account.dart';
+import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/repository/user.dart';
+import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import '../splash/splash_screen.dart';
@@ -23,9 +28,11 @@ class ProfileCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
   UserRepository _userRepository = UserRepository();
   AccountRepository _accountRepository = AccountRepository();
+  MyStorage myStorage = MyStorage();
   String newPassword = '', oldPassword = '';
-    MyAccount myAccount = MyAccount();
-    UserCategory userCategory = UserCategory(
+  MyAccount myAccount = MyAccount();
+  bool updating = false;
+  UserCategory userCategory = UserCategory(
     collection: "fds",
     enable: true,
     name: "",
@@ -125,6 +132,45 @@ class ProfileCtrl extends GetxController{
     
   }
 
+  Future updateImageProfile()async{
+    File image = File('');
+    try { 
+      var img = await GetImage().getImage(source: ImageSource.gallery);
+        if(img != null){
+          image = img;
+      updating = true;
+        update();
+        }else{
+          return  MyAlert.showMyDialog(title: 'Error al guardar la imagen', message: 'por favor, intenta de nuevo', color: Colors.red);
+        }
+      var imgres = await MyStorage().postFile(file: image);
+      if(imgres != null){
+        var data= MyFile.fromJson(imgres.data);
+        if( userData.logo != null){
+          await MyStorage().deleteFile(fileId: userData.logo.toString());
+        }
+        userData.logo = data.id;
+        UserRepository().updateMyData(data: userData)
+          .then((val){
+            updating = false;
+            btnController.success();
+            MyGetStorage().replaceData(key: "userData", data: this.userData);
+            MyAlert.showMyDialog(title: 'Imagen actualizada', message: 'se ha actualizado tu logo correctamente', color: Colors.green);
+            update();
+            });
+      }else{
+        btnController.error();
+        MyAlert.showMyDialog(title: 'Error al guardar la imagen', message: 'por favor, intenta de nuevo', color: Colors.red);
+            Timer(Duration(seconds: 3), (){
+                btnController.reset();
+            });
+        return print('culiao');
+      }
+    }catch(e){
+      print('Error update imagen: $e');
+      MyAlert.showMyDialog(title: 'Error al actualizar la imagen', message: e.toString(), color: Colors.red);
+    }
+  }
   void logout(){
     try {
       _userRepository.getSessions()

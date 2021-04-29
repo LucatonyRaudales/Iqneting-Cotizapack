@@ -1,8 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
-import 'package:cotizapack/model/product.dart';
-import 'package:cotizapack/pages/product/new_product/new_product_page.dart';
-import 'package:cotizapack/pages/product/products/products_ctrl.dart';
+import 'package:cotizapack/model/customers.dart';
+import 'package:cotizapack/pages/customer/customers/customers_ctrl.dart';
+import 'package:cotizapack/pages/customer/new_customers/new_customer_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -12,9 +12,9 @@ import 'package:transparent_image/transparent_image.dart';
 import '../../../styles/colors.dart';
 import '../../../styles/typography.dart';
 
-class ProductsPage extends StatelessWidget {
+class CustomerPage extends StatelessWidget {
 
-void showProductDetail(BuildContext context, ProductModel product){
+void showProductDetail(BuildContext context, CustomerModel customer){
     MyBottomSheet().show(context, Get.height/1.09, 
     ListView(
         children: <Widget>[
@@ -22,11 +22,11 @@ void showProductDetail(BuildContext context, ProductModel product){
             onTap: (){
               Navigator.pop(context);
             },
-                    child: Padding(
-            padding: EdgeInsets.only(left: 20),
-                      child: Align(
-              alignment: Alignment.centerLeft,
-              child: Icon(Icons.arrow_back_ios)),
+                      child: Padding(
+              padding: EdgeInsets.only(left: 20),
+                        child: Align(
+                alignment: Alignment.centerLeft,
+                child: Icon(Icons.arrow_back_ios)),
             ),
           ),
           Hero(
@@ -42,16 +42,16 @@ void showProductDetail(BuildContext context, ProductModel product){
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
             child:Column(children: [
-          new Text(product.name!, style: subtitulo),
+          new Text(customer.name!, style: subtitulo),
           SizedBox(height: 10,),
-          new Text(product.description!, style: body1),
+          new Text(customer.notes!, style: body1),
             ],)
           ),
           InkWell(
             onTap: (){
               // your add cart function here
             },
-                      child: Padding(padding: EdgeInsets.only(left: 20,right: 20),
+              child: Padding(padding: EdgeInsets.only(left: 20,right: 20),
             child: Container(
               height: 50,
               width: double.infinity,
@@ -79,53 +79,61 @@ void showProductDetail(BuildContext context, ProductModel product){
   color: color500,
   size: 50.0,
 );
-    return GetBuilder<ProductsCtrl>(
-      init: ProductsCtrl(),
+    return GetBuilder<CustomersCtrl>(
+      init: CustomersCtrl(),
       builder: (_ctrl) {
         return Scaffold(
           appBar: AppBar(
             backgroundColor: color500,
             centerTitle: true,
-            title: new Text('Mis productos y servicios', style: subtituloblanco,),
+            title: new Text('Mis clientes', style: subtituloblanco,),
           ),
           floatingActionButton: FloatingActionButton(
-            // isExtended: true,
-            child: Icon(Icons.add),
-            backgroundColor: color500,
-            onPressed: () {
-              Get.to(NewProductPage(), transition: Transition.rightToLeftWithFade);
-            },
-          ),
+        // isExtended: true,
+        child: Icon(Icons.add),
+        backgroundColor: color500,
+        onPressed: () {
+          Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade);
+        },
+      ),
           body: SafeArea(
             child: _ctrl.haveProducts == false ?
-            Padding(
-              padding: EdgeInsets.symmetric(horizontal: 25),
-              child:new Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children:[
-                new Icon(LineIcons.cryingFace, size: 50, color: color500),
-                SizedBox(height: 20,),
-                Text(
-                'No tienes productos o servicios almacenados, presiona (+) para agregar uno nuevo.',
-                style: subtitulo,
-                textAlign: TextAlign.center,
-              ) 
-              ])
-            ) : 
-            (_ctrl.productList.products == null || _ctrl.productList.products!.isEmpty) ?
-            Center(
-              child: spinkit 
-            ) : ListView.builder(
-              itemCount:  _ctrl.productList.products!.length,
-              itemBuilder: (context, index){
-                return myCards(product: _ctrl.productList.products![index], index: index, context:context, ctrl: _ctrl);
-              })),
+              Center(
+                child:new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:[
+                  new Icon(LineIcons.hushedFace, size: 50, color: color500),
+                  SizedBox(height: 20,),
+                  Text(
+                  'No hay clientes para mostrar',
+                  style: subtitulo,
+                  textAlign: TextAlign.center,
+                ),
+                SizedBox(height: 12,),
+                TextButton(
+                  child: Text("Intentar de nuevo?", style: body1,),
+                  onPressed:()=> _ctrl.getCustomers(),
+                ),
+                ])
+              ) : 
+              (_ctrl.customerList.customers == null || _ctrl.customerList.customers!.isEmpty) ?
+              Center(
+                child: spinkit 
+              ) : RefreshIndicator(
+              color: color700,
+              onRefresh:_ctrl.getCustomers,
+              child:  ListView.builder(
+                itemCount:  _ctrl.customerList.customers!.length,
+                itemBuilder: (context, index){
+                  return myCards(customer: _ctrl.customerList.customers![index], index: index, context:context, ctrl:_ctrl);
+                }),
+            )),
         );
       },
     );
   }
 
-  Widget myCards({required ProductModel product, required int index, required BuildContext context, required ProductsCtrl ctrl}){
+  Widget myCards({required CustomerModel customer, required int index, required BuildContext context, required CustomersCtrl ctrl}){
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
       child: Slidable(
@@ -136,8 +144,8 @@ void showProductDetail(BuildContext context, ProductModel product){
           color: Colors.white,
           elevation: 4,
           child: InkWell(
-          onTap: ()=> showProductDetail(context, product),//Get.to(ProductDetail(), arguments: product),
-                      child: ListTile(
+          onTap: ()=> showProductDetail(context, customer),//Get.to(ProductDetail(), arguments: product),
+            child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: color200,
                 child: FadeInImage.memoryNetwork(
@@ -147,8 +155,8 @@ void showProductDetail(BuildContext context, ProductModel product){
                   ),
                 foregroundColor: Colors.white,
               ),
-              title: Text(product.name.toString(), style: subtitulo, overflow: TextOverflow.ellipsis),
-              subtitle: Text(product.description.toString(), style: body1, overflow: TextOverflow.ellipsis,),
+              title: Text(customer.name.toString(), style: subtitulo, overflow: TextOverflow.ellipsis),
+              subtitle: Text(customer.notes.toString(), style: body1, overflow: TextOverflow.ellipsis,),
               trailing: new Icon(Icons.arrow_forward_ios, size: 15),
             ),
           ),
@@ -159,7 +167,7 @@ void showProductDetail(BuildContext context, ProductModel product){
           caption: 'Editar',
           color: color500,
           icon: LineIcons.edit,
-          onTap: () => Get.to(NewProductPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": product}),
+          onTap: () => print('Editar'),
         ),
       ],
       secondaryActions: <Widget>[
@@ -167,7 +175,7 @@ void showProductDetail(BuildContext context, ProductModel product){
           caption: 'Eliminar',
           color: Colors.red,
           icon: Icons.delete,
-          onTap: () => ctrl.deleteProduct(productID: product.id!),
+          onTap: () => ctrl.deleteCustomer(customerID: customer.id!),
         ),
       ],
     )

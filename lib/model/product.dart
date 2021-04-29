@@ -19,6 +19,7 @@ class ProductList{
 class ProductModel {
     ProductModel({
         this.id,
+        this.permissions,
         this.name,
         this.description,
         this.price,
@@ -31,6 +32,7 @@ class ProductModel {
 
     String? id;
     String? collection;
+    Permissions? permissions;
     String? name;
     String? description;
     double? price;
@@ -41,7 +43,8 @@ class ProductModel {
 
     factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
         id: json["\u0024id"],
-        collection: json["collection"],
+        collection: json["\u0024collection"],
+        permissions: Permissions.fromJson(json["\u0024permissions"]),
         name: json["name"],
         description: json["description"],
         price: json["price"].toDouble(),
@@ -53,6 +56,8 @@ class ProductModel {
 
     Map<String, dynamic> toJson() => {
         "\u0024id": id,
+        "\u0024collection": collection,
+        "\u0024permissions": permissions != null ? permissions!.toJson() : null,
         "name": name,
         "description": description,
         "price": price,
@@ -60,5 +65,26 @@ class ProductModel {
         "images": List<dynamic>.from(image!.map((x) => x)),
         "userID": userId,
         "category": category!.toJson(),
+    };
+}
+
+
+class Permissions {
+    Permissions({
+        this.read,
+        this.write,
+    });
+
+    List<String>? read;
+    List<String>? write;
+
+    factory Permissions.fromJson(Map<String, dynamic> json) => Permissions(
+        read: List<String>.from(json["read"].map((x) => x)),
+        write: List<String>.from(json["write"].map((x) => x)),
+    );
+
+    Map<String, dynamic> toJson() => {
+        "read": List<dynamic>.from(read!.map((x) => x)),
+        "write": List<dynamic>.from(write!.map((x) => x)),
     };
 }

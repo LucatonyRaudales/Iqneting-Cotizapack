@@ -1,6 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
-
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/repository/products.dart';
@@ -12,10 +10,10 @@ class ProductsCtrl extends GetxController{
   ProductRepository _productRepository = ProductRepository();
   ProductList productList = ProductList();
   bool haveProducts = true;
+  
 
   @override
   void onInit() {
-    print('products page');
     getProducts();
     super.onInit();
   }
@@ -45,5 +43,17 @@ class ProductsCtrl extends GetxController{
     }catch(e){
       print('Error get products: $e');
     }
+  }
+
+  void deleteProduct({required String productID})async{
+    _productRepository.disableProduct(productID: productID)
+    .then((value){
+      if(value){
+      MyAlert.showMyDialog(title: 'Producto eliminado', message: 'el producto fué eliminado satisfactoriamente', color: Colors.green);
+      return getProducts();
+      }else{
+        return MyAlert.showMyDialog(title: 'Error', message: 'ha ocurrido un error inesperado, por favor intenta de nuevo', color: Colors.red);
+      }
+    });
   }
 }

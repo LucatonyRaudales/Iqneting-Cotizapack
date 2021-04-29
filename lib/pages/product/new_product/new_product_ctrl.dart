@@ -8,6 +8,7 @@ import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -32,16 +33,30 @@ class NewProductCtrl extends GetxController{
   ProductRepository _productRepository = ProductRepository();
   ListProductCategory listProductCategory = ListProductCategory();
   
+  var arguments = Get.arguments;
+  bool isUpdate = false;
+
   final picker = ImagePicker();
   late MyFile myFile;
   @override
   void onInit() {
-    readUserData();
-    getProductCategory();
+    _init();
     super.onInit();
   }
 
-  void readUserData()async{
+
+  _init()async{
+    if(arguments["editData"]){
+      isUpdate = true;
+      if(arguments["data"] != null){
+        product = arguments["data"];
+      }
+    }
+    await readUserData();
+    getProductCategory();
+  }
+
+  Future readUserData()async{
     MyAccount myAccount;
     if(MyGetStorage().haveData(key: 'accountData')){
       myAccount = MyAccount.fromJson(MyGetStorage().readData(key: 'accountData'));
@@ -52,44 +67,15 @@ class NewProductCtrl extends GetxController{
       print('ID del usuario ${myAccount.id}');
   }
 
-  Future<File?> _cropImage({required String sourcePath}) async {
-    File? croppedFile = await ImageCropper.cropImage(
-        sourcePath: sourcePath,
-        compressFormat: ImageCompressFormat.jpg,
-        compressQuality: 100,
-        aspectRatioPresets: [
-                CropAspectRatioPreset.square,
-                CropAspectRatioPreset.ratio4x3,
-                CropAspectRatioPreset.ratio3x2,
-              ],
-        androidUiSettings: AndroidUiSettings(
-            toolbarTitle: 'Editar imagen',
-            toolbarColor: color700,
-            toolbarWidgetColor: Colors.white,
-            initAspectRatio: CropAspectRatioPreset.original,
-            lockAspectRatio: false),
-        iosUiSettings: IOSUiSettings(
-          title: 'Editar imagen',
-        ));
-    if (croppedFile != null) {
-      return croppedFile;
-    }
-  }
 
   Future getImage({required ImageSource source}) async {
-    final pickedFile = await picker.getImage(source: source);
-
-      if (pickedFile != null) {
-        var img = await _cropImage(sourcePath: pickedFile.path);
+        var img = await GetImage().getImage(source: source);
         if(img != null){
           image = img;
         update();
         }
-      }
-      Get.back();
   }
-
-
+  
   void saveData()async{
     try {
       var imgres = await MyStorage().postFile(file: image);
@@ -118,6 +104,11 @@ class NewProductCtrl extends GetxController{
         }
       });
     } catch (e) {
+      btnController.error();
+        MyAlert.showMyDialog(title: 'Error al guardar los datos', message: e.toString(), color: Colors.red);
+            Timer(Duration(seconds: 3), (){
+                btnController.reset();
+            });
       print('Error save data: $e');
     }
   }

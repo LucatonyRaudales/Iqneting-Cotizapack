@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:uuid/uuid.dart';
@@ -30,5 +29,29 @@ class MyStorage{
       print('Error storage: $e.message');
       return null;
     } 
+  }
+
+  Future<Response?> deleteFile({required String fileId})async{
+    try{
+      storage = Storage(AppwriteSettings.initAppwrite());
+      Response res = await storage.deleteFile(fileId: fileId);
+      print('Error update Storage');
+      return res;
+    }catch(e){
+      print('Error delete File: $e');
+      return null;
+    }
+  }
+
+  Future<Response?> getFilePreview({required String fileId})async{
+    try{
+      storage = Storage(AppwriteSettings.initAppwrite());
+      Response res = await storage.getFilePreview(fileId: fileId);
+      print('Error update Storage');
+      return res;
+    }catch(e){
+      print('Error delete File: $e');
+      return null;
+    }
   }
 }

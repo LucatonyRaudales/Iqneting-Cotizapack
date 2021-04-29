@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/session_model.dart';
+import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/login/login_page.dart';
 import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/user.dart';
@@ -49,6 +50,7 @@ class SplashCtrl extends GetxController{
       }{
         _userRepository.chargeUserData(userID: session.userId!)
           .then((value)async{
+            if(value == null) return Get.off(EditMyDataPage(), transition: Transition.rightToLeftWithFade,  arguments: {"editData":false, "data": null});
             await MyGetStorage().saveData(key: 'userData', data: value);
             print('Awevo, se guardaron los datos bien');
           });

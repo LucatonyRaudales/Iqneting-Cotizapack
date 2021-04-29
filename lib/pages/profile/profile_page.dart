@@ -1,6 +1,7 @@
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/profile/profile_ctrl.dart';
+import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
@@ -43,10 +44,18 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: new SizedBox(
                       width: 140.0,
                       height: 140.0,
-                      child:  Image.network(
-                          "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
-                          fit: BoxFit.fill,
-                        ),
+                      child: _ctrl.userData.logo == null ? Center(child: Icon(LineIcons.plus)) : FutureBuilder(
+                        future: MyStorage().getFilePreview(
+                          fileId: _ctrl.userData.logo.toString(),
+                        ), //works for both public file and private file, for private files you need to be logged in
+                        builder: (context, snapshot) {
+                          return/* snapshot.hasData && snapshot.data != null
+                            ? Image.memory(''
+                                //snapshot.data!,
+                              )
+                            : */CircularProgressIndicator();
+                        },
+                      ),
                     ),),
                     )),
                     Align(

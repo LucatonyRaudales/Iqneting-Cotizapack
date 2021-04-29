@@ -1,6 +1,8 @@
 import 'package:cotizapack/common/card.dart';
 import 'package:cotizapack/common/headerPaint.dart';
+import 'package:cotizapack/pages/customer/customers/customers_page.dart';
 import 'package:cotizapack/pages/product/products/products_page.dart';
+import 'package:cotizapack/pages/quotation/new_quotation/new_quotation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
@@ -31,13 +33,13 @@ class InitPage extends StatelessWidget {
                 ],),
               ),
               card(
-                function:()=> print('crear cotización'),
+                function:()=> Get.to(NewQuotationPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.fileInvoiceWithUsDollar,
                 title: 'Crear cotización',
                 subtitle: 'Agrega una nueva cotización'
               ),
               card(
-                function:()=> print('crear cliente'),
+                function:()=> Get.to(CustomerPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.userPlus,
                 title: 'Crear cliente',
                 subtitle: 'Agrega un nuevo cliente para tus cotizaciones'

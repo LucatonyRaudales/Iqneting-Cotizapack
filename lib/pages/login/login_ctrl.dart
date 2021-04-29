@@ -2,7 +2,7 @@ import 'dart:async';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_model.dart';
-import 'package:cotizapack/pages/home_page.dart';
+import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +28,7 @@ class LoginCtrl extends GetxController{
             _userRepository.chargeUserData(userID: _session.userId!)
               .then((value)async{
                 await MyGetStorage().saveData(key: 'userData', data: value);
-                Timer(Duration(seconds:2), ()=> Get.offAll(HomePage(), transition: Transition.rightToLeftWithFade));
+                Timer(Duration(seconds:2), ()=> Get.offAll(SplashPage(), transition: Transition.rightToLeftWithFade));
               });
           break;
           case 500:
