@@ -1,9 +1,9 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/my_account.dart';
+import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/model/user_data.dart';
-import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
@@ -14,15 +14,15 @@ class ProductRepository {
   late Database database;
   UserData _userData = UserData(category: UserCategory(collection: '', description: '', name: '', enable: true, id: ''));
 
-  Future<Response?> saveDocument({required Map<dynamic, dynamic> data})async{
+  Future<Response?> saveDocument({required ProductModel data})async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
-    myAccount = (await AccountRepository().getAccount())!;
+   this._userData = MyGetStorage().listenUserData()!;
     Response result = await database.createDocument(
     collectionId: collectionID,
-    data: data,
+    data: data.toJson(),
     read: ["*"],
-    write: ["user:${myAccount.id}"],
+    write: ["user:${data.userId}"],
   );
   return result;
     } catch (e) {
@@ -61,6 +61,25 @@ class ProductRepository {
     } catch (e) {
       print('error repository products $e');
       return null;
+    }
+  }
+
+
+  Future<bool> updateProduct({required ProductModel product})async{
+        database = Database(AppwriteSettings.initAppwrite());
+    try{
+      //_userData = _myGetStorage.listenUserData()!;
+      Response res = await database.updateDocument(
+        collectionId: collectionID,
+        documentId: product.id!,
+        data: product.toJson(), 
+        read: ['*'], 
+        write: ['user:${product.userId}']
+      );
+      return res.statusCode == 200 ? true : false;
+    }catch(e){
+      print('Error save customer: $e');
+      return false;
     }
   }
 

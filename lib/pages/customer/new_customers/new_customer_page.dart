@@ -1,9 +1,12 @@
+import 'dart:typed_data';
+
 import 'package:animate_do/animate_do.dart';
+import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/validators.dart';
+import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import '../../../common/button.dart';
 import '../../../common/textfields.dart';
@@ -33,6 +36,7 @@ class NewCustomerPage extends StatelessWidget {
                 child: new Column(children: [
                   InputText(
                     name: 'Nombre',
+                    initialValue: _ctrl.customer.name,
                     textInputType: TextInputType.name,
                     validator: Validators.nameValidator,
                     prefixIcon: Icon(LineIcons.pen),
@@ -43,6 +47,7 @@ class NewCustomerPage extends StatelessWidget {
                   ),
                   InputText(
                     name: 'Correo electrónico',
+                    initialValue: _ctrl.customer.email,
                     textInputType: TextInputType.emailAddress,
                     validator: Validators.emailValidator,
                     prefixIcon: Icon(LineIcons.envelope),
@@ -53,6 +58,8 @@ class NewCustomerPage extends StatelessWidget {
                   ),
                   InputText(
                     name: 'Nota',
+                    initialValue: _ctrl.customer.notes,
+                    minLines: 4,
                     textInputType: TextInputType.name,
                     validator: Validators.nameValidator,
                     prefixIcon: Icon(LineIcons.comment),
@@ -63,6 +70,7 @@ class NewCustomerPage extends StatelessWidget {
                   ),
                   InputText(
                     name: 'Teléfono',
+                    initialValue: _ctrl.customer.phone,
                     textInputType: TextInputType.phone,
                     validator: Validators.phoneValidator,
                     prefixIcon: Icon(LineIcons.phone),
@@ -110,7 +118,26 @@ class NewCustomerPage extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(30))
                         ),
                         child: Center(
-                          child:_ctrl.image.path == '' ? 
+                          child: _ctrl.isUpdate && _ctrl.image.path == '' && _ctrl.customer.image != null ? 
+                          FutureBuilder<Uint8List>(
+                            future: MyStorage().getFilePreview(
+                              fileId: _ctrl.customer.image!,
+                            ), //works for both public file and private file, for private files you need to be logged in
+                            builder: (context, snapshot) {
+                              return snapshot.hasData && snapshot.data != null
+                                ? Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: MemoryImage(
+                                        snapshot.data!,
+                                      ),
+                                        fit: BoxFit.cover
+                                    )
+                                  ),
+                                )
+                                : CircularProgressIndicator();
+                            },
+                          )  : _ctrl.image.path == '' ? 
                           Icon(LineIcons.plusCircle, size: 45, color: Colors.white70,) 
                           : Image.file(_ctrl.image),
                         )
@@ -125,7 +152,14 @@ class NewCustomerPage extends StatelessWidget {
                           if (!_formKey.currentState!.validate()) {
                             return _ctrl.btnController.reset();
                           }
-                          _ctrl.saveData();
+                          if(_ctrl.customer.address == ""){
+                            _ctrl.btnController.reset();
+                            return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'la dirección es necesaria para guardar tus datos', color: Colors.red);
+                          }
+                          if(_ctrl.isUpdate){
+                            return _ctrl.updateMyData();
+                          }
+                            return _ctrl.saveData();
                         },
                         btnController: _ctrl.btnController,
                         name: 'Guardar'),

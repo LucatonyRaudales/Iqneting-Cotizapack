@@ -38,17 +38,35 @@ class CustomerRepository{
   Future<Response?> saveDocument(CustomerModel customer)async{
     database = Database(AppwriteSettings.initAppwrite());
     try{
-      _userData = _myGetStorage.listenUserData()!;
+      //_userData = _myGetStorage.listenUserData()!;
       Response res = await database.createDocument(
         collectionId: collectionID, 
         data: customer.toJson(), 
         read: ['*'], 
-        write: ['user:${_userData.userID}']
+        write: ['user:${customer.userId}']
       );
       return res;
     }catch(e){
       print('Error save customer: $e');
       return null;
+    }
+  }
+
+  Future<bool> updateCustomer({required CustomerModel customer})async{
+        database = Database(AppwriteSettings.initAppwrite());
+    try{
+      _userData = _myGetStorage.listenUserData()!;
+      Response res = await database.updateDocument(
+        collectionId: collectionID,
+        documentId: customer.id!,
+        data: customer.toJson(), 
+        read: ['*'], 
+        write: ['user:${customer.userId}']
+      );
+      return res.statusCode == 200 ? true : false;
+    }catch(e){
+      print('Error save customer: $e');
+      return false;
     }
   }
 

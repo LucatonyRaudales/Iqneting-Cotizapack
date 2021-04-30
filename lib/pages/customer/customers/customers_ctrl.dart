@@ -1,6 +1,8 @@
+import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/customers.dart';
 import 'package:cotizapack/repository/customer.dart';
+import 'package:cotizapack/settings/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -9,6 +11,7 @@ class CustomersCtrl extends GetxController{
   CustomerRepository _customerRepository = CustomerRepository();
   CustomerList customerList = CustomerList();
   bool haveProducts = true;
+  late Storage storage;
 
   @override
   void onInit() {
@@ -18,6 +21,7 @@ class CustomersCtrl extends GetxController{
   }
 
   Future getCustomers()async{
+    storage = Storage(AppwriteSettings.initAppwrite());
     this.haveProducts = true;
     update();
     try{

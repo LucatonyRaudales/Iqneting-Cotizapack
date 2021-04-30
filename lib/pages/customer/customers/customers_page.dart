@@ -1,73 +1,87 @@
+import 'dart:typed_data';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/customers.dart';
 import 'package:cotizapack/pages/customer/customers/customers_ctrl.dart';
 import 'package:cotizapack/pages/customer/new_customers/new_customer_page.dart';
+import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
-import 'package:transparent_image/transparent_image.dart';
 import '../../../styles/colors.dart';
 import '../../../styles/typography.dart';
 
 class CustomerPage extends StatelessWidget {
 
-void showProductDetail(BuildContext context, CustomerModel customer){
+void showProductDetail(BuildContext context, CustomerModel customer, Uint8List image){
     MyBottomSheet().show(context, Get.height/1.09, 
     ListView(
         children: <Widget>[
-          InkWell(
-            onTap: (){
-              Navigator.pop(context);
-            },
-                      child: Padding(
-              padding: EdgeInsets.only(left: 20),
-                        child: Align(
-                alignment: Alignment.centerLeft,
-                child: Icon(Icons.arrow_back_ios)),
-            ),
-          ),
           Hero(
             tag: 'widget.id.toString()',
-                      child: Container(
+            child: Container(
             width: Get.width,
-            height: 250,
+            height: 290,
             decoration: BoxDecoration(
-              image: DecorationImage(image: AssetImage('assets/images/logo_colors.png'),fit: BoxFit.fitHeight)
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(25),
+                  topRight: const Radius.circular(25),
+                ),
+              image: DecorationImage(
+                  image: MemoryImage(
+                  image,
+                ),
+                  fit: BoxFit.cover
+              )
             ),
             ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 25),
-            child:Column(children: [
-          new Text(customer.name!, style: subtitulo),
-          SizedBox(height: 10,),
-          new Text(customer.notes!, style: body1),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+            child:Column(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                new Text(customer.name!, style: subtitulo),
+                SizedBox(height: 10,),
+                new Text(customer.notes!, style: body1),
+                ListTile(
+                  leading: Icon(LineIcons.envelope, color: color500),
+                  title: new Text(customer.email!, style: body1),
+                  subtitle:  new Text('Correo electrónico', style: body2)
+                ),
+                ListTile(
+                  leading: Icon(LineIcons.phone, color: color500),
+                  title: new Text(customer.phone!, style: body1),
+                  subtitle:  new Text('Teléfono', style: body2)
+                ),
+
+                ListTile(
+                  leading: Icon(LineIcons.locationArrow, color: color500),
+                  title: new Text(customer.address!, style: body1),
+                  subtitle:  new Text('Dirección', style: body2)
+                ),
+                InkWell(
+                  onTap: (){
+                    Get.back();
+                  },
+                    child: Padding(padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
+                  child: Container(
+                    height: 45,
+                    width: double.infinity / 1.8,
+                    decoration: BoxDecoration(
+                      color: color500,
+                      borderRadius: BorderRadius.circular(30)
+                    ),
+                    child: Center(
+                      child: Text("Atrás",style: subtituloblanco,),
+                    ),
+                  ),),
+                ),
             ],)
           ),
-          InkWell(
-            onTap: (){
-              // your add cart function here
-            },
-              child: Padding(padding: EdgeInsets.only(left: 20,right: 20),
-            child: Container(
-              height: 50,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: primary,
-                borderRadius: BorderRadius.circular(30)
-              ),
-              child: Center(
-                child: Text("ADD TO CART",style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20,
-
-                ),),
-              ),
-            ),),
-          )
         ],
       ),
     );
@@ -93,7 +107,7 @@ void showProductDetail(BuildContext context, CustomerModel customer){
         child: Icon(Icons.add),
         backgroundColor: color500,
         onPressed: () {
-          Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade);
+          Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":false, "data": null});
         },
       ),
           body: SafeArea(
@@ -122,18 +136,32 @@ void showProductDetail(BuildContext context, CustomerModel customer){
               ) : RefreshIndicator(
               color: color700,
               onRefresh:_ctrl.getCustomers,
-              child:  ListView.builder(
-                itemCount:  _ctrl.customerList.customers!.length,
-                itemBuilder: (context, index){
-                  return myCards(customer: _ctrl.customerList.customers![index], index: index, context:context, ctrl:_ctrl);
-                }),
-            )),
+              child: CustomScrollView(
+              slivers:<Widget>[
+                SliverGrid(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    mainAxisSpacing: 14.0,
+                    crossAxisSpacing: 1.0,
+                    childAspectRatio: 1.0,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                        return myCards(customer: _ctrl.customerList.customers![index], index: index, context:context, ctrl:_ctrl);
+                },
+                    childCount:  _ctrl.customerList.customers!.length,
+                  ),
+                )
+              ]
+            )
+          )),
         );
       },
     );
   }
 
   Widget myCards({required CustomerModel customer, required int index, required BuildContext context, required CustomersCtrl ctrl}){
+    Uint8List image = Uint8List(0);
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
       child: Slidable(
@@ -141,38 +169,56 @@ void showProductDetail(BuildContext context, CustomerModel customer){
       actionExtentRatio: 0.25,
       child: Container(
         child: Card(
-          color: Colors.white,
+          color: color50,
           elevation: 4,
           child: InkWell(
-          onTap: ()=> showProductDetail(context, customer),//Get.to(ProductDetail(), arguments: product),
-            child: ListTile(
-              leading: CircleAvatar(
-                backgroundColor: color200,
-                child: FadeInImage.memoryNetwork(
-                  fit: BoxFit.fill,
-                  placeholder: kTransparentImage,
-                  image: 'https://external-content.duckduckgo.com/iu/?u=http%3A%2F%2Fimg.bleacherreport.net%2Fimg%2Fimages%2Fphotos%2F002%2F197%2F187%2Frey_mysterio_wallpaper_by_regioart2012-d4xo2r3_crop_exact.jpg%3Fw%3D1200%26h%3D1200%26q%3D75&f=1&nofb=1',
-                  ),
-                foregroundColor: Colors.white,
-              ),
-              title: Text(customer.name.toString(), style: subtitulo, overflow: TextOverflow.ellipsis),
-              subtitle: Text(customer.notes.toString(), style: body1, overflow: TextOverflow.ellipsis,),
-              trailing: new Icon(Icons.arrow_forward_ios, size: 15),
+          onTap: ()=> showProductDetail(context, customer, image),//Get.to(ProductDetail(), arguments: product),
+            child: Column(
+              children: [
+                FutureBuilder<Uint8List>(
+                  future: MyStorage().getFilePreview(
+                    fileId: customer.image!,
+                  ), //works for both public file and private file, for private files you need to be logged in
+                  builder: (context, snapshot) {
+                    if(snapshot.data != null) image = snapshot.data!;
+                    return snapshot.hasData && snapshot.data != null
+                      ? Container(
+                        padding: EdgeInsets.symmetric(vertical:5),
+                        child: CircleAvatar(
+                        backgroundColor: color200,
+                        backgroundImage: MemoryImage(
+                          snapshot.data!,
+                        ),
+                        foregroundColor: Colors.white,
+                        radius: 35,
+                      )
+                      )
+                      : CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                        valueColor: new AlwaysStoppedAnimation<Color>(color500),);
+                  },
+                ),
+                SizedBox(height: 5,),
+                Text(customer.name.toString(), style: subtitulo, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+                SizedBox(height: 5,),
+                Text(customer.notes.toString(), style: body1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+                SizedBox(height: 5,),
+                  Text(customer.email.toString(), style: body1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+                  Icon(LineIcons.envelope, color: color500, size: 15)
+              ],
             ),
           ),
         ),
       ),
       actions: <Widget>[
         IconSlideAction(
-          caption: 'Editar',
           color: color500,
           icon: LineIcons.edit,
-          onTap: () => print('Editar'),
+          onTap: () => Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": customer}),
         ),
       ],
       secondaryActions: <Widget>[
         IconSlideAction(
-          caption: 'Eliminar',
           color: Colors.red,
           icon: Icons.delete,
           onTap: () => ctrl.deleteCustomer(customerID: customer.id!),

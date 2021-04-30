@@ -20,23 +20,30 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class NewCustomerCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
     File image = File('');
-  /*ProductModel product = ProductModel(image: [], category: ProductCategory(
-    name: "Seleccionar Categoría", 
-    description: "", 
-    enable: true,
-    collection: "",
-    id: "",
-    ));*/
   CustomerRepository _customerRepository = CustomerRepository();
-    CustomerModel customer = CustomerModel(address: '');
-  
+    CustomerModel customer = CustomerModel(address: 'mi dirección default para quitar luego');
   late MyFile myFile;
+
+  var arguments = Get.arguments;
+  bool isUpdate = false;
+
   @override
   void onInit() {
-    readUserData();
-    //getProductCategory();
+    _init();
     super.onInit();
   }
+
+
+  _init(){
+    if(arguments["editData"]){
+      isUpdate = true;
+      if(arguments["data"] != null){
+        customer = arguments["data"];
+      }
+    }
+    readUserData();
+  }
+
 
   void readUserData()async{
     MyAccount myAccount;
@@ -60,61 +67,61 @@ class NewCustomerCtrl extends GetxController{
   void getAddress({required BuildContext context})async{
   final kInitialPosition =  LatLng(-33.8567844, 151.213108);
     Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return PlacePicker(
-                          apiKey: 'AIzaSyCEKW1ZjGXOBqYaa94nmddouzv_shllRz0',
-                          initialPosition: kInitialPosition,
-                          useCurrentLocation: true,
-                          selectInitialPosition: true,
+    context,
+    MaterialPageRoute(
+      builder: (context) {
+        return PlacePicker(
+          apiKey: 'AIzaSyCEKW1ZjGXOBqYaa94nmddouzv_shllRz0',
+          initialPosition: kInitialPosition,
+          useCurrentLocation: true,
+          selectInitialPosition: true,
 
-                          //usePlaceDetailSearch: true,
-                          onPlacePicked: (result) {
-                            customer.address = result.adrAddress;
-                            Navigator.of(context).pop();
-                          update();
-                          },
-                          //forceSearchOnZoomChanged: true,
-                          //automaticallyImplyAppBarLeading: false,
-                          //autocompleteLanguage: "ko",
-                          //region: 'au',
-                          //selectInitialPosition: true,
-                          // selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
-                          //   print("state: $state, isSearchBarFocused: $isSearchBarFocused");
-                          //   return isSearchBarFocused
-                          //       ? Container()
-                          //       : FloatingCard(
-                          //           bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-                          //           leftPosition: 0.0,
-                          //           rightPosition: 0.0,
-                          //           width: 500,
-                          //           borderRadius: BorderRadius.circular(12.0),
-                          //           child: state == SearchingState.Searching
-                          //               ? Center(child: CircularProgressIndicator())
-                          //               : RaisedButton(
-                          //                   child: Text("Pick Here"),
-                          //                   onPressed: () {
-                          //                     // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
-                          //                     //            this will override default 'Select here' Button.
-                          //                     print("do something with [selectedPlace] data");
-                          //                     Navigator.of(context).pop();
-                          //                   },
-                          //                 ),
-                          //         );
-                          // },
-                          // pinBuilder: (context, state) {
-                          //   if (state == PinState.Idle) {
-                          //     return Icon(Icons.favorite_border);
-                          //   } else {
-                          //     return Icon(Icons.favorite);
-                          //   }
-                          // },
-                        );
-                      },
-                    ),
-                  );
-  }
+          //usePlaceDetailSearch: true,
+          onPlacePicked: (result) {
+            customer.address = result.adrAddress;
+            Navigator.of(context).pop();
+          update();
+          },
+          //forceSearchOnZoomChanged: true,
+          //automaticallyImplyAppBarLeading: false,
+          //autocompleteLanguage: "ko",
+          //region: 'au',
+          //selectInitialPosition: true,
+          // selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
+          //   print("state: $state, isSearchBarFocused: $isSearchBarFocused");
+          //   return isSearchBarFocused
+          //       ? Container()
+          //       : FloatingCard(
+          //           bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
+          //           leftPosition: 0.0,
+          //           rightPosition: 0.0,
+          //           width: 500,
+          //           borderRadius: BorderRadius.circular(12.0),
+          //           child: state == SearchingState.Searching
+          //               ? Center(child: CircularProgressIndicator())
+          //               : RaisedButton(
+          //                   child: Text("Pick Here"),
+          //                   onPressed: () {
+          //                     // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
+          //                     //            this will override default 'Select here' Button.
+          //                     print("do something with [selectedPlace] data");
+          //                     Navigator.of(context).pop();
+          //                   },
+          //                 ),
+          //         );
+          // },
+          // pinBuilder: (context, state) {
+          //   if (state == PinState.Idle) {
+          //     return Icon(Icons.favorite_border);
+          //   } else {
+          //     return Icon(Icons.favorite);
+          //   }
+          // },
+        );
+      },
+    ),
+  );
+}
   void saveData()async{
     try {
       var imgres = await MyStorage().postFile(file: image);
@@ -128,7 +135,7 @@ class NewCustomerCtrl extends GetxController{
             });
         return print('culiao');
       }
-      customer.createAt = DateTime.now().millisecond;
+      customer.createAt = DateTime.now().millisecondsSinceEpoch;
       customer.image = myFile.id;
       _customerRepository.saveDocument(customer)
       .then((value){
@@ -152,57 +159,42 @@ class NewCustomerCtrl extends GetxController{
       print('Error save data: $e');
     }
   }
-/*
-  void getProductCategory(){
-    _productRepository.getProductsCategories()
-    .then((value){
-      if(value == null){
-        MyAlert.showMyDialog(title: 'Error!', message: 'hubo un problema al obtener algunos datos necesario, intenta de nuevo', color: Colors.red);
-        return Timer(Duration(seconds: 3), ()=> Get.back());
+
+  void updateMyData()async{
+    try{
+      if(image.path != ''){
+        var imgres = await MyStorage().postFile(file: image);
+        if(imgres != null){
+          myFile = MyFile.fromJson(imgres.data);
+          if(customer.image != null){
+            var deleted = await MyStorage().deleteFile(fileId: customer.image!);
+            print('Imagen vieja eliminado ${deleted.statusCode}');
+            }
+          customer.image = myFile.id;
+        }else{
+          btnController.error();
+          MyAlert.showMyDialog(title: 'Error al guardar la imagen', message: 'por favor, intenta de nuevo', color: Colors.red);
+              Timer(Duration(seconds: 3), (){
+                  btnController.reset();
+              });
+          return print('culiao');
+        }
       }
-      listProductCategory = value;
-      update();
-    });
+    _customerRepository.updateCustomer(customer: customer)
+      .then((value){
+        if(value){
+          this.btnController.success();
+          MyAlert.showMyDialog(title: 'Actualización exitósa', message: 'el cliente ${customer.name} fué actualizado exitósamente', color: Colors.green);
+          return Timer(Duration(seconds: 3), ()=> Get.back());
+        }else{
+          this.btnController.error();
+          MyAlert.showMyDialog(title: 'Error al actualizar el cliente', message: 'hubo un error inesperado, por favor intenta de nuevo', color: Colors.red);
+          return Timer(Duration(seconds:2), ()=> this.btnController.reset());
+        }
+      });
+    }catch(e){
+      print('Error en actualizar customer: $e');
+      MyAlert.showMyDialog(title: 'Error al actualizar el cliente', message: 'hubo un error inesperado, por favor intenta de nuevo', color: Colors.red);
+    }
   }
-
-
-
-    void showPicker(BuildContext ctx) {
-      showModalBottomSheet(
-        context: ctx,
-        builder: (context) {
-          return Container(
-            color: Color(0xFF737373),
-            height: 180,
-            child: Container(
-              child: listProductCategory.listProductCategory!.isNotEmpty ? ListView.builder(
-                    itemCount: listProductCategory.listProductCategory!.length,
-                    itemBuilder: (ctx, index){
-                      return InkWell(
-                        onTap: (){
-                          product.category = listProductCategory.listProductCategory![index];
-                          update();
-                          Navigator.pop(context);
-                          },
-                        child: ListTile(
-                          trailing: new Icon(LineIcons.plus, color: color500,),
-                          title: new Text(listProductCategory.listProductCategory![index].name, style: subtitulo,),
-                          subtitle: new Text(listProductCategory.listProductCategory![index].description, style: body2,),
-                        ),
-                      );
-                    })
-                    : new Center(
-                      child: new Text('Cargando')
-                    ),
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(10),
-                  topRight: const Radius.circular(10),
-                ),
-              ),
-            ),
-          );
-        });
-  }*/
 }

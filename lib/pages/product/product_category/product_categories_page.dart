@@ -2,95 +2,19 @@ import 'dart:typed_data';
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/product.dart';
+import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/pages/product/new_product/new_product_page.dart';
 import 'package:cotizapack/pages/product/products/products_ctrl.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/styles/colors.dart';
+import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
-import '../../../styles/colors.dart';
-import '../../../styles/typography.dart';
 
 class ProductsPage extends StatelessWidget {
-void showProductDetail(BuildContext context, ProductModel product, Uint8List image){
-    MyBottomSheet().show(context, Get.height/1.09, 
-    ListView(
-        children: <Widget>[
-          Hero(
-            tag: 'widget.id.toString()',
-                      child: Container(
-            width: Get.width,
-            height: 290,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(25),
-                  topRight: const Radius.circular(25),
-                ),
-              image: DecorationImage(
-                  image: MemoryImage(
-                  image,
-                ),
-                  fit: BoxFit.cover
-              )
-            ),
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            child:Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                new Text(product.name!, style: subtitulo),
-                SizedBox(height: 10,),
-                new Text(product.description!, style: body1),
-            ],)
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            child:Column(
-              //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ListTile(
-                  leading: Icon(LineIcons.moneyBill, color: color500),
-                  title: new Text(product.price.toString(), style: body1),
-                  subtitle:  new Text('Precio', style: body2)
-                ),
-                ListTile(
-                  leading: Icon(LineIcons.tag, color: color500),
-                  title: new Text(product.category!.name, style: body1),
-                  subtitle:  new Text('Categoría', style: body2)
-                ),
-
-                ListTile(
-                  leading: Icon(LineIcons.locationArrow, color: color500),
-                  title: new Text(product.category!.description, style: body1),
-                  subtitle:  new Text('Descripción de la categoría', style: body2)
-                ),
-            ],)
-          ),
-          InkWell(
-            onTap: (){
-              Get.back();
-            },
-              child: Padding(padding: EdgeInsets.symmetric(horizontal: 20,vertical: 20),
-            child: Container(
-              height: 45,
-              width: double.infinity / 1.8,
-              decoration: BoxDecoration(
-                color: color500,
-                borderRadius: BorderRadius.circular(30)
-              ),
-              child: Center(
-                child: Text("Atrás",style: subtituloblanco,),
-              ),
-            ),),
-          )
-        ],
-      ),
-    );
-}
   @override
   Widget build(BuildContext context) {
   final spinkit = SpinKitPulse(
@@ -104,7 +28,7 @@ void showProductDetail(BuildContext context, ProductModel product, Uint8List ima
           appBar: AppBar(
             backgroundColor: color500,
             centerTitle: true,
-            title: new Text('Mis productos y servicios', style: subtituloblanco,),
+            title: new Text('Mis categorías de productos', style: subtituloblanco,),
           ),
           floatingActionButton: FloatingActionButton(
             // isExtended: true,
@@ -121,10 +45,10 @@ void showProductDetail(BuildContext context, ProductModel product, Uint8List ima
               child:new Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children:[
-                new Icon(LineIcons.cryingFace, size: 50, color: color500),
+                new Icon(LineIcons.hushedFace, size: 50, color: color500),
                 SizedBox(height: 20,),
                 Text(
-                'No tienes productos o servicios almacenados, presiona (+) para agregar uno nuevo.',
+                'No tienes categorías guardadas, presiona (+) para agregar uno nuevo.',
                 style: subtitulo,
                 textAlign: TextAlign.center,
               ) 
@@ -160,7 +84,7 @@ void showProductDetail(BuildContext context, ProductModel product, Uint8List ima
     );
   }
 
-  Widget myCards({required ProductModel product, required int index, required BuildContext context, required ProductsCtrl ctrl}){
+  Widget myCards({required ProductCategory category, required int index, required BuildContext context, required ProductsCtrl ctrl}){
     Uint8List image = Uint8List(0);
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
@@ -172,7 +96,7 @@ void showProductDetail(BuildContext context, ProductModel product, Uint8List ima
           color: color50,
           elevation: 4,
           child: InkWell(
-          onTap: ()=> showProductDetail(context, product, image),//Get.to(ProductDetail(), arguments: product),
+          onTap: ()=> Get.to(ProductsPage(), arguments: category),
             child: Column(
               children: [
                 FutureBuilder<Uint8List>(

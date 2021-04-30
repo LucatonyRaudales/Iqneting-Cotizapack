@@ -18,11 +18,11 @@ class ProductsCtrl extends GetxController{
     super.onInit();
   }
 
-  void getProducts()async{
+  Future getProducts()async{
     try{
       _productRepository.getProducts()
       .then((value){
-        if(value == null){
+        if(value!.data["sum"] == 0){
           this.haveProducts = false;
           return update();
         }

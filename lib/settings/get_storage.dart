@@ -14,7 +14,6 @@ class MyGetStorage{
     return box.read(key);
   }
   bool haveData({required String key}){
-    box.erase();
     return box.hasData(key);
   }
 
@@ -33,7 +32,9 @@ class MyGetStorage{
 
   UserData? listenUserData(){
     try{
-      return box.read("userData");
+      UserData userData  = UserData.fromJson(box.read("userData"));
+      print('listen User: $userData');
+      return userData;
     }catch(err){
       print('Error listen User: $err');
     }

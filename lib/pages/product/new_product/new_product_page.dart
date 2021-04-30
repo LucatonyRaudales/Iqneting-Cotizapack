@@ -1,5 +1,9 @@
+import 'dart:typed_data';
+
 import 'package:animate_do/animate_do.dart';
+import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/validators.dart';
+import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -33,6 +37,7 @@ class NewProductPage extends StatelessWidget {
                 child: new Column(children: [
                   InputText(
                     name: 'Nombre',
+                    initialValue: _ctrl.product.name,
                     textInputType: TextInputType.name,
                     validator: Validators.nameValidator,
                     prefixIcon: Icon(LineIcons.pen),
@@ -43,6 +48,8 @@ class NewProductPage extends StatelessWidget {
                   ),
                   InputText(
                     name: 'descripción',
+                    initialValue: _ctrl.product.description,
+                    minLines: 4,
                     textInputType: TextInputType.name,
                     validator: Validators.nameValidator,
                     prefixIcon: Icon(LineIcons.comment),
@@ -53,6 +60,7 @@ class NewProductPage extends StatelessWidget {
                   ),
                   InputText(
                     name: 'Precio',
+                    initialValue: _ctrl.product.price.toString(),
                     textInputType: TextInputType.number,
                     validator: Validators.nameValidator,
                     prefixIcon: Icon(LineIcons.moneyBill),
@@ -63,6 +71,7 @@ class NewProductPage extends StatelessWidget {
                   ),
                   InputText(
                     name: 'Precio al cliente',
+                    initialValue: _ctrl.product.clientPrice.toString(),
                     textInputType: TextInputType.number,
                     validator: Validators.nameValidator,
                     prefixIcon: Icon(LineIcons.wavyMoneyBill),
@@ -82,7 +91,7 @@ class NewProductPage extends StatelessWidget {
                           child:  ListTile(
                           trailing: new Icon(Icons.arrow_drop_down),
                           title: new Text(_ctrl.product.category!.name, style: subtitulo),
-                          subtitle: new Text(_ctrl.product.category!.description, style: body1, overflow: TextOverflow.ellipsis,),
+                          subtitle: new Text('Categoría', style: body1),
                           )
                         )
                       ),
@@ -132,12 +141,31 @@ class NewProductPage extends StatelessWidget {
                           color: color100,
                           borderRadius: BorderRadius.all(Radius.circular(30))
                         ),
-                        child: Center(
-                          child:_ctrl.image.path == '' ? 
+                        child:Center(
+                          child: _ctrl.isUpdate && _ctrl.image.path == '' && _ctrl.product.image!.isNotEmpty ? 
+                          FutureBuilder<Uint8List>(
+                            future: MyStorage().getFilePreview(
+                              fileId: _ctrl.product.image![0],
+                            ), //works for both public file and private file, for private files you need to be logged in
+                            builder: (context, snapshot) {
+                              return snapshot.hasData && snapshot.data != null
+                                ? Container(
+                                  decoration: BoxDecoration(
+                                      image: DecorationImage(
+                                        image: MemoryImage(
+                                        snapshot.data!,
+                                      ),
+                                        fit: BoxFit.cover
+                                    )
+                                  ),
+                                )
+                                : CircularProgressIndicator();
+                            },
+                          )  : _ctrl.image.path == '' ? 
                           Icon(LineIcons.plusCircle, size: 45, color: Colors.white70,) 
                           : Image.file(_ctrl.image),
-                        )
-                      ),
+                        ),
+                      )
                     ),
                   ),
                       SizedBox(
@@ -145,10 +173,18 @@ class NewProductPage extends StatelessWidget {
                       ),
                       Button(
                         function: (){
+
                           if (!_formKey.currentState!.validate()) {
                             return _ctrl.btnController.reset();
                           }
-                          _ctrl.saveData();
+                          if(_ctrl.product.category!.id == ""){
+                            _ctrl.btnController.reset();
+                            return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'la categoría es necesaria para guardar tus datos', color: Colors.red);
+                          }
+                          if(_ctrl.isUpdate){
+                            return _ctrl.updateMyData();
+                          }
+                            return _ctrl.saveData();
                         },
                         btnController: _ctrl.btnController,
                         name: 'Guardar'),

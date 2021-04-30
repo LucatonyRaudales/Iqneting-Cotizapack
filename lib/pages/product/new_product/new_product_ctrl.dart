@@ -15,7 +15,6 @@ import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
@@ -23,7 +22,7 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 class NewProductCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
     File image = File('');
-  ProductModel product = ProductModel(image: [], category: ProductCategory(
+  ProductModel product = ProductModel(image: [],price: 0.00, clientPrice: 0.00, category: ProductCategory(
     name: "Seleccionar Categoría", 
     description: "", 
     enable: true,
@@ -67,11 +66,11 @@ class NewProductCtrl extends GetxController{
       print('ID del usuario ${myAccount.id}');
   }
 
-
   Future getImage({required ImageSource source}) async {
         var img = await GetImage().getImage(source: source);
         if(img != null){
           image = img;
+          Get.back();
         update();
         }
   }
@@ -90,7 +89,7 @@ class NewProductCtrl extends GetxController{
         return print('culiao');
       }
       product.image!.add(myFile.id!);
-      _productRepository.saveDocument(data: product.toJson())
+      _productRepository.saveDocument(data: product)
       .then((value){
         switch(value!.statusCode){
           case 201:
@@ -125,7 +124,45 @@ class NewProductCtrl extends GetxController{
     });
   }
 
-
+  void updateMyData()async{
+    try{
+      if(image.path != ''){
+        var imgres = await MyStorage().postFile(file: image);
+        if(imgres != null){
+          myFile = MyFile.fromJson(imgres.data);
+          if(product.image![0] != ''){
+            var deleted = await MyStorage().deleteFile(fileId: product.image![0]);
+            print('Imagen vieja eliminado ${deleted.statusCode}');
+            }
+          product.image![0] = myFile.id!;
+        }else{
+          btnController.error();
+          MyAlert.showMyDialog(title: 'Error al guardar la imagen', message: 'por favor, intenta de nuevo', color: Colors.red);
+              Timer(Duration(seconds: 3), (){
+                  btnController.reset();
+              });
+          return print('culiao');
+        }
+      }
+    _productRepository.updateProduct(product: product)
+      .then((value){
+        if(value){
+          this.btnController.success();
+          MyAlert.showMyDialog(title: 'Actualización exitosa', message: 'el producto ${product.name} fué actualizado exitósamente', color: Colors.green);
+          return Timer(Duration(seconds: 3), ()=> Get.back());
+        }else{
+          this.btnController.error();
+          MyAlert.showMyDialog(title: 'Error al actualizar el producto', message: 'hubo un error inesperado, por favor intenta de nuevo', color: Colors.red);
+          return Timer(Duration(seconds:2), ()=> this.btnController.reset());
+        }
+      });
+    }catch(e){
+      print('Error en actualizar customer: $e');
+      this.btnController.error();
+      MyAlert.showMyDialog(title: 'Error al actualizar el producto', message: 'hubo un error inesperado, por favor intenta de nuevo', color: Colors.red);
+      Timer(Duration(seconds:2), ()=> this.btnController.reset());
+    }
+  }
 
     void showPicker(BuildContext ctx) {
       showModalBottomSheet(
