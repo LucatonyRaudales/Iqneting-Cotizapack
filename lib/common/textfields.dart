@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 
 class InputText extends StatefulWidget {
@@ -50,6 +51,7 @@ class _InputTextState extends State<InputText> {
           cursorColor: Colors.deepOrange,
           decoration: InputDecoration(
             hintText: widget.name,
+            hintStyle: body1,
             prefixIcon: Material(
               elevation: 0,
               borderRadius: BorderRadius.all(Radius.circular(30)),

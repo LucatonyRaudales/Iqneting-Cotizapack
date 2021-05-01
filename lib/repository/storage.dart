@@ -2,12 +2,10 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/settings/appwrite.dart';
-import 'package:uuid/uuid.dart';
 
 class MyStorage{
     Client client = Client();
   late Storage storage;
-  var uuid = Uuid();
   
   Future<Response?> postFile({required File file})async{
     try {

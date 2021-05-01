@@ -17,7 +17,7 @@ class ProductRepository {
   Future<Response?> saveDocument({required ProductModel data})async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
-   this._userData = MyGetStorage().listenUserData()!;
+      data.enable = true;
     Response result = await database.createDocument(
     collectionId: collectionID,
     data: data.toJson(),
@@ -30,7 +30,26 @@ class ProductRepository {
     }
   }
 
-  Future<Response?> getProducts()async{
+  Future<Response?> getProductsByCategory({required String categoryID})async{
+    database = Database(AppwriteSettings.initAppwrite());
+    try {
+      this._userData = MyGetStorage().listenUserData()!;
+      Response result  = await database.listDocuments(
+        collectionId: collectionID,
+        filters: [
+          "userID=${_userData.userID}",
+          "enable=1",
+          "category.\u0024id=$categoryID"
+        ]
+      );
+      return result;
+    } catch (e) {
+      print('error repository products $e');
+      return null;
+    }
+  }
+
+    Future<Response?> getProducts()async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
       this._userData = MyGetStorage().listenUserData()!;
@@ -48,13 +67,16 @@ class ProductRepository {
     }
   }
 
-    Future<ListProductCategory?> getProductsCategories()async{
+    Future<ListProductCategory?> getProductsCategories({required String userID})async{
     database = Database(AppwriteSettings.initAppwrite());
     ListProductCategory listProductCategory = ListProductCategory();
     try {
       Response result  = await database.listDocuments(
         collectionId: productCategoriesCollectionID,
-        filters: ['enable=1']
+        filters: [
+          'userID=$userID',
+          'enable=1'
+        ]
       );
       listProductCategory = ListProductCategory.fromJson(result.data['documents']);
       return listProductCategory;

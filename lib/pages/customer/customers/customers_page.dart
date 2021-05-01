@@ -1,5 +1,4 @@
 import 'dart:typed_data';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/customers.dart';
@@ -7,7 +6,6 @@ import 'package:cotizapack/pages/customer/customers/customers_ctrl.dart';
 import 'package:cotizapack/pages/customer/new_customers/new_customer_page.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
@@ -164,15 +162,74 @@ void showProductDetail(BuildContext context, CustomerModel customer, Uint8List i
     Uint8List image = Uint8List(0);
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
-      child: Slidable(
-      actionPane: SlidableDrawerActionPane(),
-      actionExtentRatio: 0.25,
       child: Container(
         child: Card(
           color: color50,
           elevation: 4,
           child: InkWell(
           onTap: ()=> showProductDetail(context, customer, image),//Get.to(ProductDetail(), arguments: product),
+          onLongPress: ()=> showModalBottomSheet<void>(
+              backgroundColor: Colors.transparent,
+              context: context,
+              builder: (BuildContext context) {
+                return Container(
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(25),
+                      topRight: const Radius.circular(25),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      SizedBox(height: 10),
+                      new Text(customer.name!, style: subtitulo),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [ 
+                          Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                              IconButton(
+                                onPressed: (){
+                                  Get.back();
+                                  Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": customer});
+                                },
+                                icon: new Icon(LineIcons.edit, size: 40, color: primary)),
+                              new Text('Editar', style: body1,)
+                            ],),
+                        Column(
+                          children: [
+                              IconButton(
+                                onPressed: (){
+                                  Get.back();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text('Seguro que deseas eliminar ${customer.name}'),
+                                      backgroundColor: Colors.red,
+                                      behavior: SnackBarBehavior.fixed,
+                                      duration: const Duration(seconds: 2),
+                                      action: SnackBarAction(
+                                          label: '¡Eliminar!',
+                                          textColor: Colors.white,
+                                          onPressed: () {
+                                            ctrl.deleteCustomer(customerID: customer.id!);
+                                          }),
+                                    ),
+                                  );
+                                },
+                                icon: new Icon(LineIcons.trash, size: 40, color: Colors.red)),
+                              new Text('Eliminar', style: body1Rojo,)
+                            ],),
+                      ],),
+                    ],
+                  ),
+                );
+              },
+            ),
             child: Column(
               children: [
                 FutureBuilder<Uint8List>(
@@ -210,21 +267,6 @@ void showProductDetail(BuildContext context, CustomerModel customer, Uint8List i
           ),
         ),
       ),
-      actions: <Widget>[
-        IconSlideAction(
-          color: color500,
-          icon: LineIcons.edit,
-          onTap: () => Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": customer}),
-        ),
-      ],
-      secondaryActions: <Widget>[
-        IconSlideAction(
-          color: Colors.red,
-          icon: Icons.delete,
-          onTap: () => ctrl.deleteCustomer(customerID: customer.id!),
-        ),
-      ],
-    )
     );
   }
 }

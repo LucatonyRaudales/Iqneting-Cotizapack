@@ -14,7 +14,9 @@ class MyGetStorage{
     return box.read(key);
   }
   bool haveData({required String key}){
-    return box.hasData(key);
+    box.erase();
+    print(box.read(key));
+  return box.hasData(key);
   }
 
   Future eraseData(){

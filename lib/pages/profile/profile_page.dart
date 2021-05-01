@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/profile/profile_ctrl.dart';
@@ -44,16 +46,21 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: new SizedBox(
                       width: 140.0,
                       height: 140.0,
-                      child: _ctrl.userData.logo == null ? Center(child: Icon(LineIcons.plus)) : FutureBuilder(
+                      child: _ctrl.userData.logo == null || _ctrl.userData.logo == '' ? 
+                      Center(
+                        child: Icon(LineIcons.plus)
+                      ) : 
+                      FutureBuilder<Uint8List>(
                         future: MyStorage().getFilePreview(
                           fileId: _ctrl.userData.logo.toString(),
                         ), //works for both public file and private file, for private files you need to be logged in
                         builder: (context, snapshot) {
-                          return/* snapshot.hasData && snapshot.data != null
-                            ? Image.memory(''
+                          return snapshot.hasError ?
+                          Icon(LineIcons.exclamationCircle, color: Colors.red) : snapshot.hasData && snapshot.data != null
+                            ? Image.memory(snapshot.data!
                                 //snapshot.data!,
                               )
-                            : */CircularProgressIndicator();
+                            : CircularProgressIndicator();
                         },
                       ),
                     ),),
@@ -63,7 +70,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: MaterialButton(
                         minWidth: 0,
                         child: Icon(Icons.camera_alt),
-                        onPressed: (){},
+                        onPressed: ()=> _ctrl.updateImageProfile(),
                         textColor: Colors.white,
                         color: color400,
                         elevation: 0,
@@ -79,7 +86,7 @@ class _ProfilePageState extends State<ProfilePage> {
             SizedBox(height: 30,),
             ListTile(
               title: Text(
-                "Mi cuenta (Premium)",
+                "Mi cuenta",
                 style: subtitulo,
               ),
               subtitle: Column(children: [

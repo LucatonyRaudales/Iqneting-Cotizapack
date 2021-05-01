@@ -123,7 +123,8 @@ class _HomePageState extends State<HomePage> {
                   );
                 },
               ),
-              selectedPlace == null ? Container() : Text(selectedPlace.formattedAddress ?? ""),
+              //selectedPlace == null ? Container() : Text(selectedPlace.formattedAddress ?? ""),
+              Text(selectedPlace.formattedAddress ?? "")
             ],
           ),
         ));

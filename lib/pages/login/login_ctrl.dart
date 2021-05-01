@@ -27,7 +27,6 @@ class LoginCtrl extends GetxController{
             _session = Session.fromJson(value!.data);
             _userRepository.chargeUserData(userID: _session.userId!)
               .then((value)async{
-                await MyGetStorage().saveData(key: 'userData', data: value);
                 Timer(Duration(seconds:2), ()=> Get.offAll(SplashPage(), transition: Transition.rightToLeftWithFade));
               });
           break;

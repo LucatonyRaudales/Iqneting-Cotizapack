@@ -1,7 +1,7 @@
 import 'package:cotizapack/common/card.dart';
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/pages/customer/customers/customers_page.dart';
-import 'package:cotizapack/pages/product/products/products_page.dart';
+import 'package:cotizapack/pages/product/product_category/product_categories_page.dart';
 import 'package:cotizapack/pages/quotation/new_quotation/new_quotation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,14 +41,14 @@ class InitPage extends StatelessWidget {
               card(
                 function:()=> Get.to(CustomerPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.userPlus,
-                title: 'Crear cliente',
+                title: 'Mis clientes',
                 subtitle: 'Agrega un nuevo cliente para tus cotizaciones'
               ),
               card(
-                function:()=> Get.to(ProductsPage(), transition: Transition.rightToLeftWithFade),
+                function:()=> Get.to(ProductsCategoryPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.conciergeBell,
-                title: 'Productos y servicio',
-                subtitle: 'revisa y gestiona tus productos y servicios'
+                title: 'Mis Productos y servicio',
+                subtitle: 'revisa y gestiona tus categorías, productos y servicios'
               ),
               const SizedBox(height: 10.0),
             ],

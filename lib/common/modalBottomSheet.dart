@@ -1,12 +1,8 @@
-import 'package:cotizapack/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class MyBottomSheet{
   void show(BuildContext ctx, double height, Widget content) {
       showModalBottomSheet(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.only(topLeft: Radius.circular(35.0)),
-        ),
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
         context: ctx,

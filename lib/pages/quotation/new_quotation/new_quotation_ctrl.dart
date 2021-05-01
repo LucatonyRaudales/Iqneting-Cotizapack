@@ -23,12 +23,12 @@ import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class NewQuotationCtrl extends GetxController{
-  QuotationModel quotation = QuotationModel(product: ProductModel(name: 'Seleccionar producto', category: null));
+  QuotationModel quotation = QuotationModel(product: ProductModel(name: '', category: null));
   QuotationRepository _quotationRepository = QuotationRepository();
   ProductRepository _productRepository = ProductRepository();
   RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
   CustomerList _customerList = CustomerList();
-  CustomerModel customerSelected = CustomerModel(name:'Selecionar cliente');
+  CustomerModel customerSelected = CustomerModel(name:'');
   ProductList _productList = ProductList();
   CustomerRepository _customerRepository = CustomerRepository();
   UserData _userData = UserData(category: UserCategory(collection: '', description: '', name: '', enable: true, id: ''));
@@ -68,11 +68,11 @@ class NewQuotationCtrl extends GetxController{
       quotation: quotation)
       .then((val){
         if(val == null){
-           btnController.error();
-            MyAlert.showMyDialog(title: 'Error al generar la cotización!', message: 'se produjo un error inesperado, intenta de nuevo.', color: Colors.green);
-            
+          btnController.error();
+          MyAlert.showMyDialog(title: 'Error al generar la cotización!', message: 'se produjo un error inesperado, intenta de nuevo.', color: Colors.red);
+            return Timer(Duration(seconds: 3), ()=> this.btnController.reset());
         }
-        switch (val!.statusCode) {
+        switch (val.statusCode) {
           case 201:
             btnController.success();
             MyAlert.showMyDialog(title: 'Cotización guardado correctamente!', message: 'Se generará un pdf y lo podrás visualizar', color: Colors.green);
@@ -210,9 +210,6 @@ class NewQuotationCtrl extends GetxController{
                 new pw.Text(quotation.title!, textAlign: pw.TextAlign.right),
                 new pw.Text(quotation.description!, textAlign: pw.TextAlign.right),
                 pw.SizedBox(height: 30),
-                new pw.Text('Alcance del proyecto', textAlign: pw.TextAlign.right),
-                new pw.Text(quotation.scope!, textAlign: pw.TextAlign.right),
-                pw.SizedBox(height: 30),
                 pw.Header(
                   level: 0,
                   child: new pw.Column(
@@ -231,8 +228,8 @@ class NewQuotationCtrl extends GetxController{
                             new pw.Row(
                               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                               children: [
-                                new pw.Text('Diseño y Desarrollo de Sitio Web con Base de Datos y Sección de Administración'),
-                                new pw.Text('USD 35,500.00')
+                                new pw.Text(quotation.description!),
+                                new pw.Text(quotation.subTotal!.toString())
                               ]
                             ),
                             new pw.Text('Total USD ${quotation.subTotal! * 1.15}', textAlign: pw.TextAlign.right),

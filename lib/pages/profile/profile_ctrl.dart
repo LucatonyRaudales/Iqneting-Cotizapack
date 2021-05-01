@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/button.dart';
+import 'package:cotizapack/common/dialog.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
@@ -56,28 +57,42 @@ class ProfileCtrl extends GetxController{
     super.onInit();
   }
 
-    void getUserData(){
+    void getUserData()async{
     try{
     userData =  MyGetStorage().listenUserData()!;
     print('User name: ${userData.businessName}');
+    await getAccount();
     }catch(e){
       print('Error get UserData: $e');
     }
   }
 
-  void getAccount(){
+  Future getAccount()async{
     try{
-    myAccount =  MyGetStorage().readData(key: 'accountData') as MyAccount;
+        if(MyGetStorage().haveData(key: 'accountData')){
+          myAccount = MyAccount.fromJson(MyGetStorage().readData(key: 'accountData'));
+        }else{
+        myAccount = (await _accountRepository.getAccount())!;
+        MyGetStorage().saveData(key: 'accountData', data: myAccount.toJson());
+        }
+    return update();
     }catch(e){
     print('Error box getAccount:$e');
     }
   }
 
   void updatePassword(BuildContext ctx){
-  final _formKey = GlobalKey<FormState>();
-    MyBottomSheet().show(ctx, 300, Form(
-      key: _formKey,
-      child: Column(
+
+      final _formKey = GlobalKey<FormState>();
+    MyDialog().show(
+    context:ctx,
+    title: 'Agregar categoría',
+    content: Stack(
+        children: <Widget>[
+          Form(
+            key: _formKey,
+            child: SingleChildScrollView(
+              child: Column(
         children: [
           SizedBox(
             height: 20,
@@ -128,8 +143,11 @@ class ProfileCtrl extends GetxController{
             name: 'Actualizar'),
           SizedBox(height: 15,),
       ],),
-    ));
-    
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Future updateImageProfile()async{
@@ -146,18 +164,22 @@ class ProfileCtrl extends GetxController{
       var imgres = await MyStorage().postFile(file: image);
       if(imgres != null){
         var data= MyFile.fromJson(imgres.data);
-        if( userData.logo != null){
+        if( userData.logo != '' && userData.logo != null ){
           await MyStorage().deleteFile(fileId: userData.logo.toString());
         }
         userData.logo = data.id;
         UserRepository().updateMyData(data: userData)
           .then((val){
+            if(val!.statusCode == 200){
             updating = false;
-            btnController.success();
             MyGetStorage().replaceData(key: "userData", data: this.userData);
             MyAlert.showMyDialog(title: 'Imagen actualizada', message: 'se ha actualizado tu logo correctamente', color: Colors.green);
-            update();
+            //getUserData();
+            }else{
+              MyAlert.showMyDialog(title: 'Error al actualizar', message: 'Hubo un error al momento de actualizar tus datos', color: Colors.red);
+            }
             });
+            return update();
       }else{
         btnController.error();
         MyAlert.showMyDialog(title: 'Error al guardar la imagen', message: 'por favor, intenta de nuevo', color: Colors.red);
@@ -171,17 +193,18 @@ class ProfileCtrl extends GetxController{
       MyAlert.showMyDialog(title: 'Error al actualizar la imagen', message: e.toString(), color: Colors.red);
     }
   }
+
   void logout(){
     try {
-      _userRepository.getSessions()
-      .then((value){
+      //_userRepository.getSessions()
+      //.then((value){
         //_session = Session.fromJson(value!.data);
           _userRepository.logout()
           .then((value) async {
             await MyGetStorage().eraseData();
             Get.off(SplashPage(), transition: Transition.cupertino);
           });
-      });
+      //});
     } catch (e) {
     }
   }

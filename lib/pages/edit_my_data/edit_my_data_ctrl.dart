@@ -4,6 +4,7 @@ import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/get_storage.dart';
@@ -137,30 +138,21 @@ class EditMyDataCtrl extends GetxController{
             ),
           );
         });
-    /*showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Container(
-              width: Get.width,
-              height: 250,
-              child: CupertinoPicker(
-                backgroundColor: CupertinoColors.white,
-                itemExtent: 30,
-                scrollController: FixedExtentScrollController(initialItem: 1),
-                children: [
-                  userCategories.categories!.isNotEmpty ?
-                  ListView.builder(
-                    itemCount: 2,
-                    itemBuilder: (ctx, index){
-                      return new Text(userCategories.categories![0].name, style: subtitulo,);
-                    })
-                    : new Center(
-                      child: new Text('Cargando')
-                    )
-                ],
-                onSelectedItemChanged: (value) {
-                  print('categoría seleccionado: $value');
-                },
-              ),
-            ));*/
   }
+
+  void logout(){
+    try {
+      //_userRepository.getSessions()
+      //.then((value){
+        //_session = Session.fromJson(value!.data);
+          _userRepository.logout()
+          .then((value) async {
+            await MyGetStorage().eraseData();
+            Get.off(SplashPage(), transition: Transition.cupertino);
+          });
+      //});
+    } catch (e) {
+    }
+  }
+
 }

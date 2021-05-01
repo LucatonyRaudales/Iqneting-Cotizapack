@@ -5,7 +5,7 @@ import 'WaveClippers.dart';
 
 class Header extends StatelessWidget {
   final Widget widgetToShow;
-  double? height;
+  final double? height;
     Header({
     Key? key,
     required this.widgetToShow,

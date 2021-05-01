@@ -12,14 +12,15 @@ class QuotationModel{
         this.collection,
         this.email,
         this.product,
-        this.clientID, scope
+        this.clientID, 
+        this.quantity
     });
 
     String? id;
     String? collection;
     String? title = '';
     String? description = '';
-    String? scope;
+    int? quantity;
     int? expirationDate;
     double? subTotal;
     double? total;
@@ -33,7 +34,7 @@ class QuotationModel{
         collection: json["collection"],
         title: json["title"],
         description: json["description"],
-        scope: json['scope'],
+        quantity: json['quantity'],
         expirationDate: json["expirationDate"],
         subTotal: json["subTotal"].toDouble(),
         total: json['total'].toDouble(),
@@ -47,13 +48,13 @@ class QuotationModel{
         "\u0024id": id,
         "title": title,
         "description": description,
-        "scope": scope,
+        "quantity": quantity,
         "expirationDate": expirationDate,
         "subTotal": subTotal,
         "total": total,
         "userID": userId,
         "email": email,
-        "product": product!.toJson(),
+        "product": product == null ? product!.toJson() : null,
         "clientID": clientID
     };
 }

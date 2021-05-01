@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/session_model.dart';
+import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/login/login_page.dart';
 import 'package:cotizapack/repository/account.dart';
@@ -29,7 +30,7 @@ class SplashCtrl extends GetxController{
       var response = await _userRepository.getSessions();
       if(response!.statusCode == 200){
         _session = Session.fromJson(response.data);
-        bool checked = await checkuserData(session: _session);
+        bool checked = (await checkuserData(session: _session))!;
         page = checked ? HomePage() : LoginPage();
       }else{
           page = LoginPage();
@@ -43,33 +44,22 @@ class SplashCtrl extends GetxController{
   }
 
 
-  Future<bool> checkuserData({required Session session})async{
+  Future<bool?> checkuserData({required Session session})async{
     try{
       if(MyGetStorage().haveData(key: 'userData')){
         return true;
       }{
-        _userRepository.chargeUserData(userID: session.userId!)
-          .then((value)async{
-            if(value == null) return Get.off(EditMyDataPage(), transition: Transition.rightToLeftWithFade,  arguments: {"editData":false, "data": null});
-            await MyGetStorage().saveData(key: 'userData', data: value);
+        UserData value = await _userRepository.chargeUserData(userID: session.userId!);
+            if(value.userID == null){
+              return Get.off(EditMyDataPage(), transition: Transition.rightToLeftWithFade,  arguments: {"editData":false, "data": null});
+            }
+            MyGetStorage().saveData(key: 'userData', data: value.toJson());
             print('Awevo, se guardaron los datos bien');
-          });
           return true;
       }
     }catch(e){
       print('Error: $e');
       return false;
-    }
-  }
-
-  Future checkMyAccount()async{
-    MyAccount myAccount = MyAccount();
-    if(MyGetStorage().haveData(key: 'accountData')){
-      return null;
-    }else{
-    myAccount = (await _accountRepository.getAccount())!;
-    MyGetStorage().saveData(key: 'accountData', data: myAccount.toJson());
-    return null;
     }
   }
 }

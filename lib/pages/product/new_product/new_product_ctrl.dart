@@ -22,7 +22,8 @@ import 'package:rounded_loading_button/rounded_loading_button.dart';
 class NewProductCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
     File image = File('');
-  ProductModel product = ProductModel(image: [],price: 0.00, clientPrice: 0.00, category: ProductCategory(
+    MyAccount myAccount = MyAccount();
+  ProductModel product = ProductModel(image: [],price: 0.00, category: ProductCategory(
     name: "Seleccionar Categoría", 
     description: "", 
     enable: true,
@@ -56,7 +57,6 @@ class NewProductCtrl extends GetxController{
   }
 
   Future readUserData()async{
-    MyAccount myAccount;
     if(MyGetStorage().haveData(key: 'accountData')){
       myAccount = MyAccount.fromJson(MyGetStorage().readData(key: 'accountData'));
     }else{
@@ -91,7 +91,12 @@ class NewProductCtrl extends GetxController{
       product.image!.add(myFile.id!);
       _productRepository.saveDocument(data: product)
       .then((value){
-        switch(value!.statusCode){
+        if(value == null){
+          MyAlert.showMyDialog(title: 'Error al guardar los datos', message: 'por favor, intenta de nuevo', color: Colors.red);
+          print('sepa el error');
+          return Timer(Duration(seconds:2), ()=>this.btnController.reset());
+        }
+        switch(value.statusCode){
           case 201:
             this.btnController.success();
             MyAlert.showMyDialog(title: 'Guardado exitósamente', message: '${product.name} fué añadido sin problemas', color: Colors.green);
@@ -100,6 +105,7 @@ class NewProductCtrl extends GetxController{
           default:
           MyAlert.showMyDialog(title: 'Error al guardar los datos', message: 'por favor, intenta de nuevo', color: Colors.red);
           print('sepa el error');
+          Timer(Duration(seconds:2), ()=>this.btnController.reset());
         }
       });
     } catch (e) {
@@ -113,7 +119,7 @@ class NewProductCtrl extends GetxController{
   }
 
   void getProductCategory(){
-    _productRepository.getProductsCategories()
+    _productRepository.getProductsCategories(userID: myAccount.id!)
     .then((value){
       if(value == null){
         MyAlert.showMyDialog(title: 'Error!', message: 'hubo un problema al obtener algunos datos necesario, intenta de nuevo', color: Colors.red);
@@ -183,8 +189,8 @@ class NewProductCtrl extends GetxController{
                           },
                         child: ListTile(
                           trailing: new Icon(LineIcons.plus, color: color500,),
-                          title: new Text(listProductCategory.listProductCategory![index].name, style: subtitulo,),
-                          subtitle: new Text(listProductCategory.listProductCategory![index].description, style: body2,),
+                          title: new Text(listProductCategory.listProductCategory![index].name!, style: subtitulo,),
+                          subtitle: new Text(listProductCategory.listProductCategory![index].description!, style: body2,),
                         ),
                       );
                     })

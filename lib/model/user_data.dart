@@ -1,11 +1,19 @@
-
-import 'dart:convert';
-
 import 'categories.dart';
+class UserList{
+  late final List<UserData>? users;
+  UserList({
+    this.users
+  });
 
-UserData userDataFromJson(String str) => UserData.fromJson(json.decode(str));
+  factory UserList.fromJson(List<dynamic> parsedJson) {
 
-String userDataToJson(UserData data) => json.encode(data.toJson());
+    List<UserData> users = parsedJson.map((i)=>UserData.fromJson(i)).toList();
+
+    return new UserList(
+      users: users,
+    );
+  }
+}
 
 class UserData {
     UserData({
@@ -74,7 +82,7 @@ class UserData {
         "phone": phone,
         "address": address,
         "giro": giro,
-        "create_at": DateTime.now().millisecondsSinceEpoch,
+        "create_at": createAt,
         "category": category.toJson(),
     };
 }

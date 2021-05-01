@@ -18,7 +18,7 @@ class UserRepository {
     collection: "",
     id: ""
   );
-  late  UserData userData = UserData(category: userCategory);  
+  late  UserData userData = UserData(category: userCategory);
   final String userCollectionID = "6080caddd98c6";
   late Database database;
 
@@ -112,7 +112,7 @@ class UserRepository {
       database = Database(AppwriteSettings.initAppwrite());
       Response response = await  database.updateDocument(
         collectionId: userCollectionID,
-        documentId: data.id.toString(),
+        documentId: data.id!,
         data: data.toJson(),
         read: ["*"], write: ["user:${data.userID}"]);
       return response;
@@ -122,7 +122,7 @@ class UserRepository {
     }
   }
 
-  Future<UserData?> chargeUserData({required String userID})async{
+  Future<UserData> chargeUserData({required String userID})async{
     try {
       database = Database(AppwriteSettings.initAppwrite());
       Response response = await database.listDocuments(
@@ -131,14 +131,11 @@ class UserRepository {
         limit: 1
       );
       var data = response.data["documents"][0];
-      if(data != null){
         userData = UserData.fromJson(data);
         return userData;
-      }
-      return null;
     } catch (e) {
       print('Error charge Data $e');
-      return null;
+      return userData;
     }
   }
 }

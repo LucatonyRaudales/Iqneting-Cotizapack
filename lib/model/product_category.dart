@@ -17,22 +17,24 @@ class ListProductCategory{
 
 class ProductCategory {
     ProductCategory({
-      required  this.id,
-      required  this.collection,
+      this.id,
+      this.collection,
       this.permissions,
-      required  this.name,
-      required  this.description,
+      this.name,
+      this.description,
+      this.userID,
       this.createAt,
-      required  this.enable,
+      this.enable,
     });
 
-    String id;
-    String collection;
+    String? id;
+    String? collection;
     Permissions? permissions;
-    String name;
-    String description;
+    String? name;
+    String? description;
+    String? userID;
     int? createAt;
-    bool enable;
+    bool? enable;
 
     factory ProductCategory.fromJson(Map<String, dynamic> json) => ProductCategory(
         id: json["\u0024id"],
@@ -40,6 +42,7 @@ class ProductCategory {
         permissions: Permissions.fromJson(json["\u0024permissions"]),
         name: json["name"],
         description: json["description"],
+        userID: json["userID"],
         createAt: json["create_at"],
         enable: json["enable"],
     );
@@ -47,9 +50,10 @@ class ProductCategory {
     Map<String, dynamic> toJson() => {
         "\u0024id": id,
         "\u0024collection": collection,
-        "\u0024permissions": permissions!.toJson(),
+        "\u0024permissions": permissions != null ? permissions!.toJson() : null,
         "name": name,
         "description": description,
+        "userID": userID,
         "create_at": createAt,
         "enable": enable,
     };

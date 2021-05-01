@@ -69,17 +69,6 @@ class NewProductPage extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  InputText(
-                    name: 'Precio al cliente',
-                    initialValue: _ctrl.product.clientPrice.toString(),
-                    textInputType: TextInputType.number,
-                    validator: Validators.nameValidator,
-                    prefixIcon: Icon(LineIcons.wavyMoneyBill),
-                    onChanged: (val)=> _ctrl.product.clientPrice = double.tryParse(val),
-                  ),
-                  SizedBox(
-                    height: 20,
-                  ),
                   FadeInUp(
                       child:InkWell(
                       onTap: ()=>_ctrl.showPicker(context),
@@ -90,7 +79,7 @@ class NewProductPage extends StatelessWidget {
                           borderRadius: BorderRadius.all(Radius.circular(30)),
                           child:  ListTile(
                           trailing: new Icon(Icons.arrow_drop_down),
-                          title: new Text(_ctrl.product.category!.name, style: subtitulo),
+                          title: new Text(_ctrl.product.category!.name!, style: subtitulo),
                           subtitle: new Text('Categoría', style: body1),
                           )
                         )

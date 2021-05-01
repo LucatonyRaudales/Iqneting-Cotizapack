@@ -50,18 +50,13 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                                     alignment: Alignment.center,
                                     child: CircleAvatar(
                                       radius: 80,
-                                      backgroundColor: color300,
+                                      backgroundColor: color400,
                     //                backgroundColor: Color(0xff476cfb),
-                                      child: ClipOval(
-                                        child: new SizedBox(
-                                          width: 140.0,
-                                          height: 140.0,
-                                          child:  Image.network(
-                                              "https://images.unsplash.com/photo-1502164980785-f8aa41d53611?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60",
+                                      child: Image.asset(
+                                              "assets/images/logo_white.png",
                                               fit: BoxFit.fill,
                                             ),
-                                        ),),
-                                        )
+                                        ),
                                   ),
                                 ],
                               ),
@@ -166,7 +161,12 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                 SizedBox(height: 12,),
                 TextButton(
                   child: Text("Cancelar", style: body1,),
-                  onPressed:()=> Navigator.pop(context),
+                  onPressed:(){
+                    if(_ctrl.isUpdate){
+                      return Navigator.pop(context);
+                    }
+                      return _ctrl.logout();
+                  }
                 ),
                 SizedBox(height: 20,),
               ],)

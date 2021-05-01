@@ -33,10 +33,20 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                 child: SingleChildScrollView(
                   child: Column(children: [
                     Header(
-                      height: 170,
-                      widgetToShow: new Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 100, vertical:30),
-                        child: Text('Crear cotización', style: subtituloblanco),)
+                      height: 260,
+                      widgetToShow: Padding(
+                        padding: EdgeInsets.only(top: 25, bottom: 100),
+                        child:FadeInDown(
+                          child:new Column(
+                            children:[
+                              SizedBox(height: 15,),
+                              Icon(LineIcons.swatchbook, color: Colors.white, size: 49),
+                              SizedBox(height: 25,),
+                              new Text('Crear cotización', style: subtituloblanco,),
+                            ]
+                          )
+                        )
+                      )
                     ),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 15),
@@ -67,18 +77,6 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                           height: 25,
                         ),
                         InputText(
-                          initialValue: _ctrl.quotation.scope,
-                          name: 'Alcance',
-                          validator: Validators.nameValidator,
-                          autofillHints: [AutofillHints.name],
-                          textInputType: TextInputType.name,
-                          prefixIcon: Icon(LineIcons.glasses),
-                          onChanged: (val)=> _ctrl.quotation.scope = val,  
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        InputText(
                           initialValue:'0.00',
                           name: 'Precio',
                           validator: Validators.nameValidator,
@@ -86,17 +84,6 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                           textInputType: TextInputType.number,
                           prefixIcon: Icon(LineIcons.dollarSign),
                           onChanged: (val)=> _ctrl.quotation.subTotal = double.parse(val),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-                        InputText(
-                          name: 'Duración (días)',
-                          validator: Validators.nameValidator,
-                          autofillHints: [AutofillHints.telephoneNumber],
-                          textInputType: TextInputType.number,
-                          prefixIcon: Icon(LineIcons.clock),
-                          onChanged: (val)=> _ctrl.quotation.expirationDate = int.parse(val),  
                         ),
                         SizedBox(
                           height: 25,
@@ -139,7 +126,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                               borderRadius: BorderRadius.all(Radius.circular(30)),
                               child:  ListTile(
                               trailing: new Icon(Icons.arrow_drop_down),
-                              title: new Text(_ctrl.customerSelected.name!, style: subtitulo,  overflow: TextOverflow.ellipsis,),
+                              title: new Text(_ctrl.customerSelected.name! == '' ? 'Selecionar cliente' : _ctrl.customerSelected.name!, style: subtitulo,  overflow: TextOverflow.ellipsis,),
                           subtitle: new Text('Cliente', style: body1, overflow: TextOverflow.ellipsis,),
                           )
                         )
@@ -159,13 +146,29 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                           borderRadius: BorderRadius.all(Radius.circular(30)),
                           child:  ListTile(
                           trailing: new Icon(Icons.arrow_drop_down),
-                          title: new Text(_ctrl.quotation.product!.name!, style: subtitulo,  overflow: TextOverflow.ellipsis,),
+                          title: new Text(_ctrl.quotation.product!.name! == '' ? 'Selecionar producto' : _ctrl.quotation.product!.name!, style: subtitulo,  overflow: TextOverflow.ellipsis,),
                           subtitle: new Text('Producto', style: body1, overflow: TextOverflow.ellipsis,),
                           )
                         )
                       ),
                       )
                     ),
+                    _ctrl.quotation.product!.name! != '' ? 
+                    Column(
+                      children: [
+                        SizedBox(
+                          height: 25,
+                        ),
+                    InputText(
+                      name: 'Cantitdad',
+                      validator: Validators.nameValidator,
+                      autofillHints: [AutofillHints.telephoneNumber],
+                      textInputType: TextInputType.number,
+                      prefixIcon: Icon(LineIcons.productHunt),
+                      onChanged: (val)=> _ctrl.quotation.quantity = int.parse(val),  
+                    ) 
+                      ],
+                    ) : SizedBox(),
                     SizedBox(
                       height: 25,
                     ),
@@ -174,13 +177,10 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                       if (!_formKey.currentState!.validate()) {
                           return _ctrl.btnController.reset();
                         }
-                        if(_ctrl.customerSelected.id == "" || _ctrl.quotation.product!.id == null){
+                        if(_ctrl.customerSelected.id == "" || _ctrl.customerSelected.id == null){
                           _ctrl.btnController.reset();
                           return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'Selecciona los datos requeridos para guardar tus datos', color: Colors.red);
                         }
-                        /*if(_ctrl.isUpdate){
-                          return _ctrl.updateMyData();
-                        }*/
                           return _ctrl.saveData();
                       },
                       btnController: _ctrl.btnController,

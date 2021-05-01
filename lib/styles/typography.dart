@@ -11,6 +11,7 @@ TextStyle subtituloblanco = TextStyle(color: Colors.white,fontWeight: FontWeight
 
 TextStyle body1 = TextStyle(color: color500,fontWeight: FontWeight.w300,fontSize: 14);
 TextStyle body1blanco = TextStyle(color: Colors.white,fontWeight: FontWeight.w300,fontSize: 14);
+TextStyle body1Rojo = TextStyle(color: Colors.red,fontWeight: FontWeight.w300,fontSize: 14);
 
 TextStyle body2 = TextStyle(color: color500,fontWeight: FontWeight.w200,fontSize: 12);
 TextStyle body2blanco = TextStyle(color: Colors.white,fontWeight: FontWeight.w200,fontSize: 12);

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/product.dart';
+import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -9,18 +10,19 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 class ProductsCtrl extends GetxController{
   ProductRepository _productRepository = ProductRepository();
   ProductList productList = ProductList();
+  ProductCategory category = ProductCategory();
   bool haveProducts = true;
-  
 
   @override
   void onInit() {
+    category = Get.arguments;
     getProducts();
     super.onInit();
   }
 
   Future getProducts()async{
     try{
-      _productRepository.getProducts()
+      _productRepository.getProductsByCategory(categoryID: category.id!)
       .then((value){
         if(value!.data["sum"] == 0){
           this.haveProducts = false;
