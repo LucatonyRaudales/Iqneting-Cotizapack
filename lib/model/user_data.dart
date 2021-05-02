@@ -29,7 +29,7 @@ class UserData {
         this.businessName,
         this.phone,
         this.address,
-        this.giro,
+        this.paymentUrl,
         this.createAt,
         required this.category,
     });
@@ -46,7 +46,7 @@ class UserData {
     String? businessName;
     String? phone;
     String? address;
-    String? giro;
+    String? paymentUrl;
     int? createAt;
     UserCategory category;
 
@@ -63,7 +63,7 @@ class UserData {
         businessName: json["businessName"],
         phone: json["phone"],
         address: json["address"],
-        giro: json["giro"],
+        paymentUrl: json["paymentUrl"],
         createAt: json["create_at"],
         category: UserCategory.fromJson(json["category"]),
     );
@@ -81,7 +81,7 @@ class UserData {
         "businessName": businessName,
         "phone": phone,
         "address": address,
-        "giro": giro,
+        "paymentUrl": paymentUrl,
         "create_at": createAt,
         "category": category.toJson(),
     };

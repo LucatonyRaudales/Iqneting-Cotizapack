@@ -45,7 +45,7 @@ class ProfileCtrl extends GetxController{
     nickname: "",
     businessName: "",
     logo: "",
-    giro: "",
+    paymentUrl: "",
     userID: "",
     category: userCategory
   );
@@ -86,7 +86,7 @@ class ProfileCtrl extends GetxController{
       final _formKey = GlobalKey<FormState>();
     MyDialog().show(
     context:ctx,
-    title: 'Agregar categoría',
+    title: 'Actualizar contraseña',
     content: Stack(
         children: <Widget>[
           Form(
@@ -94,10 +94,6 @@ class ProfileCtrl extends GetxController{
             child: SingleChildScrollView(
               child: Column(
         children: [
-          SizedBox(
-            height: 20,
-          ),
-          new Text('actualizar contraseña'.toUpperCase(), style: subtitulo, textAlign: TextAlign.center,),
           SizedBox(
             height: 20,
           ),

@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/session_model.dart';
@@ -8,12 +7,14 @@ import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/get_storage.dart';
+import 'package:cotizapack/settings/google_map.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -36,7 +37,7 @@ class EditMyDataCtrl extends GetxController{
     nickname: "",
     businessName: "",
     logo: "",
-    giro: "",
+    paymentUrl: "",
     userID: "",
     category: userCategory
   );
@@ -64,6 +65,7 @@ class EditMyDataCtrl extends GetxController{
       this.userData.userID = sesionData.userId;
   }
 
+
   void saveMyData(){
     _userRepository.saveMyData(data: this.userData.toJson())
     .then((value){
@@ -78,11 +80,20 @@ class EditMyDataCtrl extends GetxController{
       try{
     _userRepository.updateMyData(data: this.userData)
     .then((value){
-      btnController.success();
-      MyGetStorage().replaceData(key: "userData", data: this.userData);
-      MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
-      Timer(Duration(seconds:3), ()=>Get.off(HomePage(), transition: Transition.leftToRightWithFade));
-    });
+      switch (value!.statusCode) {
+        case 201:
+          btnController.success();
+          MyGetStorage().replaceData(key: "userData", data: this.userData);
+          MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
+          Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
+        break;
+        default:
+          btnController.error();
+          MyAlert.showMyDialog(title: 'Error', message: 'hubo un problema al gardar tus datos, intenta de nuevo', color: Colors.green);
+          Timer(Duration(seconds:3), ()=> btnController.reset());
+          break;
+      }
+      });
       }catch(e){
         print('Error update: $e');
       }
@@ -155,4 +166,63 @@ class EditMyDataCtrl extends GetxController{
     }
   }
 
-}
+  /*void getAddress({required BuildContext context})async{
+  final kInitialPosition =  LatLng(-33.8567844, 151.213108);
+      Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) {
+          return PlacePicker(
+            apiKey: GoogleMapSettings.api,
+            initialPosition: kInitialPosition,
+            useCurrentLocation: true,
+            selectInitialPosition: true,
+  
+            //usePlaceDetailSearch: true,
+            onPlacePicked: (result) {
+              userData.address = result.adrAddress;
+              Navigator.of(context).pop();
+            update();
+            },
+            //forceSearchOnZoomChanged: true,
+            //automaticallyImplyAppBarLeading: false,
+            //autocompleteLanguage: "ko",
+            //region: 'au',
+            //selectInitialPosition: true,
+            // selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
+            //   print("state: $state, isSearchBarFocused: $isSearchBarFocused");
+            //   return isSearchBarFocused
+            //       ? Container()
+            //       : FloatingCard(
+            //           bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
+            //           leftPosition: 0.0,
+            //           rightPosition: 0.0,
+            //           width: 500,
+            //           borderRadius: BorderRadius.circular(12.0),
+            //           child: state == SearchingState.Searching
+            //               ? Center(child: CircularProgressIndicator())
+            //               : RaisedButton(
+            //                   child: Text("Pick Here"),
+            //                   onPressed: () {
+            //                     // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
+            //                     //            this will override default 'Select here' Button.
+            //                     print("do something with [selectedPlace] data");
+            //                     Navigator.of(context).pop();
+            //                   },
+            //                 ),
+            //         );
+            // },
+            // pinBuilder: (context, state) {
+            //   if (state == PinState.Idle) {
+            //     return Icon(Icons.favorite_border);
+            //   } else {
+            //     return Icon(Icons.favorite);
+            //   }
+            // },
+          );
+        },
+      ),
+    );
+  }*/
+  }
+  

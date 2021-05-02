@@ -29,7 +29,6 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
           child: SafeArea(
             child: SingleChildScrollView(
               child: Column(children: [
-
                 Header(
                   height: 300,
                   widgetToShow: Padding(
@@ -51,7 +50,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                                     child: CircleAvatar(
                                       radius: 80,
                                       backgroundColor: color400,
-                    //                backgroundColor: Color(0xff476cfb),
+                    //        ghj       backgroundColor: Color(0xff476cfb),
                                       child: Image.asset(
                                               "assets/images/logo_white.png",
                                               fit: BoxFit.fill,
@@ -108,14 +107,34 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                     SizedBox(
                       height: 25,
                     ),
+                  FadeInUp(
+                      child:InkWell(
+                      onTap: ()=>print('get address'),//_ctrl.getAddress(context:context),
+                      child: Container(
+                        height: 70,
+                        child:  Material(
+                          elevation: 2.0,
+                          borderRadius: BorderRadius.all(Radius.circular(30)),
+                          child:  ListTile(
+                          trailing: new Icon(Icons.arrow_drop_down),
+                          title: new Text(_ctrl.userData.address! == '' ? 'Agregar dirección' : _ctrl.userData.address!, style: subtitulo),
+                          subtitle: new Text('Dirección', style: body1, overflow: TextOverflow.ellipsis,),
+                          )
+                        )
+                      ),
+                      )
+                    ),
+                    SizedBox(
+                      height: 25,
+                    ),
                     InputText(
-                      name: 'Dirección',
-                      initialValue: _ctrl.userData.address,
-                      validator: Validators.addressValidator,
+                      name: 'Link de pago',
+                      initialValue: _ctrl.userData.paymentUrl,
+                      validator: Validators.urlValidator,
                       autofillHints: [AutofillHints.addressCity],
-                      textInputType: TextInputType.streetAddress,
-                      prefixIcon: Icon(LineIcons.streetView),
-                      onChanged: (val)=>_ctrl.userData.address = val,  
+                      textInputType: TextInputType.url,
+                      prefixIcon: Icon(LineIcons.paypal),
+                      onChanged: (val)=>_ctrl.userData.paymentUrl = val,  
                     ),
                     SizedBox(
                       height: 25,

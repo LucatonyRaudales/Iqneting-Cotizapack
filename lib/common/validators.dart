@@ -49,4 +49,10 @@ class Validators {
       return "ingrese una dirección más exacta";
     }
   }
+
+  static String? urlValidator (value) {
+    if (Uri.parse(value).isAbsolute) {
+      return 'ingrese un link de pago válido';
+    }
+  }
 }

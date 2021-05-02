@@ -9,6 +9,7 @@ import 'package:cotizapack/repository/customer.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
+import 'package:cotizapack/settings/google_map.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -71,7 +72,7 @@ class NewCustomerCtrl extends GetxController{
     MaterialPageRoute(
       builder: (context) {
         return PlacePicker(
-          apiKey: 'AIzaSyCEKW1ZjGXOBqYaa94nmddouzv_shllRz0',
+          apiKey: GoogleMapSettings.api,
           initialPosition: kInitialPosition,
           useCurrentLocation: true,
           selectInitialPosition: true,

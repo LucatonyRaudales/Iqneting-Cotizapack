@@ -16,7 +16,7 @@ class InitPageCtrl extends GetxController{
     nickname: "--",
     businessName: "--",
     logo: "--",
-    giro: "--",
+    paymentUrl: "--",
     userID: "",
     category: userCategory);
 

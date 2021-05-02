@@ -37,33 +37,33 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Stack(
                   children: [
                     Align(
-                alignment: Alignment.center,
-                child: CircleAvatar(
-                  radius: 80,
-                  backgroundColor: color300,
-//                backgroundColor: Color(0xff476cfb),
-                  child: ClipOval(
-                    child: new SizedBox(
-                      width: 140.0,
-                      height: 140.0,
-                      child: _ctrl.userData.logo == null || _ctrl.userData.logo == '' ? 
-                      Center(
-                        child: Icon(LineIcons.plus)
-                      ) : 
-                      FutureBuilder<Uint8List>(
-                        future: MyStorage().getFilePreview(
-                          fileId: _ctrl.userData.logo.toString(),
-                        ), //works for both public file and private file, for private files you need to be logged in
-                        builder: (context, snapshot) {
-                          return snapshot.hasError ?
-                          Icon(LineIcons.exclamationCircle, color: Colors.red) : snapshot.hasData && snapshot.data != null
-                            ? Image.memory(snapshot.data!
-                                //snapshot.data!,
-                              )
-                            : CircularProgressIndicator();
-                        },
+                    alignment: Alignment.center,
+                    child: CircleAvatar(
+                      radius: 80,
+                      backgroundColor: color300,
+    //                backgroundColor: Color(0xff476cfb),
+                      child: ClipOval(
+                        child: new SizedBox(
+                          width: 140.0,
+                          height: 140.0,
+                          child: _ctrl.userData.logo == null || _ctrl.userData.logo == '' ? 
+                          Center(
+                            child: Icon(LineIcons.plus)
+                          ) : 
+                          FutureBuilder<Uint8List>(
+                            future: MyStorage().getFilePreview(
+                              fileId: _ctrl.userData.logo.toString(),
+                            ), //works for both public file and private file, for private files you need to be logged in
+                            builder: (context, snapshot) {
+                              return snapshot.hasError ?
+                              Icon(LineIcons.exclamationCircle, color: Colors.red) : snapshot.hasData && snapshot.data != null
+                                ? Image.memory(snapshot.data!
+                                  )
+                                : CircularProgressIndicator();
+                            },
+                          ),
+                        ),
                       ),
-                    ),),
                     )),
                     Align(
                       alignment: Alignment(1.5,1.5),
