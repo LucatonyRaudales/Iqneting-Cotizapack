@@ -51,7 +51,7 @@ class Validators {
   }
 
   static String? urlValidator (value) {
-    if (Uri.parse(value).isAbsolute) {
+    if (!Uri.parse(value).isAbsolute) {
       return 'ingrese un link de pago válido';
     }
   }

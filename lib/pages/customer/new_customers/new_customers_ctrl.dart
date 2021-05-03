@@ -4,6 +4,7 @@ import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/customers.dart';
 import 'package:cotizapack/model/file.dart';
 import 'package:cotizapack/model/my_account.dart';
+import 'package:cotizapack/pages/customer/customers/customers_ctrl.dart';
 import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/customer.dart';
 import 'package:cotizapack/repository/storage.dart';
@@ -149,6 +150,9 @@ class NewCustomerCtrl extends GetxController{
           case 201:
             this.btnController.success();
             MyAlert.showMyDialog(title: 'Guardado exitósamente', message: '${customer.name} fué añadido sin problemas', color: Colors.green);
+            Get.put(CustomersCtrl());
+            CustomersCtrl inst = Get.find();
+            inst.getCustomers();
             Timer(Duration(seconds: 3), ()=> Get.back());
           break;
           default:

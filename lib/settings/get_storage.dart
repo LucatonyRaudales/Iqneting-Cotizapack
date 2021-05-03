@@ -1,4 +1,7 @@
+import 'package:cotizapack/model/categories.dart';
+import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/repository/user.dart';
 import 'package:get_storage/get_storage.dart';
 
 class MyGetStorage{
@@ -32,11 +35,26 @@ class MyGetStorage{
     }
   }
 
-  UserData? listenUserData(){
+  Future<UserData?> listenUserData()async{
+    Session _mySession = Session();
+    UserData _userData = UserData(category: UserCategory(
+      id: '',
+      collection: '',
+      enable: false,
+      name: '',
+      description: ''));
     try{
-      UserData userData  = UserData.fromJson(box.read("userData"));
-      print('listen User: $userData');
-      return userData;
+      if(box.hasData('userData')){
+        _userData  = UserData.fromJson(box.read("userData"));
+        print('local db has user data: $_userData');
+        return _userData;
+      }else{
+        var resultSession = await UserRepository().getSessions();
+            _mySession = Session.fromJson(resultSession!.data);
+
+            _userData = await UserRepository().chargeUserData(userID: _mySession.userId!);
+            return _userData;
+      }
     }catch(err){
       print('Error listen User: $err');
     }

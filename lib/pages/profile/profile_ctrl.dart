@@ -59,7 +59,7 @@ class ProfileCtrl extends GetxController{
 
     void getUserData()async{
     try{
-    userData =  MyGetStorage().listenUserData()!;
+    userData =(await MyGetStorage().listenUserData())!;
     print('User name: ${userData.businessName}');
     await getAccount();
     }catch(e){
@@ -69,12 +69,12 @@ class ProfileCtrl extends GetxController{
 
   Future getAccount()async{
     try{
-        if(MyGetStorage().haveData(key: 'accountData')){
+        /*if(MyGetStorage().haveData(key: 'accountData')){
           myAccount = MyAccount.fromJson(MyGetStorage().readData(key: 'accountData'));
-        }else{
+        }else{*/
         myAccount = (await _accountRepository.getAccount())!;
-        MyGetStorage().saveData(key: 'accountData', data: myAccount.toJson());
-        }
+        /*MyGetStorage().saveData(key: 'accountData', data: myAccount.toJson());
+        }*/
     return update();
     }catch(e){
     print('Error box getAccount:$e');

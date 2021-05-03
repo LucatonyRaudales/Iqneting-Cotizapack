@@ -43,10 +43,10 @@ class NewQuotationCtrl extends GetxController{
   void getCustomers()async{
     quotation.expirationDate = DateTime.now().millisecondsSinceEpoch;
     _customerRepository.getMyCustomers()
-      .then((value){
+      .then((value)async{
         _customerList = value;
-        var data = MyGetStorage().listenUserData();
-        quotation.userId = data!.userID;
+        var data = (await MyGetStorage().listenUserData())!;
+        quotation.userId = data.userID;
         getProducts();
       });
   }
@@ -182,7 +182,7 @@ class NewQuotationCtrl extends GetxController{
 
   // the function
   void generateFile() async {
-    _userData = MyGetStorage().listenUserData()!;
+    _userData = (await MyGetStorage().listenUserData())!;
     doc.addPage(pw.Page(
       pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {

@@ -25,10 +25,7 @@ class LoginCtrl extends GetxController{
             btnController.success();
             MyAlert.showMyDialog(title: '¡Bienvenid@!', message: 'estamos cargando tus datos', color: Colors.green);
             _session = Session.fromJson(value!.data);
-            _userRepository.chargeUserData(userID: _session.userId!)
-              .then((value)async{
-                Timer(Duration(seconds:2), ()=> Get.offAll(SplashPage(), transition: Transition.rightToLeftWithFade));
-              });
+            Timer(Duration(seconds:2), ()=> Get.offAll(SplashPage(), transition: Transition.rightToLeftWithFade));
           break;
           case 500:
             btnController.error();

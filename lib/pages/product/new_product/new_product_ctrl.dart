@@ -5,6 +5,7 @@ import 'package:cotizapack/model/file.dart';
 import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/product_category.dart';
+import 'package:cotizapack/pages/product/products/products_ctrl.dart';
 import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/storage.dart';
@@ -90,7 +91,7 @@ class NewProductCtrl extends GetxController{
       }
       product.image!.add(myFile.id!);
       _productRepository.saveDocument(data: product)
-      .then((value){
+      .then((value)async{
         if(value == null){
           MyAlert.showMyDialog(title: 'Error al guardar los datos', message: 'por favor, intenta de nuevo', color: Colors.red);
           print('sepa el error');
@@ -100,6 +101,9 @@ class NewProductCtrl extends GetxController{
           case 201:
             this.btnController.success();
             MyAlert.showMyDialog(title: 'Guardado exitósamente', message: '${product.name} fué añadido sin problemas', color: Colors.green);
+            Get.put(ProductsCtrl());
+            ProductsCtrl inst = Get.find();
+            await inst.getProducts();
             Timer(Duration(seconds: 3), ()=> Get.back());
           break;
           default:

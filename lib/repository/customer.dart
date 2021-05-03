@@ -18,7 +18,7 @@ class CustomerRepository{
   Future<CustomerList> getMyCustomers()async{
     database = Database(AppwriteSettings.initAppwrite());
     try{
-      _userData = _myGetStorage.listenUserData()!;
+      _userData = (await _myGetStorage.listenUserData())!;
       Response res = await database.listDocuments(
         collectionId: collectionID,
         filters: [
@@ -55,7 +55,7 @@ class CustomerRepository{
   Future<bool> updateCustomer({required CustomerModel customer})async{
         database = Database(AppwriteSettings.initAppwrite());
     try{
-      _userData = _myGetStorage.listenUserData()!;
+      _userData = (await _myGetStorage.listenUserData())!;
       Response res = await database.updateDocument(
         collectionId: collectionID,
         documentId: customer.id!,
@@ -73,7 +73,7 @@ class CustomerRepository{
   Future<bool> disableCustomer({required String customerID})async{
     database = Database(AppwriteSettings.initAppwrite());
     try{
-      _userData = _myGetStorage.listenUserData()!;
+      _userData = (await _myGetStorage.listenUserData())!;
       Response res = await database.updateDocument(
         collectionId: collectionID, 
         documentId: customerID, 

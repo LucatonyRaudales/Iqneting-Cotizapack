@@ -12,10 +12,10 @@ class InitPageCtrl extends GetxController{
     id: "",
   );
   late UserData userData = UserData(
-    ceoName: "--",
-    nickname: "--",
-    businessName: "--",
-    logo: "--",
+    ceoName: "",
+    nickname: "",
+    businessName: "",
+    logo: "",
     paymentUrl: "--",
     userID: "",
     category: userCategory);
@@ -29,8 +29,9 @@ class InitPageCtrl extends GetxController{
 
   void getUserData()async{
     try{
-    userData =  MyGetStorage().listenUserData()!;
+    userData =  (await MyGetStorage().listenUserData())!;
     print('User name: ${userData.businessName}');
+    update();
     }catch(e){
       print('Error get UserData: $e');
     }

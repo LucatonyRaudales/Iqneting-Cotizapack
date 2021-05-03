@@ -33,7 +33,7 @@ class ProductRepository {
   Future<Response?> getProductsByCategory({required String categoryID})async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
-      this._userData = MyGetStorage().listenUserData()!;
+      this._userData = (await MyGetStorage().listenUserData())!;
       Response result  = await database.listDocuments(
         collectionId: collectionID,
         filters: [
@@ -52,7 +52,7 @@ class ProductRepository {
     Future<Response?> getProducts()async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
-      this._userData = MyGetStorage().listenUserData()!;
+      this._userData = (await MyGetStorage().listenUserData())!;
       Response result  = await database.listDocuments(
         collectionId: collectionID,
         filters: [

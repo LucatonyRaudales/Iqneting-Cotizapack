@@ -14,7 +14,7 @@ class ProductCategoryRepository{
 
   Future<ListProductCategory> getCategories()async{
     database = Database(AppwriteSettings.initAppwrite());
-      this._userData = MyGetStorage().listenUserData()!;
+      this._userData =(await MyGetStorage().listenUserData())!;
     try {
       Response result  = await database.listDocuments(
         collectionId: collectionID,
@@ -33,7 +33,7 @@ class ProductCategoryRepository{
   Future<Response?> saveDocument({required ProductCategory category})async{
     database = Database(AppwriteSettings.initAppwrite());
     try {
-    this._userData = MyGetStorage().listenUserData()!;
+    this._userData = (await MyGetStorage().listenUserData())!;
     category.userID = _userData.userID;
     category.createAt = DateTime.now().microsecondsSinceEpoch;
     Response result = await database.createDocument(

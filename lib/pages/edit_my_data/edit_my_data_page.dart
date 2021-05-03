@@ -117,7 +117,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                           borderRadius: BorderRadius.all(Radius.circular(30)),
                           child:  ListTile(
                           trailing: new Icon(Icons.arrow_drop_down),
-                          title: new Text(_ctrl.userData.address! == '' ? 'Agregar dirección' : _ctrl.userData.address!, style: subtitulo),
+                          title: new Text(_ctrl.userData.address == null || _ctrl.userData.address! == ''  ? 'Agregar dirección' : _ctrl.userData.address!, style: subtitulo),
                           subtitle: new Text('Dirección', style: body1, overflow: TextOverflow.ellipsis,),
                           )
                         )
@@ -164,9 +164,13 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                         if (!_formKey.currentState!.validate()) {
                           return _ctrl.btnController.reset();
                         }
-                        if(_ctrl.userData.category.id == ""){
+                        if(_ctrl.userData.category.id == "" ||_ctrl.userData.category.id == null ){
                           _ctrl.btnController.reset();
                           return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'elige una categoría para guardar tus datos', color: Colors.red);
+                        }
+                        if(_ctrl.userData.address == null || _ctrl.userData.address! == ''){
+                          _ctrl.btnController.reset();
+                          return MyAlert.showMyDialog(title: 'Datos vacíos', message: 'ofrécenos tu dirección para guardar tus datos', color: Colors.red);
                         }
                         if(_ctrl.isUpdate){
                           return _ctrl.updateMyData();

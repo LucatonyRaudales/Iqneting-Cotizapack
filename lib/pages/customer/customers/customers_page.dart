@@ -196,7 +196,12 @@ void showProductDetail(BuildContext context, CustomerModel customer, Uint8List i
                               IconButton(
                                 onPressed: (){
                                   Get.back();
-                                  Get.to(NewCustomerPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": customer});
+                                  Get.to(
+                                    NewCustomerPage(), transition: Transition.rightToLeftWithFade, arguments: {"editData":true, "data": customer})!
+                                  .then((_){
+                                    print('holas');
+                                    ctrl.getCustomers();
+                                  });
                                 },
                                 icon: new Icon(LineIcons.edit, size: 40, color: primary)),
                               new Text('Editar', style: body1,)

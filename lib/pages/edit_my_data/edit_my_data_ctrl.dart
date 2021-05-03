@@ -18,8 +18,6 @@ import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-import '../home_page.dart';
-
 class EditMyDataCtrl extends GetxController{
   final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
   UserCategoryList userCategories = UserCategoryList();
@@ -39,7 +37,8 @@ class EditMyDataCtrl extends GetxController{
     logo: "",
     paymentUrl: "",
     userID: "",
-    category: userCategory
+    category: userCategory,
+    address: 'Dirección default mientras hay una api key'
   );
   var arguments = Get.arguments;
   bool isUpdate = false;
@@ -69,10 +68,17 @@ class EditMyDataCtrl extends GetxController{
   void saveMyData(){
     _userRepository.saveMyData(data: this.userData.toJson())
     .then((value){
+      if(value.id != null){
       btnController.success();
       MyGetStorage().replaceData(key: "userData", data: this.userData);
       MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
-      Timer(Duration(seconds:3), ()=>Get.off(HomePage(), transition: Transition.leftToRightWithFade));
+      Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
+      }else{
+      btnController.error();
+      //MyGetStorage().replaceData(key: "userData", data: this.userData);
+      MyAlert.showMyDialog(title: '¡Error!', message: 'Hubo un error inesperado al guardar tus datos', color: Colors.red);
+      Timer(Duration(seconds:3), ()=>btnController.reset());
+      }
     });
   }
 
