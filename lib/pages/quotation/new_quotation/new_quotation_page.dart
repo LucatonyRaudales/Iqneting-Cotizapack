@@ -93,7 +93,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                           onTap: ()=> DatePicker.showDatePicker(context,
                               showTitleActions: true,
                               minTime: DateTime.now(),
-                              maxTime: DateTime(2030, 7, 7), onChanged: (date) {
+                              maxTime: DateTime(DateTime.now().year, DateTime.now().month + 1), onChanged: (date) {
                             print('change $date');
                           }, onConfirm: (date) {
                             print('confirm $date');
@@ -106,7 +106,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                               borderRadius: BorderRadius.all(Radius.circular(30)),
                               child:  ListTile(
                               trailing: new Icon(Icons.arrow_drop_down),
-                              title: new Text(DateFormat.yMMMMEEEEd(Get.locale).format(DateTime.fromMillisecondsSinceEpoch(_ctrl.quotation.expirationDate!)).toString(), style: subtitulo),
+                              title: new Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.fromMillisecondsSinceEpoch(_ctrl.quotation.expirationDate!)).toString(), style: subtitulo),
                           subtitle: new Text('Fecha de expiración', style: body1, overflow: TextOverflow.ellipsis,),
                           )
                         )

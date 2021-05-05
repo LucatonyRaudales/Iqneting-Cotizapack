@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import '../styles/colors.dart';
 import 'categories/categories_pages.dart';
+import 'dashboard/dashboard_page.dart';
 import 'inicio/init_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -37,6 +38,7 @@ class _HomePageState extends State<HomePage> {
             setState(() => _currentIndex = index);
           },
           children: <Widget>[
+            DashboardPage(),
             InitPage(),
             CategoriesPage(),
             ProfilePage(),
@@ -53,6 +55,11 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: color500,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         items: <BottomNavyBarItem>[
+          BottomNavyBarItem(
+            activeColor: Colors.white,
+            title: Text('Dashboard'),
+            icon: Icon(LineIcons.pieChart)
+          ),
           BottomNavyBarItem(
             activeColor: Colors.white,
             title: Text('Inicio'),

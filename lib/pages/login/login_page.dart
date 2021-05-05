@@ -4,6 +4,7 @@ import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/common/socials.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
+import 'package:cotizapack/pages/recovery_password/recovery_page.dart';
 import 'package:cotizapack/pages/signup/signup_page.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -82,7 +83,10 @@ class LoginPage extends StatelessWidget {
                           child: Column(
                             children:[
                               Center(
-                                child: Text("Olvidaste tu contraseña?", style: TextStyle(color:color300,fontSize: 12 ,fontWeight: FontWeight.w700),),
+                                child: TextButton(
+                                  onPressed: ()=> Get.to(RecoveryPasswordPage(), transition: Transition.rightToLeftWithFade),
+                                  child: Text("Olvidaste tu contraseña?", style: TextStyle(color:color300,fontSize: 12 ,fontWeight: FontWeight.w700),),
+                                ),
                               ),
                               SizedBox(height: 20,),
                               SocialNetwork(),

@@ -41,6 +41,7 @@ class NewQuotationCtrl extends GetxController{
   }
 
   void getCustomers()async{
+    quotation.quantity = 1;
     quotation.expirationDate = DateTime.now().millisecondsSinceEpoch;
     _customerRepository.getMyCustomers()
       .then((value)async{
@@ -195,7 +196,7 @@ class NewQuotationCtrl extends GetxController{
                   child: new pw.Column(
                     children: [
                       new pw.Center(
-                          child: pw.Text(DateFormat.MMMM(Get.locale).format(DateTime.now()).toString(), textAlign: pw.TextAlign.right),
+                          child: pw.Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.now()), textAlign: pw.TextAlign.right),
                       ),
                 pw.SizedBox(height: 20),
                       new pw.Text(_userData.businessName!.toUpperCase(), textAlign: pw.TextAlign.left),
@@ -222,6 +223,7 @@ class NewQuotationCtrl extends GetxController{
                               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                               children: [
                                 new pw.Text('Concepto: '),
+                                new pw.Text('Cantidad: '),
                                 new pw.Text('Precio: ')
                               ]
                             ),
@@ -229,10 +231,11 @@ class NewQuotationCtrl extends GetxController{
                               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                               children: [
                                 new pw.Text(quotation.description!),
+                                new pw.Text(quotation.quantity!.toString()),
                                 new pw.Text(quotation.subTotal!.toString())
                               ]
                             ),
-                            new pw.Text('Total USD ${quotation.subTotal! * 1.15}', textAlign: pw.TextAlign.right),
+                            new pw.Text('Total USD ${quotation.subTotal! * quotation.quantity!}', textAlign: pw.TextAlign.right),
                           ]
                         )
                       )

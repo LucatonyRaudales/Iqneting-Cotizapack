@@ -1,4 +1,19 @@
 import 'package:cotizapack/model/product.dart';
+class QuotationsList{
+  QuotationsList({
+    this.quotations
+  });
+  List<QuotationModel>? quotations;
+
+    factory QuotationsList.fromJson(List<dynamic> parsedJson) {
+
+    List<QuotationModel> quotations = parsedJson.map((i)=>QuotationModel.fromJson(i)).toList();
+
+    return new QuotationsList(
+      quotations: quotations,
+    );
+  }
+}
 
 class QuotationModel{
     QuotationModel({
@@ -13,7 +28,8 @@ class QuotationModel{
         this.email,
         this.product,
         this.clientID, 
-        this.quantity
+        this.quantity,
+        this.createAt
     });
 
     String? id;
@@ -28,6 +44,7 @@ class QuotationModel{
     String? email;
     ProductModel? product;
     String? clientID;
+    int? createAt;
 
     factory QuotationModel.fromJson(Map<String, dynamic> json) => QuotationModel(
         id: json["\u0024id"],
@@ -40,8 +57,9 @@ class QuotationModel{
         total: json['total'].toDouble(),
         userId: json["userID"].toString(),
         email: json["email"],
-        product:  ProductModel.fromJson(json["product"]),
-        clientID: json["clientID"]
+        product:  json["product"] != null ? ProductModel.fromJson(json["product"]) : null,
+        clientID: json["clientID"],
+        createAt: json["create_at"]
     );
 
     Map<String, dynamic> toJson() => {
@@ -55,6 +73,7 @@ class QuotationModel{
         "userID": userId,
         "email": email,
         "product": product == null ? product!.toJson() : null,
-        "clientID": clientID
+        "clientID": clientID,
+        "create_at": createAt
     };
 }

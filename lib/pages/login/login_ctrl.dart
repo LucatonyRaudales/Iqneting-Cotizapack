@@ -4,7 +4,6 @@ import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_model.dart';
 import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/user.dart';
-import 'package:cotizapack/settings/get_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';

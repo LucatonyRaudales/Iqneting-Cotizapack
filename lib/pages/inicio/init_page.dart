@@ -2,7 +2,7 @@ import 'package:cotizapack/common/card.dart';
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/pages/customer/customers/customers_page.dart';
 import 'package:cotizapack/pages/product/product_category/product_categories_page.dart';
-import 'package:cotizapack/pages/quotation/new_quotation/new_quotation_page.dart';
+import 'package:cotizapack/pages/quotation/quotations/quotations_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
@@ -23,7 +23,6 @@ class InitPage extends StatelessWidget {
             children: [
               Header(
                 widgetToShow: Column(children: [
-
               const SizedBox(height: 60.0),
               Text('¡Hola!', style: tituloblanco,),
               const SizedBox(height: 10.0),
@@ -33,22 +32,22 @@ class InitPage extends StatelessWidget {
                 ],),
               ),
               card(
-                function:()=> Get.to(NewQuotationPage(), transition: Transition.rightToLeftWithFade),
+                function:()=> Get.to(QuotationsPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.fileInvoiceWithUsDollar,
-                title: 'Crear cotización',
-                subtitle: 'Agrega una nueva cotización'
+                title: 'Cotizaciones',
+                subtitle: 'revisa o genera una nueva cotización'
               ),
               card(
                 function:()=> Get.to(CustomerPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.userPlus,
                 title: 'Mis clientes',
-                subtitle: 'Agrega un nuevo cliente para tus cotizaciones'
+                subtitle: 'gestionar mis clientes'
               ),
               card(
                 function:()=> Get.to(ProductsCategoryPage(), transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.conciergeBell,
                 title: 'Mis Productos y servicio',
-                subtitle: 'revisa y gestiona tus categorías, productos y servicios'
+                subtitle: 'gestiona mis categorías, productos y servicios'
               ),
               const SizedBox(height: 10.0),
             ],
