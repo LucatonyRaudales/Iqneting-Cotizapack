@@ -1,6 +1,10 @@
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:intl/intl.dart';
+
+import 'dashboard_ctrl.dart';
 
 class DashboardPage extends StatelessWidget {
   final TextStyle whiteText = TextStyle(color: Colors.white);
@@ -13,11 +17,13 @@ class DashboardPage extends StatelessWidget {
   }
 
   Widget _buildBody(BuildContext context) {
-    return SingleChildScrollView(
+    return GetBuilder<DashboardCtrl>(
+      init:DashboardCtrl(),
+      builder: (_ctrl)=> SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          _buildHeader(),
+          _buildHeader(ctrl: _ctrl),
           const SizedBox(height: 20.0),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
@@ -34,7 +40,7 @@ class DashboardPage extends StatelessWidget {
               children: <Widget>[
                 Expanded(
                   child: ListTile(
-                    leading: Container(
+                    /*leading: Container(
                       alignment: Alignment.bottomCenter,
                       width: 45.0,
                       child: Row(
@@ -65,9 +71,9 @@ class DashboardPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    ),
+                    ),*/
                     title: Text("Hoy"),
-                    subtitle: Text("18 aceptados"),
+                    subtitle: Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.now())),
                   ),
                 ),
                 VerticalDivider(),
@@ -106,7 +112,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                     title: Text("Cancelados"),
-                    subtitle: Text("7 cot."),
+                    subtitle: Text("${_ctrl.statistic.quotesCanceled} cot."),
                   ),
                 ),
               ],
@@ -122,7 +128,7 @@ class DashboardPage extends StatelessWidget {
                     color: Colors.pink,
                     icon: Icons.portrait,
                     title: "Mis cotizaciones",
-                    data: "1200",
+                    data: "${_ctrl.statistic.totalQuotes}",
                   ),
                 ),
                 const SizedBox(width: 16.0),
@@ -131,7 +137,7 @@ class DashboardPage extends StatelessWidget {
                     color: Colors.green,
                     icon: Icons.portrait,
                     title: "Enviados",
-                    data: "857",
+                    data: "${_ctrl.statistic.quotesSent}",
                   ),
                 ),
               ],
@@ -146,8 +152,8 @@ class DashboardPage extends StatelessWidget {
                   child: _buildTile(
                     color: Colors.blue,
                     icon: Icons.favorite,
-                    title: "----",
-                    data: "864",
+                    title: "Categorías",
+                    data: "${_ctrl.statistic.myCategories}",
                   ),
                 ),
                 const SizedBox(width: 16.0),
@@ -155,8 +161,8 @@ class DashboardPage extends StatelessWidget {
                   child: _buildTile(
                     color: Colors.pink,
                     icon: Icons.portrait,
-                    title: "----",
-                    data: "857",
+                    title: "Productos",
+                    data: "${_ctrl.statistic.myProducts}",
                   ),
                 ),
                 const SizedBox(width: 16.0),
@@ -164,8 +170,8 @@ class DashboardPage extends StatelessWidget {
                   child: _buildTile(
                     color: Colors.blue,
                     icon: Icons.favorite,
-                    title: "----",
-                    data: "698",
+                    title: "Clientes",
+                    data: "${_ctrl.statistic.myClients}",
                   ),
                 ),
               ],
@@ -174,10 +180,10 @@ class DashboardPage extends StatelessWidget {
           const SizedBox(height: 20.0),
         ],
       ),
-    );
+    ));
   }
 
-  Container _buildHeader() {
+  Container _buildHeader({required DashboardCtrl ctrl}) {
     return Container(
       padding: const EdgeInsets.fromLTRB(0, 50.0, 0, 32.0),
       decoration: BoxDecoration(
@@ -192,7 +198,7 @@ class DashboardPage extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              "Dashboard",
+              ctrl.userData.businessName.toString(),
               style: tituloblanco,
             ),
             trailing: CircleAvatar(
@@ -204,7 +210,7 @@ class DashboardPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              "Dr. Tony Raudales",
+              ctrl.userData.ceoName.toString(),
               style: subtituloblanco,
             ),
           ),
@@ -212,7 +218,7 @@ class DashboardPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              "Partido anti-corrupción",
+              "Bienvenido, que disfrutes de tu día",
               style: whiteText,
             ),
           ),

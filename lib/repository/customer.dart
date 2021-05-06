@@ -3,6 +3,8 @@ import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/customers.dart';
 import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/pages/dashboard/dashboard_ctrl.dart';
+import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
@@ -26,6 +28,7 @@ class CustomerRepository{
           'enable=1'
         ]
       );
+      StatisticsRepository().compareStatistics(key: 'myClients', value: res.data["sum"]);
       list = CustomerList.fromJson(
         res.data["documents"],);
       return list;

@@ -93,12 +93,12 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                           onTap: ()=> DatePicker.showDatePicker(context,
                               showTitleActions: true,
                               minTime: DateTime.now(),
-                              maxTime: DateTime(DateTime.now().year, DateTime.now().month + 1), onChanged: (date) {
+                              maxTime: DateTime(DateTime.now().year, DateTime.now().month + 1, DateTime.now().day), onChanged: (date) {
                             print('change $date');
                           }, onConfirm: (date) {
                             print('confirm $date');
                             setState(()=> _ctrl.quotation.expirationDate = date.millisecondsSinceEpoch);
-                          }, currentTime: DateTime.now(), locale: LocaleType.es),
+                          }, currentTime: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1), locale: LocaleType.es),
                           child: Container(
                             height: 70,
                             child:  Material(
@@ -162,6 +162,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                     InputText(
                       name: 'Cantitdad',
                       validator: Validators.nameValidator,
+                      initialValue: 1.toString(),
                       autofillHints: [AutofillHints.telephoneNumber],
                       textInputType: TextInputType.number,
                       prefixIcon: Icon(LineIcons.productHunt),

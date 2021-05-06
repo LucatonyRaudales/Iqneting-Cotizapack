@@ -1,10 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/button.dart';
 import 'package:cotizapack/common/dialog.dart';
-import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
 import 'package:cotizapack/model/categories.dart';
@@ -16,7 +14,6 @@ import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
-import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';

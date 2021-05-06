@@ -7,14 +7,12 @@ import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/get_storage.dart';
-import 'package:cotizapack/settings/google_map.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
@@ -93,9 +91,15 @@ class EditMyDataCtrl extends GetxController{
           MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
           Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
         break;
+        case 200:
+          btnController.success();
+          MyGetStorage().replaceData(key: "userData", data: this.userData);
+          MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
+          Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
+        break;
         default:
           btnController.error();
-          MyAlert.showMyDialog(title: 'Error', message: 'hubo un problema al gardar tus datos, intenta de nuevo', color: Colors.green);
+          MyAlert.showMyDialog(title: 'Error', message: 'hubo un problema al gardar tus datos, intenta de nuevo', color: Colors.red);
           Timer(Duration(seconds:3), ()=> btnController.reset());
           break;
       }

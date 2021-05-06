@@ -2,6 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
@@ -23,6 +24,8 @@ class ProductCategoryRepository{
           "enable=1",
         ]
       );
+
+      StatisticsRepository().compareStatistics(key: 'myCategories', value: result.data["sum"]);
       categories =  ListProductCategory.fromJson(result.data["documents"]);
       return categories;
     } catch (e) {

@@ -2,6 +2,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/quotation.dart';
 import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
@@ -36,6 +37,7 @@ class QuotationRepository{
       collectionId: collectionID,
       filters: ["userID=${_userData.userID}"]
       );
+      StatisticsRepository().compareStatistics(key: 'totalQuotes', value: res.data["sum"]);
       return QuotationsList.fromJson(res.data['documents']);
     }catch(e){
       print('Error get quotations: $e');

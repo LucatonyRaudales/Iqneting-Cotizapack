@@ -29,7 +29,9 @@ class QuotationModel{
         this.product,
         this.clientID, 
         this.quantity,
-        this.createAt
+        this.createAt,
+        this.clientName,
+        this.status
     });
 
     String? id;
@@ -42,9 +44,11 @@ class QuotationModel{
     double? total;
     String? userId;
     String? email;
+    String? clientName;
     ProductModel? product;
     String? clientID;
     int? createAt;
+    int? status;
 
     factory QuotationModel.fromJson(Map<String, dynamic> json) => QuotationModel(
         id: json["\u0024id"],
@@ -59,21 +63,25 @@ class QuotationModel{
         email: json["email"],
         product:  json["product"] != null ? ProductModel.fromJson(json["product"]) : null,
         clientID: json["clientID"],
-        createAt: json["create_at"]
+        createAt: json["create_at"],
+        clientName: json["clientName"],
+        status: json["status"]
     );
 
     Map<String, dynamic> toJson() => {
-        "\u0024id": id,
-        "title": title,
-        "description": description,
-        "quantity": quantity,
-        "expirationDate": expirationDate,
-        "subTotal": subTotal,
-        "total": total,
-        "userID": userId,
-        "email": email,
-        "product": product == null ? product!.toJson() : null,
-        "clientID": clientID,
-        "create_at": createAt
+      "\u0024id": id,
+      "title": title,
+      "description": description,
+      "quantity": quantity,
+      "expirationDate": expirationDate,
+      "subTotal": subTotal,
+      "total": total,
+      "userID": userId,
+      "email": email,
+      "product": product == null ? product!.toJson() : null,
+      "clientID": clientID,
+      "clientName": clientName,
+      "create_at": createAt,
+      "status": status
     };
 }

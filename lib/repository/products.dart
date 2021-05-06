@@ -4,6 +4,7 @@ import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
@@ -60,6 +61,7 @@ class ProductRepository {
           "enable=1",
         ]
       );
+      StatisticsRepository().compareStatistics(key: 'myProducts', value: result.data["sum"]);
       return result;
     } catch (e) {
       print('error repository products $e');

@@ -26,9 +26,9 @@ class MyGetStorage{
     return box.erase();
   }
   
-  replaceData({required String key, required var data}){
+  Future replaceData({required String key, required var data})async{
     try{
-      box.remove(key);
+      await box.remove(key);
       return box.write(key, data);
     }catch(e){
       print('Error replaceData $e');

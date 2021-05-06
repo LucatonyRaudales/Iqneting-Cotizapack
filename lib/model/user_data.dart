@@ -63,7 +63,7 @@ class UserData {
         businessName: json["businessName"],
         phone: json["phone"],
         address: json["address"],
-        paymentUrl: json["paymentUrl"],
+        paymentUrl: json["giro"],
         createAt: json["create_at"],
         category: UserCategory.fromJson(json["category"]),
     );
@@ -81,7 +81,7 @@ class UserData {
         "businessName": businessName,
         "phone": phone,
         "address": address,
-        "paymentUrl": paymentUrl,
+        "giro": paymentUrl,
         "create_at": createAt,
         "category": category.toJson(),
     };

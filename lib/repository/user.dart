@@ -6,6 +6,7 @@ import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/model/user_model.dart';
 import 'package:cotizapack/pages/splash/splash_screen.dart';
+import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart' as getImport;
@@ -18,6 +19,7 @@ class UserRepository {
     collection: "",
     id: ""
   );
+  Session session = Session();
   late  UserData userData = UserData(category: userCategory);
   final String userCollectionID = "6080caddd98c6";
   late Database database;
@@ -29,6 +31,10 @@ class UserRepository {
         email: user.email.toString(),
         password: user.password.toString(),
         name: user.nickname.toString());
+        if(result.statusCode == 201){
+          UserModel usuario = UserModel.fromJson(result.data);
+          await StatisticsRepository().createStatistic(usuario);
+        }
       return result;
     }catch(err){
       print('ERROR: $err');
@@ -68,7 +74,6 @@ class UserRepository {
     }
   }
   Future<Session?> getUserSessionData()async{
-    Session session = Session();
     try{
     Account account = Account(AppwriteSettings.initAppwrite());
     Response response = await account.get();

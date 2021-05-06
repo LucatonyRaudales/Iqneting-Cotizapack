@@ -103,7 +103,7 @@ class QuotationsPage extends StatelessWidget {
                 children: [
                   Text(quotation.title.toString(), style: subtitulo, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
                   SizedBox(height: 1,),
-                  Text(quotation.description.toString(), style: body1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
+                  Text(quotation.clientName!, style: body1, overflow: TextOverflow.ellipsis, textAlign: TextAlign.center),
                   SizedBox(height: 15,),
                   quotation.createAt != null ?
                   Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.fromMillisecondsSinceEpoch(quotation.createAt!)).toString(), style: body2, overflow: TextOverflow.clip, textAlign: TextAlign.center) : SizedBox(),

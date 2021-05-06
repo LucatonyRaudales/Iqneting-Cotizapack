@@ -149,6 +149,8 @@ class NewQuotationCtrl extends GetxController{
                         onTap: (){
                           customerSelected = _customerList.customers![index];
                           quotation.clientID = customerSelected.id;
+                          quotation.clientName = customerSelected.name;
+                          quotation.email = customerSelected.email;
                           update();
                           Navigator.pop(context);
                           },
@@ -196,13 +198,13 @@ class NewQuotationCtrl extends GetxController{
                   child: new pw.Column(
                     children: [
                       new pw.Center(
-                          child: pw.Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.now()), textAlign: pw.TextAlign.right),
+                        child: pw.Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.now()), textAlign: pw.TextAlign.right),
                       ),
-                pw.SizedBox(height: 20),
+                      pw.SizedBox(height: 20),
                       new pw.Text(_userData.businessName!.toUpperCase(), textAlign: pw.TextAlign.left),
-                pw.SizedBox(height: 10),
+                      pw.SizedBox(height: 10),
                       new pw.Text(customerSelected.name!.toUpperCase(), textAlign: pw.TextAlign.left),
-                pw.SizedBox(height: 10),
+                      pw.SizedBox(height: 10),
                       new pw.Text('PRESENTE:', textAlign: pw.TextAlign.left, )
                     ]
                   )
