@@ -70,12 +70,14 @@ class StatisticsRepository{
     _statistic = Statistic.fromJson(MyGetStorage().readData(key: 'statistic'));
     switch (key) {
       case "quotesSent":
-        return _statistic.quotesSent != value ? 
-        await updateStatistic(data: {"quotesSent" : value}) : null;
+      return await updateStatistic(data: {"quotesSent" : _statistic.quotesSent + value});
+       /* return _statistic.quotesSent != value ? 
+        await updateStatistic(data: {"quotesSent" : _statistic.quotesSent + value}) : null;*/
 
       case "quotesCanceled":
-        return _statistic.quotesCanceled != value ? 
-        await updateStatistic(data: {"quotesCanceled" : value}) : null;
+      return await updateStatistic(data: {"quotesCanceled" :  _statistic.quotesCanceled + value});
+        /*return _statistic.quotesCanceled != value ? 
+        await updateStatistic(data: {"quotesCanceled" :  _statistic.quotesCanceled + value}) : null;*/
 
       case "myCategories":
         return _statistic.myCategories != value ? 

@@ -44,4 +44,21 @@ class QuotationRepository{
       return QuotationsList.fromJson([]);
     }
   }
+
+  Future<int> updateQuotation({required QuotationModel quotation, required Map<String, dynamic> toUpdate})async{
+    try{
+    database = Database(AppwriteSettings.initAppwrite());
+      Response res = await database.updateDocument(
+        documentId: quotation.id!,
+        collectionId: collectionID, 
+        data: toUpdate, 
+        read: ['*'], 
+        write: ["user:${quotation.userId}"]
+      );
+      return res.statusCode!;
+    }catch(err){
+      print('Error create quotation: .$err');
+      return 500;
+    }
+  }
 }

@@ -29,7 +29,7 @@ class ProfileCtrl extends GetxController{
   MyStorage myStorage = MyStorage();
   String newPassword = '', oldPassword = '';
   MyAccount myAccount = MyAccount();
-  bool updating = false;
+  bool updating = true;
   UserCategory userCategory = UserCategory(
     collection: "fds",
     enable: true,
@@ -72,6 +72,7 @@ class ProfileCtrl extends GetxController{
         myAccount = (await _accountRepository.getAccount())!;
         /*MyGetStorage().saveData(key: 'accountData', data: myAccount.toJson());
         }*/
+        updating = false;
     return update();
     }catch(e){
     print('Error box getAccount:$e');

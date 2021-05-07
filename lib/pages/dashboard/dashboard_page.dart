@@ -112,7 +112,7 @@ class DashboardPage extends StatelessWidget {
                       ),
                     ),
                     title: Text("Cancelados"),
-                    subtitle: Text("${_ctrl.statistic.quotesCanceled} cot."),
+                    subtitle: Text("${_ctrl.statistic.quotesCanceled}"),
                   ),
                 ),
               ],
@@ -198,7 +198,7 @@ class DashboardPage extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              ctrl.userData.businessName.toString(),
+              ctrl.userData.businessName!.toUpperCase(),
               style: tituloblanco,
             ),
             trailing: CircleAvatar(
@@ -210,7 +210,7 @@ class DashboardPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              ctrl.userData.ceoName.toString(),
+              ctrl.userData.ceoName!,
               style: subtituloblanco,
             ),
           ),

@@ -1,5 +1,5 @@
+import 'dart:io';
 import 'package:cotizapack/pages/pdf/pdg_viewer_ctrl.dart';
-import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +8,9 @@ import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 
 class PdfPreviewScreen extends StatelessWidget {
-  final String path;
+  final File file;
 
-  PdfPreviewScreen({required this.path});
+  PdfPreviewScreen({required this.file});
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +21,7 @@ class PdfPreviewScreen extends StatelessWidget {
           backgroundColor: color500,
           centerTitle: true,
           title: new Text('Ver cotización', style: subtituloblanco),
-          leading: new IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=> Get.off(SplashPage(), transition: Transition.rightToLeftWithFade)),
+          leading: new IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=> _ctrl.getBack(file)),
         ),
         floatingActionButton: FloatingActionButton(
           // isExtended: true,
@@ -29,28 +29,30 @@ class PdfPreviewScreen extends StatelessWidget {
           backgroundColor: color500,
           onPressed: () {
             print('Compartir');
-            _ctrl.sharePDF(context, path);
+            _ctrl.sharePDF(context, file);
           },
         ),
         body: PDFView(
-          filePath: path,
+          filePath: _ctrl.file.path,
           enableSwipe: true,
           swipeHorizontal: true,
           autoSpacing: false,
           pageFling: false,
           onRender: (_pages) {
+            print('renderizdo corretacemnte');
             /* setState(() {
                 pages = _pages;
                 isReady = true;
               });*/
           },
           onError: (error) {
-              print(error.toString());
+            print('Error on render: $error');
           },
           onPageError: (page, error) {
-              print('$page: ${error.toString()}');
+            print('Error on onPageError: $error');
           },
           onViewCreated: (PDFViewController pdfViewController) {
+            print('onViewCreated');
              // _controller.complete(pdfViewController);
           },
           onPageChanged: (int? page, int? total) {

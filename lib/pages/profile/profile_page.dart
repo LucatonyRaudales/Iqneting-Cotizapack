@@ -5,6 +5,7 @@ import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/profile/profile_ctrl.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 import '../../styles/colors.dart';
@@ -89,7 +90,17 @@ class _ProfilePageState extends State<ProfilePage> {
                 "Mi cuenta",
                 style: subtitulo,
               ),
-              subtitle: Column(children: [
+              subtitle: Column(
+                children: [
+                _ctrl.myAccount.email == null ?
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical:18.0),
+                  child: SpinKitThreeBounce(
+                    color: color500,
+                    size: 20.0,
+                  ),
+                )
+                :
               ListTile(
                 title: Text(
                 _ctrl.myAccount.email.toString(),
@@ -126,6 +137,14 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
             ),*/
             _buildDivider(),
+            _ctrl.updating ?
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical:70.0),
+              child: SpinKitThreeBounce(
+                color: color500,
+                size: 30.0,
+              ),
+            ) :
             _ctrl.userData.userID == "" ?
             Center(
               child: Column(children: [

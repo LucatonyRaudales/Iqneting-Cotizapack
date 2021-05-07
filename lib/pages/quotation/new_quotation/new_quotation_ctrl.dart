@@ -10,6 +10,7 @@ import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
 import 'package:cotizapack/repository/customer.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/quotation.dart';
+import 'package:cotizapack/settings/generate_pdf.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -42,7 +43,7 @@ class NewQuotationCtrl extends GetxController{
 
   void getCustomers()async{
     quotation.quantity = 1;
-    quotation.expirationDate = DateTime.now().millisecondsSinceEpoch;
+    quotation.expirationDate = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 1).millisecondsSinceEpoch;
     _customerRepository.getMyCustomers()
       .then((value)async{
         _customerList = value;
@@ -77,8 +78,7 @@ class NewQuotationCtrl extends GetxController{
           case 201:
             btnController.success();
             MyAlert.showMyDialog(title: 'Cotización guardado correctamente!', message: 'Se generará un pdf y lo podrás visualizar', color: Colors.green);
-            generateFile(); 
-            savePdf();
+            PDF().generateFile(quotation: quotation);
             break;
           default:
           this.btnController.reset();
@@ -181,84 +181,5 @@ class NewQuotationCtrl extends GetxController{
             ),
           );
         });
-  }
-
-  // the function
-  void generateFile() async {
-    _userData = (await MyGetStorage().listenUserData())!;
-    doc.addPage(pw.Page(
-      pageFormat: PdfPageFormat.a4,
-        build: (pw.Context context) {
-          return pw.Container(
-            padding: pw.EdgeInsets.all(15),
-            child: pw.Column(
-              children: [
-                pw.Header(
-                  level: 0,
-                  child: new pw.Column(
-                    children: [
-                      new pw.Center(
-                        child: pw.Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.now()), textAlign: pw.TextAlign.right),
-                      ),
-                      pw.SizedBox(height: 20),
-                      new pw.Text(_userData.businessName!.toUpperCase(), textAlign: pw.TextAlign.left),
-                      pw.SizedBox(height: 10),
-                      new pw.Text(customerSelected.name!.toUpperCase(), textAlign: pw.TextAlign.left),
-                      pw.SizedBox(height: 10),
-                      new pw.Text('PRESENTE:', textAlign: pw.TextAlign.left, )
-                    ]
-                  )
-                ),
-                pw.SizedBox(height: 30),
-                new pw.Text(quotation.title!, textAlign: pw.TextAlign.right),
-                new pw.Text(quotation.description!, textAlign: pw.TextAlign.right),
-                pw.SizedBox(height: 30),
-                pw.Header(
-                  level: 0,
-                  child: new pw.Column(
-                    children: [
-                      new pw.Text('Propuesta Económica', textAlign: pw.TextAlign.center),
-                      new pw.Container(
-                        child: pw.Column(
-                          children: [
-                            new pw.Row(
-                              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                              children: [
-                                new pw.Text('Concepto: '),
-                                new pw.Text('Cantidad: '),
-                                new pw.Text('Precio: ')
-                              ]
-                            ),
-                            new pw.Row(
-                              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                              children: [
-                                new pw.Text(quotation.description!),
-                                new pw.Text(quotation.quantity!.toString()),
-                                new pw.Text(quotation.subTotal!.toString())
-                              ]
-                            ),
-                            new pw.Text('Total USD ${quotation.subTotal! * quotation.quantity!}', textAlign: pw.TextAlign.right),
-                          ]
-                        )
-                      )
-                    ]
-                  )
-                ),
-              ]
-            )
-          );
-        }
-      ),
-    );
-  }
-    Future savePdf() async{
-    Directory documentDirectory = await getApplicationDocumentsDirectory();
-
-    String documentPath = documentDirectory.path;
-
-    File file = File("$documentPath/example.pdf");
-
-    file.writeAsBytesSync(await doc.save());
-    Timer(Duration(seconds:2), ()=>Get.to(()=>PdfPreviewScreen(path: file.path,)));
   }
 }

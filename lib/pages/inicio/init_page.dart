@@ -18,18 +18,20 @@ class InitPage extends StatelessWidget {
       init: InitPageCtrl(),
       builder: (_ctrl) => Scaffold(
         backgroundColor: Colors.white,
-        body: SingleChildScrollView(
-                child: Column(
+        body: ListView(
             children: [
               Header(
-                widgetToShow: Column(children: [
-              const SizedBox(height: 60.0),
-              Text('¡Hola!', style: tituloblanco,),
-              const SizedBox(height: 10.0),
-              Text( _ctrl.userData.ceoName!.toUpperCase(), style: subtituloblanco,),
-              const SizedBox(height: 10.0),
-              Icon(LineIcons.rocket, color: Colors.white, size: 50,),
-                ],),
+                widgetToShow: Padding(
+                  padding: const EdgeInsets.all(28.0),
+                  child: Column(children: [
+                    const SizedBox(height: 30.0),
+                    Text('¡Gestionar!', style: tituloblanco,),
+                    const SizedBox(height: 10.0),
+                    Text( "aquí puedes gestionar toda la información de tus cotizaciones", style: body1blanco, textAlign: TextAlign.center,),
+                    const SizedBox(height: 10.0),
+                    Icon(LineIcons.rocket, color: Colors.white, size: 50,),
+                  ],),
+                ),
               ),
               card(
                 function:()=> Get.to(QuotationsPage(), transition: Transition.rightToLeftWithFade),
@@ -53,7 +55,6 @@ class InitPage extends StatelessWidget {
             ],
           ),
         ),
-      ),
     );
   }
     Widget card({required String title, required String subtitle, required IconData icon,  void Function()?function}) {
