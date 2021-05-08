@@ -3,6 +3,7 @@ import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:intl/intl.dart';
+import 'package:line_icons/line_icons.dart';
 
 import 'dashboard_ctrl.dart';
 
@@ -28,55 +29,16 @@ class DashboardPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              "Estadísticas",
+              "Estadísticas - ${DateFormat.yMMMMEEEEd('es_US').format(DateTime.now())}",
               style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
             ),
           ),
           Card(
             elevation: 4.0,
             color: Colors.white,
-            margin: const EdgeInsets.all(16.0),
+            margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal:  12),
             child: Row(
               children: <Widget>[
-                Expanded(
-                  child: ListTile(
-                    /*leading: Container(
-                      alignment: Alignment.bottomCenter,
-                      width: 45.0,
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                            height: 20,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 25,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 40,
-                            width: 8.0,
-                            color: Colors.blue,
-                          ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 30,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
-                        ],
-                      ),
-                    ),*/
-                    title: Text("Hoy"),
-                    subtitle: Text(DateFormat.yMMMMEEEEd('es_US').format(DateTime.now())),
-                  ),
-                ),
-                VerticalDivider(),
                 Expanded(
                   child: ListTile(
                     leading: Container(
@@ -88,13 +50,45 @@ class DashboardPage extends StatelessWidget {
                           Container(
                             height: 20,
                             width: 8.0,
-                            color: Colors.grey.shade300,
+                            color: Colors.green.shade100,
                           ),
                           const SizedBox(width: 4.0),
                           Container(
                             height: 25,
                             width: 8.0,
-                            color: Colors.grey.shade300,
+                            color: Colors.green.shade300,
+                          ),
+                          const SizedBox(width: 4.0),
+                          Container(
+                            height: 40,
+                            width: 8.0,
+                            color: Colors.green,
+                          ),
+                        ],
+                      ),
+                    ),
+                    title: Text("Aceptados", style: body1,),
+                    subtitle: Text('${_ctrl.statistic.quotesSent}', style: subtituloVerde, textAlign: TextAlign.center,),
+                  ),
+                ),
+                Expanded(
+                  child: ListTile(
+                    leading: Container(
+                      alignment: Alignment.bottomCenter,
+                      width: 45.0,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Container(
+                            height: 20,
+                            width: 8.0,
+                            color: Colors.red.shade100,
+                          ),
+                          const SizedBox(width: 4.0),
+                          Container(
+                            height: 25,
+                            width: 8.0,
+                            color: Colors.red.shade300,
                           ),
                           const SizedBox(width: 4.0),
                           Container(
@@ -102,17 +96,11 @@ class DashboardPage extends StatelessWidget {
                             width: 8.0,
                             color: Colors.red,
                           ),
-                          const SizedBox(width: 4.0),
-                          Container(
-                            height: 30,
-                            width: 8.0,
-                            color: Colors.grey.shade300,
-                          ),
                         ],
                       ),
                     ),
-                    title: Text("Cancelados"),
-                    subtitle: Text("${_ctrl.statistic.quotesCanceled}"),
+                    title: Text("Cancelados", style: body1, textAlign: TextAlign.center,),
+                    subtitle: Text('${_ctrl.statistic.quotesCanceled}', style: subtituloRojo, textAlign: TextAlign.center,),
                   ),
                 ),
               ],
@@ -151,7 +139,7 @@ class DashboardPage extends StatelessWidget {
                 Expanded(
                   child: _buildTile(
                     color: Colors.blue,
-                    icon: Icons.favorite,
+                    icon: LineIcons.tags,
                     title: "Categorías",
                     data: "${_ctrl.statistic.myCategories}",
                   ),
@@ -160,7 +148,7 @@ class DashboardPage extends StatelessWidget {
                 Expanded(
                   child: _buildTile(
                     color: Colors.pink,
-                    icon: Icons.portrait,
+                    icon: LineIcons.list,
                     title: "Productos",
                     data: "${_ctrl.statistic.myProducts}",
                   ),
@@ -169,7 +157,7 @@ class DashboardPage extends StatelessWidget {
                 Expanded(
                   child: _buildTile(
                     color: Colors.blue,
-                    icon: Icons.favorite,
+                    icon: LineIcons.users,
                     title: "Clientes",
                     data: "${_ctrl.statistic.myClients}",
                   ),
@@ -201,10 +189,23 @@ class DashboardPage extends StatelessWidget {
               ctrl.userData.businessName!.toUpperCase(),
               style: tituloblanco,
             ),
-            trailing: CircleAvatar(
+            trailing: Padding(
+              padding: const EdgeInsets.only(right:10.0),
+              child: IconButton(
+                onPressed:(){
+                  ctrl.getmystatistics();
+                  SnackBar(
+                    content:  Text('Actualizando estadísticas', style: subtituloblanco),
+                    backgroundColor:  color500,
+                    behavior: SnackBarBehavior.floating,
+                    duration: const Duration(seconds: 3),);
+                },
+                icon: Icon(Icons.refresh_outlined, color: Colors.white),
+              )
+            )/*CircleAvatar(
               radius: 25.0,
               backgroundImage: NetworkImage('https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fichef.bbci.co.uk%2Fnews%2F1024%2Fmedia%2Fimages%2F71695000%2Fjpg%2F_71695702_020225302-1.jpg&f=1&nofb=1'),
-            ),
+            ),*/
           ),
           const SizedBox(height: 10.0),
           Padding(

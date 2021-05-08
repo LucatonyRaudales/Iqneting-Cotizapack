@@ -11,6 +11,8 @@ TextStyle subtitulo = TextStyle(color: color500,fontWeight: FontWeight.w500,font
 TextStyle subtituloblanco = TextStyle(color: Colors.white).copyWith(
                 fontSize: 18.0,
                 fontWeight: FontWeight.w500);
+TextStyle subtituloVerde = TextStyle(color: Colors.green,fontWeight: FontWeight.w500,fontSize: 17);
+TextStyle subtituloRojo = TextStyle(color: Colors.red,fontWeight: FontWeight.w500,fontSize: 17);
 
 
 TextStyle body1 = TextStyle(color: color500,fontWeight: FontWeight.w300,fontSize: 14);

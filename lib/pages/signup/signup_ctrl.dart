@@ -1,9 +1,10 @@
 import 'dart:async';
-
 import 'package:cotizapack/common/alert.dart';
+import 'package:cotizapack/model/social_auth_models.dart';
 import 'package:cotizapack/model/user_model.dart';
 import 'package:cotizapack/pages/login/login_page.dart';
 import 'package:cotizapack/repository/user.dart';
+import 'package:cotizapack/settings/social_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -15,8 +16,7 @@ class SignUpCtrl extends GetxController{
   UserModel user = UserModel();
 
   @override
-  void onInit() {
-    print('login page');  
+  void onInit() {  
     super.onInit();
   }
 
@@ -51,5 +51,22 @@ class SignUpCtrl extends GetxController{
     }catch(e){
       print('Error $e');
     }
+  }
+
+    
+    void signUPWithFacebook()async{
+    try{
+      FacebookData? data = await SocialAuth().facebookLogin();
+      if(data == null) return MyAlert.showMyDialog(title: 'Facebook Error', message: 'hubo un problema al obtener los datos de facebook', color: Colors.blue);
+      user.email = data.email;
+      user.password = data.id.toString();
+      user.nickname = data.name;
+      signup();
+    }catch(e){
+      print('Error $e');
+    }
+    Timer(Duration(seconds:2), (){
+      
+    });
   }
 }

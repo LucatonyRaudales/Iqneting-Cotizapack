@@ -12,14 +12,14 @@ class StatisticsRepository{
   late Database database;
   Statistic _statistic = Statistic();
 
-    Future createStatistic(UserModel userModel)async{
+    Future createStatistic(String user)async{
     try{
     database = Database(AppwriteSettings.initAppwrite());
       Response res = await database.createDocument(
         collectionId: collectionID, 
-        data: {"userID": userModel.id}, 
+        data: {"userID": user}, 
         read: ['*'], 
-        write: ["*"]
+        write: ["user:$user"]
       );
       return res;
     }catch(err){
@@ -56,6 +56,11 @@ class StatisticsRepository{
         limit: 1,
         filters: ["userID=${_userData.userID}"]
       );
+
+        if(res.data["sum"] == 0){
+          await StatisticsRepository().createStatistic(_userData.userID!);
+          return getMyStatistics();
+        }
       var data = res.data["documents"][0];
       _statistic = Statistic.fromJson(data);
       MyGetStorage().saveData(key: 'statistic', data: data);

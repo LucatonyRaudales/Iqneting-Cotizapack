@@ -91,7 +91,14 @@ class SignUpPage extends StatelessWidget {
                             children:[
                               Text("- o registrate con - ", style: body1,),
                               SizedBox(height: 10,),
-                              SocialNetwork(),
+                              SocialNetwork(
+                                facebookFunction: ()=> ctrl.signUPWithFacebook(),
+                                googleFunction: ()=> ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text('Hubo un problema, estamos trabajando en ello', style: body1blanco),
+                                  backgroundColor: Colors.red
+                                  )
+                                ),
+                              ),
                               SizedBox(height: 30,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,

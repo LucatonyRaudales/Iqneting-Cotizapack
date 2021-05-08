@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
 class SocialNetwork extends StatelessWidget {
+  final void Function() facebookFunction;
+
+  final void Function() googleFunction;
+   SocialNetwork({
+    Key? key,
+    required this.facebookFunction,
+    required this.googleFunction
+    });
+  
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -14,7 +24,7 @@ class SocialNetwork extends StatelessWidget {
               borderRadius:
                   BorderRadius.all(Radius.circular(40)),
             ),
-            onPressed: () {},
+            onPressed: facebookFunction,
           ),
         ),
         SizedBox(
@@ -29,7 +39,7 @@ class SocialNetwork extends StatelessWidget {
               borderRadius:
                   BorderRadius.all(Radius.circular(40)),
             ),
-            onPressed: () {},
+            onPressed: googleFunction,
           ),
         ),
       ],

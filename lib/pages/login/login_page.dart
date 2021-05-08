@@ -78,7 +78,6 @@ class LoginPage extends StatelessWidget {
                       },
                       btnController: _ctrl.btnController,
                       name: 'Iniciar sesión'),
-                        SizedBox(height: 20,),
                         FadeInUp(
                           child: Column(
                             children:[
@@ -89,7 +88,14 @@ class LoginPage extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: 20,),
-                              SocialNetwork(),
+                              SocialNetwork(
+                                facebookFunction: ()=> _ctrl.loginWithFacebook(),
+                                googleFunction: ()=> ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                  content: Text('Hubo un problema, estamos trabajando en ello', style: body1blanco),
+                                  backgroundColor: Colors.red
+                                  )
+                                ),
+                              ),
                               SizedBox(height: 30,),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
