@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/customers.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/quotation.dart';
 import 'package:cotizapack/model/user_data.dart';
-import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
 import 'package:cotizapack/repository/customer.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/quotation.dart';
@@ -17,10 +15,7 @@ import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
 class NewQuotationCtrl extends GetxController{
@@ -34,6 +29,8 @@ class NewQuotationCtrl extends GetxController{
   CustomerRepository _customerRepository = CustomerRepository();
   UserData _userData = UserData(category: UserCategory(collection: '', description: '', name: '', enable: true, id: ''));
   final doc = pw.Document();
+  RxInt activeStep = 0.obs;
+  RxInt dotCount = 4.obs;
 
   @override
   void onInit() {

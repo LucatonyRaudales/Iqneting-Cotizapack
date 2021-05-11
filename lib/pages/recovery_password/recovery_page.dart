@@ -141,7 +141,7 @@ Widget viewToShow({required RecoveryCtrl ctrl}){
               SizedBox(
                 height: 10,
               ),
-              new Text('cópia y pega el contenido después de  &secret= (ejemplo: https://**********?userId=***********&secret="Código a pegar").\n Normalente será un código extenso', style: body1),
+              new Text('copia y pega el contenido después de  &secret= (ejemplo: https://**********?userId=***********&secret="Código a pegar").\n Normalente será un código extenso', style: body1),
 
               SizedBox(
                 height: 35,

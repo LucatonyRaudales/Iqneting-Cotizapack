@@ -11,3 +11,7 @@ Color color50 = Colors.blue[50]!;
 
 Color primary = Color(0xff696b9e);
 Color secondary = Color(0xfff29a94);
+
+
+Color azulObscuro = Color(0xff0C5F8E);
+Color azulclaro = Color(0xff0097CC);
