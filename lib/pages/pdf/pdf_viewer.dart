@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cotizapack/pages/pdf/pdg_viewer_ctrl.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -8,32 +7,33 @@ import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 
 class PdfPreviewScreen extends StatelessWidget {
-  final File file;
-
-  PdfPreviewScreen({required this.file});
-
   @override
   Widget build(BuildContext context) {
     return GetBuilder<PDFCtrl>(
       init: PDFCtrl(),
-      builder:(_ctrl)=> Scaffold(
+      builder: (_ctrl) => Scaffold(
         appBar: AppBar(
           backgroundColor: color500,
           centerTitle: true,
           title: new Text('Ver cotización', style: subtituloblanco),
-          leading: new IconButton(icon: Icon(Icons.arrow_back_ios), onPressed: ()=> _ctrl.getBack(file)),
+          leading: new IconButton(
+              icon: Icon(Icons.arrow_back_ios),
+              onPressed: () => _ctrl.getBack(_ctrl.file!)),
         ),
         floatingActionButton: FloatingActionButton(
           // isExtended: true,
-          child: Icon(LineIcons.share, color: Colors.white,),
+          child: Icon(
+            LineIcons.share,
+            color: Colors.white,
+          ),
           backgroundColor: color500,
           onPressed: () {
             print('Compartir');
-            _ctrl.sharePDF(context, file);
+            _ctrl.sharePDF(context, _ctrl.file!);
           },
         ),
         body: PDFView(
-          filePath: _ctrl.file.path,
+          filePath: _ctrl.file!.path,
           enableSwipe: true,
           swipeHorizontal: true,
           autoSpacing: false,
@@ -53,10 +53,10 @@ class PdfPreviewScreen extends StatelessWidget {
           },
           onViewCreated: (PDFViewController pdfViewController) {
             print('onViewCreated');
-             // _controller.complete(pdfViewController);
+            // _controller.complete(pdfViewController);
           },
           onPageChanged: (int? page, int? total) {
-              print('page change: $page/$total');
+            print('page change: $page/$total');
           },
         ),
       ),
