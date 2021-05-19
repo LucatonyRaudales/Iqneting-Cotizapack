@@ -7,10 +7,16 @@ import 'package:line_icons/line_icons.dart';
 
 import 'dashboard_ctrl.dart';
 
-class DashboardPage extends StatelessWidget {
+class DashboardPage extends StatefulWidget {
+  @override
+  _DashboardPageState createState() => _DashboardPageState();
+}
+
+class _DashboardPageState extends State<DashboardPage> with AutomaticKeepAliveClientMixin{
   final TextStyle whiteText = TextStyle(color: Colors.white);
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return Scaffold(
       backgroundColor: Colors.white,
       body: _buildBody(context),
@@ -258,4 +264,8 @@ class DashboardPage extends StatelessWidget {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

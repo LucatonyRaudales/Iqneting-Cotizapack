@@ -7,7 +7,6 @@ import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swipper/flutter_card_swiper.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:line_icons/line_icons.dart';
@@ -20,7 +19,7 @@ class CategoriesPage extends StatefulWidget {
   _CategoriesPageState createState() => _CategoriesPageState();
 }
 
-class _CategoriesPageState extends State<CategoriesPage> {
+class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAliveClientMixin{
 
   
 void showProductDetail(BuildContext context, UserData user, Uint8List image){
@@ -99,6 +98,7 @@ void showProductDetail(BuildContext context, UserData user, Uint8List image){
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<CategoriesCtrl>(
       init: CategoriesCtrl(),
       builder:(_ctrl){
@@ -242,4 +242,7 @@ void showProductDetail(BuildContext context, UserData user, Uint8List image){
       ),
     );
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

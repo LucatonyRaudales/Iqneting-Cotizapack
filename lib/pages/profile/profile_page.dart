@@ -3,6 +3,7 @@ import 'dart:typed_data';
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/profile/profile_ctrl.dart';
+import 'package:cotizapack/pages/shop_market/shop_page.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -16,9 +17,10 @@ class ProfilePage extends StatefulWidget {
   _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return GetBuilder<ProfileCtrl>(
       init: ProfileCtrl(),
       builder:(_ctrl)=> Scaffold(
@@ -119,6 +121,25 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
               ],),
               leading: Icon(LineIcons.envelope, color: color700),
+            ),
+            _buildDivider(),
+            SizedBox(height: 10,),
+             ListTile(
+              title: Text(
+                "Cotizaciones",
+                style: subtitulo,
+              ),
+              subtitle: InkWell(
+                  onTap: ()=> Get.to(()=> ShopQuotationsPage(), transition: Transition.rightToLeftWithFade),
+                  child: ListTile(
+                title: Text(
+                  "Comprar cotizaciones",
+                  style: body1,
+                ),
+                trailing: Icon(LineIcons.arrowRight, color: color700),
+                )
+              ),
+              leading: Icon(LineIcons.list, color: color700),
             ),
             /*SwitchListTile(
               value: true,
@@ -254,4 +275,8 @@ class _ProfilePageState extends State<ProfilePage> {
       ),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
