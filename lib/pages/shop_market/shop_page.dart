@@ -84,7 +84,7 @@ class _ShopQuotationsPageState extends State<ShopQuotationsPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(
-              "e.icon",
+              Icons.ac_unit,
               size: 50,
               color:Colors.grey,
             ),
