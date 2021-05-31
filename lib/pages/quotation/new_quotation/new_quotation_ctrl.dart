@@ -1,40 +1,52 @@
 import 'dart:async';
+import 'dart:io';
 import 'package:cotizapack/common/alert.dart';
-import 'package:cotizapack/model/categories.dart';
+import 'package:cotizapack/model/ModelPDF.dart';
 import 'package:cotizapack/model/customers.dart';
+import 'package:cotizapack/model/file.dart';
 import 'package:cotizapack/model/product.dart';
-import 'package:cotizapack/model/quotation.dart';
-import 'package:cotizapack/model/user_data.dart';
+import 'package:cotizapack/model/product_category.dart';
 import 'package:cotizapack/repository/customer.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/quotation.dart';
+import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/settings/generate_pdf.dart';
+import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-class NewQuotationCtrl extends GetxController {
-  QuotationModel quotation =
-      QuotationModel(product: ProductModel(name: '', category: null));
+class NewQuotationCtrl extends GetxController with StateMixin {
+  QuotationModel quotation = QuotationModel(
+    product: new ProductList(products: []),
+    images: [],
+  );
   QuotationRepository _quotationRepository = QuotationRepository();
   ProductRepository _productRepository = ProductRepository();
   RoundedLoadingButtonController btnController =
+      new RoundedLoadingButtonController();
+  RoundedLoadingButtonController btnControllerSave =
       new RoundedLoadingButtonController();
   CustomerList _customerList = CustomerList();
   CustomerModel customerSelected = CustomerModel(name: '');
   ProductList _productList = ProductList();
   CustomerRepository _customerRepository = CustomerRepository();
-  UserData _userData = UserData(
-      category: UserCategory(
-          collection: '', description: '', name: '', enable: true, id: ''));
+  // UserData _userData = UserData(
+  //     category: UserCategory(
+  //         collection: '', description: '', name: '', enable: true, id: ''));
+  late MyFile myFile;
   final doc = pw.Document();
   RxInt activeStep = 0.obs;
   RxInt dotCount = 4.obs;
+  List<File?> images = [];
+  ProductModel productModelTemp = ProductModel(category: ProductCategory());
 
   @override
   void onInit() {
@@ -57,124 +69,194 @@ class NewQuotationCtrl extends GetxController {
 
   void getProducts() async {
     try {
+      change(null,
+          status: RxStatus
+              .loading()); // value.data["documents"].map((i)=>ProductModel.fromJson(i)).toList();
       _productRepository.getProducts().then((value) {
-        _productList = ProductList.fromJson(value!.data[
-            "documents"]); // value.data["documents"].map((i)=>ProductModel.fromJson(i)).toList();
+        _productList = ProductList.fromJson(value!.data["documents"]);
+        change(null,
+            status: RxStatus
+                .success()); // value.data["documents"].map((i)=>ProductModel.fromJson(i)).toList();
         update();
       });
     } catch (e) {
+      change(null, status: RxStatus.error(e.toString()));
       print('Error get products: $e');
     }
   }
 
-  void saveData() {
-    _quotationRepository.createQuotation(quotation: quotation).then((val) {
-      if (val == null) {
-        btnController.error();
-        MyAlert.showMyDialog(
-            title: 'Error al generar la cotización!',
-            message: 'se produjo un error inesperado, intenta de nuevo.',
-            color: Colors.red);
-        return Timer(Duration(seconds: 3), () => this.btnController.reset());
-      }
-      switch (val.statusCode) {
-        case 201:
-          btnController.success();
-          MyAlert.showMyDialog(
-              title: 'Cotización guardado correctamente!',
-              message: 'Se generará un pdf y lo podrás visualizar',
-              color: Colors.green);
-          PDF().generateFile(quotation: quotation);
-          break;
-        default:
-          this.btnController.reset();
-          print('Error: ${val.statusMessage}');
-      }
-    });
+  uploadImage(File image) async {
+    var imgres = await MyStorage().postFile(file: image);
+    if (imgres != null) {
+      myFile = MyFile.fromJson(imgres.data);
+      print('Me Guarde');
+    } else {
+      btnController.error();
+      MyAlert.showMyDialog(
+          title: 'Error al guardar la imagen',
+          message: 'por favor, intenta de nuevo',
+          color: Colors.red);
+      Timer(Duration(seconds: 3), () {
+        btnController.reset();
+      });
+      return print('culiao');
+    }
+  }
+
+  void saveData() async {
+    try {
+      change(null, status: RxStatus.loading());
+
+      await Future(() => images.map((e) async {
+            await uploadImage(e!);
+            quotation.images?.add(myFile.id!);
+          }).toList());
+      _quotationRepository.createQuotation(quotation: quotation).then(
+        (val) {
+          if (val == null) {
+            change(null, status: RxStatus.error());
+            btnController.error();
+            MyAlert.showMyDialog(
+                title: 'Error al generar la cotización!',
+                message: 'se produjo un error inesperado, intenta de nuevo.',
+                color: Colors.red);
+            return Timer(
+                Duration(seconds: 3), () => this.btnController.reset());
+          }
+          switch (val.statusCode) {
+            case 201:
+              change(null, status: RxStatus.success());
+              btnController.success();
+              MyAlert.showMyDialog(
+                  title: 'Cotización guardado correctamente!',
+                  message: 'Se generará un pdf y lo podrás visualizar',
+                  color: Colors.green);
+              PDF().generateFile(quotation: quotation);
+              break;
+            default:
+              change(null, status: RxStatus.error(val.statusMessage));
+              MyAlert.showMyDialog(
+                  title: 'Error al generar la cotización!',
+                  message: '${val.statusMessage}',
+                  color: Colors.green);
+              this.btnController.reset();
+              print('Error: ${val.statusMessage}');
+          }
+        },
+      );
+    } catch (e) {}
   }
 
   void showPickerProduct(BuildContext ctx) {
     showModalBottomSheet(
-        context: ctx,
-        builder: (context) {
-          return Container(
-            color: Color(0xFF737373),
-            height: 180,
-            child: Container(
-              child: _productList.products!.isNotEmpty
-                  ? ListView.builder(
-                      itemCount: _productList.products!.length,
-                      itemBuilder: (ctx, index) {
-                        return InkWell(
-                          onTap: () {
-                            quotation.product = _productList.products![index];
-                            update();
-                            Navigator.pop(context);
-                          },
-                          child: ListTile(
-                            trailing: new Icon(
-                              Icons.arrow_forward_ios,
-                              color: color500,
-                            ),
-                            title: new Text(
-                              _productList.products![index].name!,
-                              style: subtitulo,
-                            ),
-                            subtitle: new Text(
-                              _productList.products![index].description!,
-                              style: body2,
-                            ),
-                          ),
-                        );
-                      })
-                  : new Center(
-                      child: Column(
-                      children: [
-                        new Text('No se encontraron datos.'),
-                        SizedBox(
-                          height: 12,
-                        ),
-                        TextButton(
-                          child: Text(
-                            "¿Buscar de nuevo?",
-                            style: body1,
-                          ),
-                          onPressed: () => getCustomers(),
-                        ),
-                      ],
-                    )),
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(10),
-                  topRight: const Radius.circular(10),
-                ),
-              ),
-            ),
-          );
-        });
+      context: ctx,
+      builder: (context) {
+        return Container(
+          color: Color(0xFF737373),
+          height: 300,
+          child: this.obx(
+              (s) => Container(
+                    child: _productList.products!.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: _productList.products?.length ?? 0,
+                            itemBuilder: (ctx, index) {
+                              return InkWell(
+                                onTap: () {
+                                  productModelTemp =
+                                      _productList.products![index];
+                                  update();
+                                  Get.back();
+                                },
+                                child: ListTile(
+                                  trailing: new Icon(
+                                    Icons.arrow_forward_ios,
+                                    color: color500,
+                                  ),
+                                  title: new Text(
+                                    _productList.products![index].name!,
+                                    style: subtitulo,
+                                  ),
+                                  subtitle: new Text(
+                                    _productList.products![index].description!,
+                                    style: body2,
+                                  ),
+                                ),
+                              );
+                            })
+                        : new Center(
+                            child: Column(
+                            children: [
+                              new Text('No se encontraron datos.'),
+                              SizedBox(
+                                height: 12,
+                              ),
+                              TextButton(
+                                child: Text(
+                                  "¿Buscar de nuevo?",
+                                  style: body1,
+                                ),
+                                onPressed: () => getCustomers(),
+                              ),
+                            ],
+                          )),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                      borderRadius: BorderRadius.only(
+                        topLeft: const Radius.circular(10),
+                        topRight: const Radius.circular(10),
+                      ),
+                    ),
+                  ),
+              onLoading: Center(
+                child: CircularProgressIndicator(),
+              )),
+        );
+      },
+    );
+  }
+
+  Future getImage({required ImageSource source}) async {
+    if (images.length > 2) return print('Demaciadas Imagenes');
+    File? img = await GetImage().getImage(source: source);
+    if (img != null) images.add(img);
+    Get.back();
+    update();
+  }
+
+  GetStorage box = GetStorage();
+  addproductinList(ProductModel productModel) {
+    quotation.product!.products!.add(productModel);
+    productModelTemp = ProductModel(category: ProductCategory());
+    MyAlert.showMyDialog(
+        title: 'Producto guardado correctamente!',
+        message: 'Seleccione otro producto si es requerido.',
+        color: Colors.green);
+    btnControllerSave.success();
+    Timer(Duration(seconds: 1), () {
+      btnControllerSave.reset();
+      update();
+    });
   }
 
   void showPicker(BuildContext ctx) {
     showModalBottomSheet(
-        context: ctx,
-        builder: (context) {
-          return Container(
-            color: Color(0xFF737373),
-            height: 180,
-            child: Container(
-              child: _customerList.customers!.isNotEmpty
-                  ? ListView.builder(
+      context: ctx,
+      builder: (context) {
+        return Container(
+          color: Color(0xFF737373),
+          height: Get.height / 2.4,
+          child: Container(
+            child: _customerList.customers!.isNotEmpty
+                ? this.obx(
+                    (state) => ListView.builder(
                       itemCount: _customerList.customers!.length,
                       itemBuilder: (ctx, index) {
                         return InkWell(
                           onTap: () {
                             customerSelected = _customerList.customers![index];
-                            quotation.clientID = customerSelected.id;
-                            quotation.clientName = customerSelected.name;
-                            quotation.email = customerSelected.email;
+                            quotation.customer = customerSelected;
                             update();
-                            Navigator.pop(context);
+                            Get.back();
                           },
                           child: ListTile(
                             trailing: new Icon(
@@ -191,9 +273,15 @@ class NewQuotationCtrl extends GetxController {
                             ),
                           ),
                         );
-                      })
-                  : new Center(
-                      child: Column(
+                      },
+                    ),
+                    onLoading: Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                    onError: (error) => Text(error.toString()),
+                  )
+                : new Center(
+                    child: Column(
                       children: [
                         new Text('No se encontraron datos.'),
                         SizedBox(
@@ -207,16 +295,18 @@ class NewQuotationCtrl extends GetxController {
                           onPressed: () => getCustomers(),
                         ),
                       ],
-                    )),
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(10),
-                  topRight: const Radius.circular(10),
-                ),
+                    ),
+                  ),
+            decoration: BoxDecoration(
+              color: Theme.of(context).canvasColor,
+              borderRadius: BorderRadius.only(
+                topLeft: const Radius.circular(10),
+                topRight: const Radius.circular(10),
               ),
             ),
-          );
-        });
+          ),
+        );
+      },
+    );
   }
 }

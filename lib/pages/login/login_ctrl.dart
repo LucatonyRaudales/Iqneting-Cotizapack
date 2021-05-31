@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:cotizapack/common/alert.dart';
-import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/social_auth_models.dart';
 import 'package:cotizapack/model/user_model.dart';
 import 'package:cotizapack/pages/splash/splash_screen.dart';

@@ -24,7 +24,7 @@ class PDFCtrl extends GetxController {
   void sharePDF(BuildContext context, File file) async {
     _share.sharePDF(context, path: file.path).then((value) async {
       _statistic =
-          Statistic.fromJson(MyGetStorage().readData(key: 'statistic'));
+          Statistic.fromJson(MyGetStorage().readData(key: 'statistic')!);
       StatisticsRepository()
           .updateStatistic(data: {"quotesSent": _statistic.quotesSent + 1});
       await file.delete();

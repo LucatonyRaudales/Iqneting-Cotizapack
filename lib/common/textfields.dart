@@ -13,6 +13,7 @@ class InputText extends StatefulWidget {
   final int? maxLines;
   final String? initialValue;
   final int? minLines;
+  final void Function()? onEditingComplete;
   InputText(
       {Key? key,
       required this.name,
@@ -24,6 +25,7 @@ class InputText extends StatefulWidget {
       this.autofillHints,
       this.maxLines,
       this.initialValue,
+      this.onEditingComplete,
       this.minLines});
 
   @override
@@ -54,6 +56,7 @@ class _InputTextState extends State<InputText> {
           ],
         ),
         child: TextFormField(
+          onEditingComplete: widget.onEditingComplete,
           minLines: widget.minLines,
           initialValue: widget.initialValue,
           keyboardType: widget.textInputType,

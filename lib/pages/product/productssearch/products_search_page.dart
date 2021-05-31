@@ -1,18 +1,20 @@
 import 'dart:typed_data';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/pages/product/new_product/new_product_page.dart';
 import 'package:cotizapack/pages/product/products/products_ctrl.dart';
+import 'package:cotizapack/pages/product/productssearch/products_search_crtl.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/styles/colors.dart';
+import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
-import '../../../styles/colors.dart';
-import '../../../styles/typography.dart';
 
-class ProductsPage extends StatelessWidget {
+class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
   void showProductDetail(
       BuildContext context, ProductModel product, Uint8List image) {
     MyBottomSheet().show(
@@ -109,92 +111,207 @@ class ProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final spinkit = SpinKitPulse(
-      color: color500,
-      size: 50.0,
-    );
-    return GetBuilder<ProductsCtrl>(
-      init: ProductsCtrl(),
-      builder: (_ctrl) {
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: color500,
-            centerTitle: true,
-            title: new Text(
-              'Mis productos y servicios',
-              style: subtituloblanco,
-            ),
+    return GetBuilder<ProductsSearchController>(
+      
+      builder: (_ctrl) => Scaffold(
+        appBar: AppBar(
+          backgroundColor: color500,
+          centerTitle: true,
+          title: new Text(
+            'Productos',
+            style: subtituloblanco,
           ),
-          floatingActionButton: FloatingActionButton(
-            // isExtended: true,
-            child: Icon(Icons.add),
-            backgroundColor: color500,
-            onPressed: () {
-              Get.to(NewProductPage(),
-                  transition: Transition.rightToLeftWithFade,
-                  arguments: {"editData": false, "data": null});
-            },
-          ),
-          body: SafeArea(
-            child: _ctrl.haveProducts == false
-                ? Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 25),
-                    child: new Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          new Icon(LineIcons.cryingFace,
-                              size: 50, color: color500),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text(
-                            'No tienes productos o servicios almacenados, presiona (+) para agregar uno nuevo.',
-                            style: subtitulo,
-                            textAlign: TextAlign.center,
+        ),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.add),
+          onPressed: () => _ctrl.createNewProduct(),
+        ),
+        body: Container(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              _widgetsearch(_ctrl),
+              Expanded(
+                child: _ctrl.products.length != 0
+                    ? CustomScrollView(
+                        slivers: <Widget>[
+                          SliverGrid(
+                            gridDelegate:
+                                SliverGridDelegateWithMaxCrossAxisExtent(
+                              maxCrossAxisExtent: 200,
+                              mainAxisSpacing: 14.0,
+                              crossAxisSpacing: 1.0,
+                              childAspectRatio: 1.0,
+                            ),
+                            delegate: SliverChildBuilderDelegate(
+                              (BuildContext context, int index) {
+                                final product = _ctrl.products[index];
+                                return myCards(
+                                  product: product,
+                                  index: index,
+                                  context: context,
+                                );
+                              },
+                              childCount: _ctrl.products.length,
+                            ),
                           )
-                        ]))
-                : (_ctrl.productList.products == null ||
-                        _ctrl.productList.products!.isEmpty)
-                    ? Center(child: spinkit)
-                    : RefreshIndicator(
-                        color: color700,
-                        onRefresh: _ctrl.getProducts,
-                        child: CustomScrollView(
-                          slivers: <Widget>[
-                            SliverGrid(
-                              gridDelegate:
-                                  SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 200,
-                                mainAxisSpacing: 14.0,
-                                crossAxisSpacing: 1.0,
-                                childAspectRatio: 1.0,
-                              ),
-                              delegate: SliverChildBuilderDelegate(
-                                (BuildContext context, int index) {
-                                  return myCards(
-                                      product:
-                                          _ctrl.productList.products![index],
-                                      index: index,
-                                      context: context,
-                                      ctrl: _ctrl);
-                                },
-                                childCount: _ctrl.productList.products!.length,
-                              ),
-                            )
-                          ],
+                        ],
+                      )
+                    : Center(
+                        child: Center(
+                          child: SpinKitPulse(
+                            color: color500,
+                            size: 50.0,
+                          ),
                         ),
                       ),
+              ),
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
-  
-  Widget myCards(
-      {required ProductModel product,
-      required int index,
-      required BuildContext context,
-      required ProductsCtrl ctrl}) {
+
+  Widget _widgetsearch(ProductsSearchController _ctrl) {
+    // Timer timer = Timer(Duration(seconds: 2), () {});
+    return Container(
+      child: ExpansionTile(
+        trailing: Icon(Icons.filter_list),
+        initiallyExpanded: true,
+        title: Text('Filtro'),
+
+        // Form(
+        //   key: _ctrl.formKey,
+        //   child: InputText(
+        //     name: 'Buscar',
+        //     textInputType: TextInputType.name,
+        //     validator: Validators.nameValidator,
+        //     prefixIcon: Icon(LineIcons.search),
+        //     onChanged: (string) {
+        //       timer.cancel();
+        //       timer = Timer(Duration(seconds: 2), () {
+        //         _ctrl.searchProduct();
+        //       });
+        //     },
+        //   ),
+        // ),
+        children: [
+          Container(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      DropdownButtonHideUnderline(
+                        child: Obx(
+                          () => DropdownButton<String>(
+                            value: _ctrl.typeopcion.value.length == 0
+                                ? null
+                                : _ctrl.typeopcion.value,
+                            hint: Text('Tipo'),
+                            isExpanded: false,
+                            onChanged: (opt) {
+                              _ctrl.typeopcion.value = opt!;
+                              _ctrl.searchProduct();
+                            },
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              size: 35.0,
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('Producto'),
+                                value: 'Producto',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Servicio'),
+                                value: 'Servicio',
+                              )
+                            ],
+                            underline: null,
+                          ),
+                        ),
+                      ),
+                      DropdownButtonHideUnderline(
+                        child: Obx(
+                          () => DropdownButton<String>(
+                            value: _ctrl.ordenprice.value.length == 0
+                                ? null
+                                : _ctrl.ordenprice.value,
+                            hint: Text('Precio Orden'),
+                            isExpanded: false,
+                            onChanged: (opt) {
+                              _ctrl.ordenprice.value = opt!;
+                              _ctrl.searchProduct();
+                            },
+                            icon: Icon(
+                              Icons.arrow_drop_down,
+                              size: 35.0,
+                            ),
+                            items: [
+                              DropdownMenuItem(
+                                child: Text('Mayor a menor'),
+                                value: 'Mayor a menor',
+                              ),
+                              DropdownMenuItem(
+                                child: Text('Menor a mayor'),
+                                value: 'Menor a mayors',
+                              )
+                            ],
+                            underline: null,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                  DropdownButtonHideUnderline(
+                    child: Obx(
+                      () => DropdownButton<String>(
+                        value: _ctrl.orderAZ.value.length == 0
+                            ? null
+                            : _ctrl.orderAZ.value,
+                        hint: Text('Order Seleccione'),
+                        isExpanded: false,
+                        onChanged: (opt) {
+                          _ctrl.orderAZ.value = opt!;
+                          _ctrl.orderproductnamed(revers: opt);
+                        },
+                        icon: Icon(
+                          Icons.arrow_drop_down,
+                          size: 35.0,
+                        ),
+                        items: [
+                          DropdownMenuItem(
+                            child: Text('A-Z'),
+                            value: 'A-Z',
+                          ),
+                          DropdownMenuItem(
+                            child: Text('Z-A'),
+                            value: 'Z-A',
+                          )
+                        ],
+                        underline: null,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget myCards({
+    required ProductModel product,
+    required int index,
+    required BuildContext context,
+  }) {
+    final ProductsCtrl ctrl = Get.find();
     Uint8List image = Uint8List(0);
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
@@ -250,28 +367,29 @@ class ProductsPage extends StatelessWidget {
                           Column(
                             children: [
                               IconButton(
-                                  onPressed: () {
-                                    Get.back();
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(
-                                            'Seguro que deseas eliminar ${product.name}'),
-                                        backgroundColor: Colors.red,
-                                        behavior: SnackBarBehavior.fixed,
-                                        duration: const Duration(seconds: 2),
-                                        action: SnackBarAction(
-                                          label: '¡Eliminar!',
-                                          textColor: Colors.white,
-                                          onPressed: () {
-                                            ctrl.deleteProduct(
-                                                productID: product.id!);
-                                          },
-                                        ),
+                                onPressed: () {
+                                  Get.back();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                          'Seguro que deseas eliminar ${product.name}'),
+                                      backgroundColor: Colors.red,
+                                      behavior: SnackBarBehavior.fixed,
+                                      duration: const Duration(seconds: 2),
+                                      action: SnackBarAction(
+                                        label: '¡Eliminar!',
+                                        textColor: Colors.white,
+                                        onPressed: () {
+                                          ctrl.deleteProduct(
+                                              productID: product.id!);
+                                        },
                                       ),
-                                    );
-                                  },
-                                  icon: new Icon(LineIcons.trash,
-                                      size: 40, color: Colors.red)),
+                                    ),
+                                  );
+                                },
+                                icon: new Icon(LineIcons.trash,
+                                    size: 40, color: Colors.red),
+                              ),
                               new Text(
                                 'Eliminar',
                                 style: body1Rojo,
@@ -346,8 +464,5 @@ class ProductsPage extends StatelessWidget {
         ),
       ),
     );
-    
   }
-
-  
 }

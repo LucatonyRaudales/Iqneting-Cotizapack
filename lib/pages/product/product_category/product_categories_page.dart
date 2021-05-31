@@ -9,7 +9,7 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
 
-class ProductsCategoryPage extends StatelessWidget {
+class ProductsCategoryPage extends GetView<ProductCategoriesCtrl> {
 
   @override
   Widget build(BuildContext context) {

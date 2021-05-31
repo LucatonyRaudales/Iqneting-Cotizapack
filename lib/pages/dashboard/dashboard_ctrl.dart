@@ -5,10 +5,10 @@ import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-class DashboardCtrl extends GetxController{
+class DashboardCtrl extends GetxController {
   StatisticsRepository statisticsRepository = StatisticsRepository();
   Statistic statistic = Statistic();
-    UserCategory userCategory = UserCategory(
+  UserCategory userCategory = UserCategory(
     collection: "fds",
     enable: true,
     name: "",
@@ -16,44 +16,48 @@ class DashboardCtrl extends GetxController{
     id: "",
   );
   late UserData userData = UserData(
-    ceoName: "",
-    nickname: "",
-    businessName: "",
-    logo: "",
-    paymentUrl: "",
-    userID: "",
-    category: userCategory
-  );
+      ceoName: "",
+      nickname: "",
+      businessName: "",
+      logo: "",
+      paymentUrl: "",
+      userID: "",
+      category: userCategory);
   @override
   void onInit() {
     print('Welcome to dashboard page');
-    getUserData();
+
     super.onInit();
   }
 
-    void getUserData()async{
-    try{
-    userData =(await MyGetStorage().listenUserData())!;
-    print('User name: ${userData.businessName}');
-    getmystatistics();
-    }catch(e){
+  @override
+  void onReady() {
+    getUserData();
+    super.onReady();
+  }
+
+  void getUserData() async {
+    try {
+      userData = (await MyGetStorage().listenUserData())!;
+      print('User name: ${userData.businessName}');
+      getmystatistics();
+    } catch (e) {
       print('Error get UserData: $e');
     }
   }
 
-  void getmystatistics(){
-    if(MyGetStorage().haveData(key: 'statistic')){
-      statistic = Statistic.fromJson(MyGetStorage().readData(key: 'statistic'));
-    }else{
+  void getmystatistics() {
+    if (MyGetStorage().haveData(key: 'statistic')) {
+      statistic = Statistic.fromJson(MyGetStorage().readData(key: 'statistic')!);
+    } else {
       refreshStatistics();
     }
   }
 
-  void refreshStatistics()async{
-    statisticsRepository.getMyStatistics()
-      .then((value){
-        statistic = value;
-        update();
-      });
+  void refreshStatistics() async {
+    statisticsRepository.getMyStatistics().then((value) {
+      statistic = value;
+      update();
+    });
   }
 }

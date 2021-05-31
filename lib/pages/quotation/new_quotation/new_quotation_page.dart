@@ -1,15 +1,20 @@
+import 'dart:typed_data';
+
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/button.dart';
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
+import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 
@@ -59,7 +64,11 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                   ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Obx(() => viewToShow(ctrl: _ctrl)),
+                    child: Column(
+                      children: [
+                        Obx(() => viewToShow(ctrl: _ctrl)),
+                      ],
+                    ),
                   ),
                 ],
               ),
@@ -77,8 +86,10 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
       case 1:
         return _productWidget(ctrl: ctrl);
       case 2:
-        return clientDateExpired(ctrl: ctrl);
+        return imgDataProducts(ctrl: ctrl);
       case 3:
+        return clientDateExpired(ctrl: ctrl);
+      case 4:
         return generate(ctrl: ctrl);
       default:
         return Text("Error inesperado");
@@ -90,6 +101,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         InputText(
+          key: UniqueKey(),
           name: 'Título',
           validator: Validators.nameValidator,
           autofillHints: [AutofillHints.name],
@@ -101,6 +113,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
           height: 20,
         ),
         InputText(
+          key: UniqueKey(),
           initialValue: ctrl.quotation.description ?? '',
           name: 'Descripción',
           validator: Validators.nameValidator,
@@ -112,21 +125,22 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
         SizedBox(
           height: 25,
         ),
-        ElevatedButton(
-          child: Row(
-            children: [
-              Text('Siguiente', style: subtituloblanco),
-              Icon(LineIcons.arrowRight)
-            ],
-          ),
-          onPressed: () {
-            if (!_formKey.currentState!.validate()) {
-              return ctrl.btnController.reset();
-            }
-            ctrl.activeStep++;
-          },
-        ),
+        buttonNext(ctrl),
       ],
+    );
+  }
+
+  Button buttonNext(NewQuotationCtrl ctrl) {
+    return Button(
+      btnController: ctrl.btnController,
+      name: 'Siguiente',
+      function: () {
+        if (!_formKey.currentState!.validate()) {
+          return ctrl.btnController.reset();
+        }
+        ctrl.activeStep++;
+        ctrl.btnController.reset();
+      },
     );
   }
 
@@ -145,9 +159,9 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                 child: ListTile(
                   trailing: new Icon(Icons.arrow_drop_down),
                   title: new Text(
-                    ctrl.quotation.product!.name! == ''
+                    ctrl.productModelTemp.name == null
                         ? 'Selecionar producto'
-                        : ctrl.quotation.product!.name!,
+                        : ctrl.productModelTemp.name ?? '',
                     style: subtitulo,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -161,7 +175,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
             ),
           ),
         ),
-        ctrl.quotation.product!.name! != ''
+        ctrl.productModelTemp.name != null
             ? Column(
                 children: [
                   SizedBox(
@@ -170,43 +184,44 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                   InputText(
                     name: 'Cantitdad (opcional)',
                     validator: Validators.nameValidator,
-                    initialValue: 1.toString(),
+                    initialValue: '1',
                     autofillHints: [AutofillHints.telephoneNumber],
                     textInputType: TextInputType.number,
                     prefixIcon: Icon(LineIcons.productHunt),
                     onChanged: (val) =>
-                        ctrl.quotation.quantity = int.parse(val),
-                  )
+                        ctrl.productModelTemp.quantity = int.parse(val),
+                  ),
+                  SizedBox(
+                    height: 25,
+                  ),
+                  InputText(
+                    key: UniqueKey(),
+                    initialValue: ctrl.productModelTemp.price.toString(),
+                    name: 'Precio',
+                    validator: Validators.nameValidator,
+                    autofillHints: [AutofillHints.name],
+                    textInputType: TextInputType.number,
+                    prefixIcon: Icon(LineIcons.dollarSign),
+                    onChanged: (val) =>
+                        ctrl.quotation.subTotal = double.parse(val),
+                  ),
+                  SizedBox(height: 15),
+                  Button(
+                    btnController: ctrl.btnControllerSave,
+                    name: 'Guardar',
+                    function: () {
+                      if (!_formKey.currentState!.validate()) {
+                        return ctrl.btnControllerSave.reset();
+                      }
+                      ctrl.addproductinList(ctrl.productModelTemp);
+                      ctrl.btnControllerSave.reset();
+                    },
+                  ),
                 ],
               )
             : SizedBox(),
-        SizedBox(
-          height: 25,
-        ),
-        InputText(
-          initialValue: ctrl.quotation.product!.price.toString(),
-          name: 'Precio',
-          validator: Validators.nameValidator,
-          autofillHints: [AutofillHints.name],
-          textInputType: TextInputType.number,
-          prefixIcon: Icon(LineIcons.dollarSign),
-          onChanged: (val) => ctrl.quotation.subTotal = double.parse(val),
-        ),
         SizedBox(height: 15),
-        ElevatedButton(
-          child: Row(
-            children: [
-              Text('Siguiente', style: subtituloblanco),
-              Icon(LineIcons.arrowRight)
-            ],
-          ),
-          onPressed: () {
-            if (!_formKey.currentState!.validate()) {
-              return ctrl.btnController.reset();
-            }
-            ctrl.activeStep++;
-          },
-        )
+        buttonNext(ctrl)
       ],
     );
   }
@@ -284,21 +299,132 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
           ),
         ),
         SizedBox(height: 15),
-        ElevatedButton(
+        buttonNext(ctrl)
+      ],
+    );
+  }
+
+  Widget imgDataProducts({required NewQuotationCtrl ctrl}) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        FadeInLeft(
+          child: InkWell(
+            onTap: () {},
+            child: Column(
+              children: [
+                GestureDetector(
+                  onTap: () =>
+                      ctrl.images.length < 1 ? getImage(ctrl: ctrl) : null,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    width: Get.width,
+                    height: 200,
+                    decoration: BoxDecoration(
+                        color: color100,
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                    child: Center(
+                      child: ctrl.images.length > 0
+                          ? Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: FileImage(ctrl.images[0]!),
+                                    fit: BoxFit.cover),
+                              ),
+                            )
+                          : Container(
+                              child: Icon(
+                                Icons.add_circle_outline,
+                                size: 60,
+                                color: color300,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                GestureDetector(
+                  onTap: () =>
+                      ctrl.images.length < 2 ? getImage(ctrl: ctrl) : null,
+                  child: Container(
+                    clipBehavior: Clip.hardEdge,
+                    width: Get.width,
+                    height: 200,
+                    decoration: BoxDecoration(
+                        color: color100,
+                        borderRadius: BorderRadius.all(Radius.circular(30))),
+                    child: Center(
+                      child: ctrl.images.length > 1
+                          ? Container(
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: FileImage(ctrl.images[0]!),
+                                    fit: BoxFit.cover),
+                              ),
+                            )
+                          : Container(
+                              child: Icon(
+                                Icons.add_circle_outline,
+                                size: 60,
+                                color: color300,
+                              ),
+                            ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 15),
+        buttonNext(ctrl)
+      ],
+    );
+  }
+
+  getImage({required NewQuotationCtrl ctrl}) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 120,
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Text('Siguiente', style: subtituloblanco),
-              Icon(LineIcons.arrowRight)
+              InkWell(
+                onTap: () => ctrl.getImage(source: ImageSource.camera),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Icon(LineIcons.camera,
+                        size: 50, color: Colors.purple[700]),
+                    new Text(
+                      'Cámara',
+                      style: body1,
+                    )
+                  ],
+                ),
+              ),
+              InkWell(
+                onTap: () => ctrl.getImage(source: ImageSource.gallery),
+                child: new Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    new Icon(LineIcons.image,
+                        size: 50, color: Colors.amber[700]),
+                    new Text(
+                      'Galería',
+                      style: body1,
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
-          onPressed: () {
-            if (!_formKey.currentState!.validate()) {
-              return ctrl.btnController.reset();
-            }
-            ctrl.activeStep++;
-          },
-        )
-      ],
+        );
+      },
     );
   }
 

@@ -126,7 +126,6 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
-                            
                             child: SizedBox(height: 10.0),
                           ),
                           Text(
@@ -225,7 +224,7 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
                   height: 10,
                 ),
                 user.logo != ''
-                    ? FutureBuilder<Uint8List>(
+                    ? FutureBuilder<Uint8List?>(
                         future: MyStorage().getFilePreview(
                           fileId: user.logo!,
                         ), //works for both public file and private file, for private files you need to be logged in

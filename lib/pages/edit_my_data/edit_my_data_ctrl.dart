@@ -16,28 +16,28 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 
-class EditMyDataCtrl extends GetxController{
-  final RoundedLoadingButtonController btnController = new RoundedLoadingButtonController();
+class EditMyDataCtrl extends GetxController {
+  final RoundedLoadingButtonController btnController =
+      new RoundedLoadingButtonController();
   UserCategoryList userCategories = UserCategoryList();
   CategoriesRepository _categoriesRepository = CategoriesRepository();
   UserRepository _userRepository = UserRepository();
   UserCategory userCategory = UserCategory(
-    name: "Seleccionar Categoría", 
-    description: "", 
-    enable: true,
-    collection: "",
-    id: ""
-  );
-  late UserData userData = UserData(
-    ceoName: "",
-    nickname: "",
-    businessName: "",
-    logo: "",
-    paymentUrl: "",
-    userID: "",
-    category: userCategory,
-    address: 'Dirección default mientras hay una api key'
-  );
+      name: "Seleccionar Categoría",
+      description: "",
+      enable: true,
+      collection: "",
+      id: "");
+  late UserData? userData = UserData(
+      ceoName: "",
+      rfc: "",
+      nickname: "",
+      businessName: "",
+      logo: "",
+      paymentUrl: "",
+      userID: "",
+      category: userCategory,
+      address: 'Dirección default mientras hay una api key');
   var arguments = Get.arguments;
   bool isUpdate = false;
 
@@ -46,10 +46,11 @@ class EditMyDataCtrl extends GetxController{
     _init();
     super.onInit();
   }
-  _init(){
-    if(arguments["editData"]){
+
+  _init() {
+    if (arguments["editData"]) {
       isUpdate = true;
-      if(arguments["data"] != null){
+      if (arguments["data"] != null) {
         userData = arguments["data"];
       }
     }
@@ -57,98 +58,128 @@ class EditMyDataCtrl extends GetxController{
     getSession();
   }
 
-  void getSession()async{
-      Session sesionData = (await _userRepository.getUserSessionData())!;
-      this.userData.userID = sesionData.userId;
+  void getSession() async {
+    Session sesionData = (await _userRepository.getUserSessionData())!;
+    this.userData!.userID = sesionData.userId;
   }
 
-
-  void saveMyData(){
-    _userRepository.saveMyData(data: this.userData.toJson())
-    .then((value){
-      if(value.id != null){
-      btnController.success();
-      MyGetStorage().replaceData(key: "userData", data: this.userData);
-      MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
-      Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
-      }else{
-      btnController.error();
-      //MyGetStorage().replaceData(key: "userData", data: this.userData);
-      MyAlert.showMyDialog(title: '¡Error!', message: 'Hubo un error inesperado al guardar tus datos', color: Colors.red);
-      Timer(Duration(seconds:3), ()=>btnController.reset());
+  void saveMyData() {
+    _userRepository.saveMyData(data: this.userData!.toJson()).then((value) {
+      if (value.id != null) {
+        btnController.success();
+        MyGetStorage().replaceData(key: "userData", data: this.userData);
+        MyAlert.showMyDialog(
+            title: 'Datos guardados',
+            message: 'tus datos han sido actualizados satisfactoriamente',
+            color: Colors.green);
+        Timer(
+            Duration(seconds: 3),
+            () => Get.off(SplashPage(),
+                transition: Transition.leftToRightWithFade));
+      } else {
+        btnController.error();
+        //MyGetStorage().replaceData(key: "userData", data: this.userData);
+        MyAlert.showMyDialog(
+            title: '¡Error!',
+            message: 'Hubo un error inesperado al guardar tus datos',
+            color: Colors.red);
+        Timer(Duration(seconds: 3), () => btnController.reset());
       }
     });
   }
 
-    void updateMyData()async{
-      try{
-    _userRepository.updateMyData(data: this.userData)
-    .then((value){
-      switch (value!.statusCode) {
-        case 201:
-          btnController.success();
-          MyGetStorage().replaceData(key: "userData", data: this.userData);
-          MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
-          Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
-        break;
-        case 200:
-          btnController.success();
-          MyGetStorage().replaceData(key: "userData", data: this.userData);
-          MyAlert.showMyDialog(title: 'Datos guardados', message: 'tus datos han sido actualizados satisfactoriamente', color: Colors.green);
-          Timer(Duration(seconds:3), ()=>Get.off(SplashPage(), transition: Transition.leftToRightWithFade));
-        break;
-        default:
-          btnController.error();
-          MyAlert.showMyDialog(title: 'Error', message: 'hubo un problema al gardar tus datos, intenta de nuevo', color: Colors.red);
-          Timer(Duration(seconds:3), ()=> btnController.reset());
-          break;
-      }
+  void updateMyData() async {
+    try {
+      _userRepository.updateMyData(data: this.userData!).then((value) {
+        switch (value!.statusCode) {
+          case 201:
+            btnController.success();
+            MyGetStorage().replaceData(key: "userData", data: this.userData);
+            MyAlert.showMyDialog(
+                title: 'Datos guardados',
+                message: 'tus datos han sido actualizados satisfactoriamente',
+                color: Colors.green);
+            Timer(
+                Duration(seconds: 3),
+                () => Get.off(SplashPage(),
+                    transition: Transition.leftToRightWithFade));
+            break;
+          case 200:
+            btnController.success();
+            MyGetStorage().replaceData(key: "userData", data: this.userData);
+            MyAlert.showMyDialog(
+                title: 'Datos guardados',
+                message: 'tus datos han sido actualizados satisfactoriamente',
+                color: Colors.green);
+            Timer(
+                Duration(seconds: 3),
+                () => Get.off(SplashPage(),
+                    transition: Transition.leftToRightWithFade));
+            break;
+          default:
+            btnController.error();
+            MyAlert.showMyDialog(
+                title: 'Error',
+                message:
+                    'hubo un problema al gardar tus datos, intenta de nuevo',
+                color: Colors.red);
+            Timer(Duration(seconds: 3), () => btnController.reset());
+            break;
+        }
       });
-      }catch(e){
-        print('Error update: $e');
-      }
+    } catch (e) {
+      print('Error update: $e');
+    }
   }
 
-  void getUserCategories()async{
+  void getUserCategories() async {
     try {
-      _categoriesRepository.getCategories()
-      .then((UserCategoryList value){
+      _categoriesRepository.getCategories().then((UserCategoryList value) {
         userCategories = value;
         update();
         print(value.categories![0].description);
       });
     } catch (e) {
-    print('Error get Categories]: $e');
+      print('Error get Categories]: $e');
     }
   }
 
-    void showPicker(BuildContext ctx) {
-      showModalBottomSheet(
+  void showPicker(BuildContext ctx) {
+    showModalBottomSheet(
         context: ctx,
         builder: (context) {
           return Container(
             color: Color(0xFF737373),
             height: 180,
             child: Container(
-              child: userCategories.categories!.isNotEmpty ? ListView.builder(
-                    itemCount: userCategories.categories!.length,
-                    itemBuilder: (ctx, index){
-                      return InkWell(
-                        onTap: (){
-                          userData.category = userCategories.categories![index];
-                          update();
-                          Navigator.pop(context);
+              child: userCategories.categories!.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: userCategories.categories!.length,
+                      itemBuilder: (ctx, index) {
+                        return InkWell(
+                          onTap: () {
+                            userData!.category =
+                                userCategories.categories![index];
+                            update();
+                            Navigator.pop(context);
                           },
-                        child: ListTile(
-                          trailing: new Icon(LineIcons.plus, color: color500,),
-                          title: new Text(userCategories.categories![index].name, style: subtitulo,),
-                          subtitle: new Text(userCategories.categories![index].description, style: body2,),
-                        ),
-                      );
-                    })
-                    : new Center(
-                      child: new Text('Cargando')
-                    ),
+                          child: ListTile(
+                            trailing: new Icon(
+                              LineIcons.plus,
+                              color: color500,
+                            ),
+                            title: new Text(
+                              userCategories.categories![index].name,
+                              style: subtitulo,
+                            ),
+                            subtitle: new Text(
+                              userCategories.categories![index].description,
+                              style: body2,
+                            ),
+                          ),
+                        );
+                      })
+                  : new Center(child: new Text('Cargando')),
               decoration: BoxDecoration(
                 color: Theme.of(context).canvasColor,
                 borderRadius: BorderRadius.only(
@@ -161,19 +192,17 @@ class EditMyDataCtrl extends GetxController{
         });
   }
 
-  void logout(){
+  void logout() {
     try {
       //_userRepository.getSessions()
       //.then((value){
-        //_session = Session.fromJson(value!.data);
-          _userRepository.logout()
-          .then((value) async {
-            await MyGetStorage().eraseData();
-            Get.off(SplashPage(), transition: Transition.cupertino);
-          });
+      //_session = Session.fromJson(value!.data);
+      _userRepository.logout().then((value) async {
+        await MyGetStorage().eraseData();
+        Get.off(SplashPage(), transition: Transition.cupertino);
+      });
       //});
-    } catch (e) {
-    }
+    } catch (e) {}
   }
 
   /*void getAddress({required BuildContext context})async{
@@ -234,5 +263,4 @@ class EditMyDataCtrl extends GetxController{
       ),
     );
   }*/
-  }
-  
+}

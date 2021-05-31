@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:cotizapack/model/categories.dart';
-import 'package:cotizapack/model/quotation.dart';
+import 'package:cotizapack/model/ModelPDF.dart';
 import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
 import 'package:cotizapack/settings/get_storage.dart';
@@ -168,8 +167,7 @@ class PDF {
                     alignment: pw.Alignment.centerRight,
                     child: pw.Padding(
                       padding: pw.EdgeInsets.only(right: 15),
-                      child:
-                          pw.Text(quotation.subTotal.toString(), style: estilo),
+                      child: pw.Text(quotation.total.toString(), style: estilo),
                     ),
                   ),
                 )
