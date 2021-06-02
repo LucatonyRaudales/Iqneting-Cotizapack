@@ -8,11 +8,9 @@ import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
-
 class CustomerRepository {
   MyAccount myAccount = MyAccount();
   CustomerList list = CustomerList();
-  MyGetStorage _myGetStorage = MyGetStorage();
   final String collectionID = Collections.CUSTOMERS;
   //final String productCategoriesCollectionID = '60822a3365a96';
   late Database database;
@@ -22,7 +20,6 @@ class CustomerRepository {
 
   Future<CustomerList> getMyCustomers() async {
     database = Database(AppwriteSettings.initAppwrite());
-
     try {
       _userData = (await MyGetStorage().listenUserData());
       Response res = await database.listDocuments(

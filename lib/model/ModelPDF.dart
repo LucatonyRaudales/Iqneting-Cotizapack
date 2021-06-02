@@ -30,7 +30,6 @@ class QuotationModel {
     this.permissions,
     this.title,
     this.description,
-    this.quantity,
     this.expirationDate,
     this.subTotal,
     this.total,
@@ -47,7 +46,6 @@ class QuotationModel {
   Permissions? permissions;
   String? title;
   String? description;
-  int? quantity;
   int? expirationDate;
   CustomerModel? customer;
   double? subTotal;
@@ -86,7 +84,6 @@ class QuotationModel {
             permissions?.toJson() ?? Permissions(read: [], write: []),
         "title": title ?? '',
         "description": description ?? '',
-        "quantity": quantity ?? 0,
         "expirationDate": expirationDate ?? 0,
         "subTotal": subTotal ?? 0,
         "total": total ?? 0,

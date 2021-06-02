@@ -56,6 +56,7 @@ class ProductRepository {
   Future<Response?> getProducts() async {
     database = Database(AppwriteSettings.initAppwrite());
     try {
+      this._userData = (await MyGetStorage().listenUserData());
       Response result =
           await database.listDocuments(collectionId: collectionID, filters: [
         "userID=${_userData.userID}",
@@ -97,6 +98,8 @@ class ProductRepository {
           collectionId: collectionID,
           filters: ['userID=${_userData.userID}', 'enable=1']);
       listProductbyType = ProductList.fromJson(result.data['documents']);
+      StatisticsRepository()
+          .compareStatistics(key: 'myProducts', value: result.data["sum"]);
       return listProductbyType;
     } catch (e) {
       print('error repository products $e');

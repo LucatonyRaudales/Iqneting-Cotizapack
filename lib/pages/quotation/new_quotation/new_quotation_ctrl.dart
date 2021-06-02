@@ -54,7 +54,6 @@ class NewQuotationCtrl extends GetxController with StateMixin {
   }
 
   void getCustomers() async {
-    quotation.quantity = 1;
     quotation.expirationDate = DateTime(
             DateTime.now().year, DateTime.now().month, DateTime.now().day + 1)
         .millisecondsSinceEpoch;
@@ -90,30 +89,26 @@ class NewQuotationCtrl extends GetxController with StateMixin {
       myFile = MyFile.fromJson(imgres.data);
       print('Me Guarde');
       return true;
-    } else {
-      btnController.error();
-      MyAlert.showMyDialog(
-          title: 'Error al guardar la imagen',
-          message: 'por favor, intenta de nuevo',
-          color: Colors.red);
-      Timer(Duration(seconds: 3), () {
-        btnController.reset();
-      });
-      return false;
     }
-  }
-
-  uploadimg() async {
-    images.forEach((e) async {
-      var a = await uploadImage(e!);
-      if (a) quotation.images?.add(myFile.id!);
+    print('No se subio esa vaina');
+    btnController.error();
+    MyAlert.showMyDialog(
+        title: 'Error al guardar la imagen',
+        message: 'por favor, intenta de nuevo',
+        color: Colors.red);
+    Timer(Duration(seconds: 3), () {
+      btnController.reset();
     });
+    return false;
   }
 
   saveData() async {
     try {
       change(null, status: RxStatus.loading());
-      await uploadimg();
+      for (var e in images) {
+        var a = await uploadImage(e!);
+        if (a) quotation.images?.add(myFile.id!);
+      }
       var val =
           await _quotationRepository.createQuotation(quotation: quotation);
       if (val == null) {

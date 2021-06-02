@@ -1,7 +1,6 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/ModelPDF.dart';
-import 'package:cotizapack/pages/quotation/new_quotation/new_quotation_page.dart';
 import 'package:cotizapack/pages/quotation/quotations/quotations_ctrl.dart';
 import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/generate_pdf.dart';
@@ -38,38 +37,7 @@ class QuotationsPage extends GetView<QuotationsCtrl> {
             padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
             child: Column(
               //crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                produsts(),
-                ListTile(
-                    leading: Icon(LineIcons.moneyBill, color: color500),
-                    title:
-                        new Text(quotation.subTotal.toString(), style: body1),
-                    subtitle: new Text('precio', style: body2)),
-                ListTile(
-                    leading: Icon(LineIcons.moneyBill, color: color500),
-                    title: new Text(quotation.quantity.toString() + " unds",
-                        style: body1),
-                    subtitle: new Text('cantidad', style: body2)),
-                // ListTile(
-                //     leading: Icon(LineIcons.moneyBill, color: color500),
-                //     title: new Text(quotation.quantity.toString() + " unds",
-                //         style: body1),
-                //     subtitle: new Text('cantidad', style: body2)),
-                ListTile(
-                    leading: Icon(LineIcons.tag, color: color500),
-                    title: new Text(
-                        DateFormat.yMMMMEEEEd('es_US')
-                            .format(DateTime.fromMillisecondsSinceEpoch(
-                                quotation.expirationDate!))
-                            .toString(),
-                        style: body1),
-                    subtitle: new Text('creado el', style: body2)),
-                ListTile(
-                    leading: Icon(LineIcons.locationArrow, color: color500),
-                    title:
-                        new Text(quotation.customer!.email ?? '', style: body1),
-                    subtitle: new Text('Correo electrónico', style: body2)),
-              ],
+              children: produsts(quotation: quotation),
             ),
           ),
           Divider(color: color700),
@@ -95,11 +63,6 @@ class QuotationsPage extends GetView<QuotationsCtrl> {
               : new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    /*new IconButton(
-                icon: Icon(LineIcons.backward, size: 30, color: color500),
-                onPressed:()=> Get.back(),
-              ),*/
-
                     TextButton.icon(
                         onPressed: () => ctrl.changeQuotationStatus(
                             status: "quotesCanceled",
@@ -154,6 +117,7 @@ class QuotationsPage extends GetView<QuotationsCtrl> {
       size: 50.0,
     );
     return GetBuilder<QuotationsCtrl>(
+      init: QuotationsCtrl(),
       builder: (_ctrl) => Scaffold(
         appBar: AppBar(
           backgroundColor: color500,
@@ -293,23 +257,40 @@ class QuotationsPage extends GetView<QuotationsCtrl> {
   }
 
   produsts({QuotationModel? quotation}) {
-    List<Widget>? _lista;
+    List<Widget> _lista = [];
     quotation!.product!.products!
-        .map((e) => _lista!.add(
-              Column(
-                children: [
-                  ListTile(
-                      leading: Icon(LineIcons.tag, color: color500),
-                      title: new Text(e.name.toString(), style: body1),
-                      subtitle: new Text('producto', style: body2)),
-                  ListTile(
-                      leading: Icon(LineIcons.moneyBill, color: color500),
-                      title: new Text(e.price.toString(), style: body1),
-                      subtitle: new Text('precio del producto', style: body2)),
-                ],
-              ),
-            ))
+        .map(
+          (e) => _lista.add(
+            Column(
+              children: [
+                ListTile(
+                    leading: Icon(LineIcons.tag, color: color500),
+                    title: new Text(e.name.toString(), style: body1),
+                    subtitle: new Text('producto', style: body2)),
+                ListTile(
+                    leading: Icon(LineIcons.moneyBill, color: color500),
+                    title: new Text(e.price.toString(), style: body1),
+                    subtitle: new Text('precio del producto', style: body2)),
+              ],
+            ),
+          ),
+        )
         .toList();
+    _lista.addAll([
+      ListTile(
+          leading: Icon(LineIcons.tag, color: color500),
+          title: new Text(
+              DateFormat.yMMMMEEEEd('es_US')
+                  .format(DateTime.fromMillisecondsSinceEpoch(
+                      quotation.expirationDate!))
+                  .toString(),
+              style: body1),
+          subtitle: new Text('creado el', style: body2)),
+      ListTile(
+          leading: Icon(LineIcons.locationArrow, color: color500),
+          title: new Text(quotation.customer!.email ?? '', style: body1),
+          subtitle: new Text('Correo electrónico', style: body2)),
+    ]);
     return _lista;
   }
 }

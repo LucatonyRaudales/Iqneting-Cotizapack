@@ -1,12 +1,9 @@
-import 'dart:typed_data';
-
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/button.dart';
 import 'package:cotizapack/common/headerPaint.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
-import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/cupertino.dart';
