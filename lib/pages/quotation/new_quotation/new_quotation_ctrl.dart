@@ -18,7 +18,6 @@ import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:get_storage/get_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -61,7 +60,7 @@ class NewQuotationCtrl extends GetxController with StateMixin {
         .millisecondsSinceEpoch;
     _customerRepository.getMyCustomers().then((value) async {
       _customerList = value;
-      var data = (await MyGetStorage().listenUserData())!;
+      var data = (await MyGetStorage().listenUserData());
       quotation.userId = data.userID;
       getProducts();
     });
@@ -85,11 +84,12 @@ class NewQuotationCtrl extends GetxController with StateMixin {
     }
   }
 
-  uploadImage(File image) async {
+  Future<bool> uploadImage(File image) async {
     var imgres = await MyStorage().postFile(file: image);
     if (imgres != null) {
       myFile = MyFile.fromJson(imgres.data);
       print('Me Guarde');
+      return true;
     } else {
       btnController.error();
       MyAlert.showMyDialog(
@@ -99,51 +99,51 @@ class NewQuotationCtrl extends GetxController with StateMixin {
       Timer(Duration(seconds: 3), () {
         btnController.reset();
       });
-      return print('culiao');
+      return false;
     }
   }
 
-  void saveData() async {
+  uploadimg() async {
+    images.forEach((e) async {
+      var a = await uploadImage(e!);
+      if (a) quotation.images?.add(myFile.id!);
+    });
+  }
+
+  saveData() async {
     try {
       change(null, status: RxStatus.loading());
-
-      await Future(() => images.map((e) async {
-            await uploadImage(e!);
-            quotation.images?.add(myFile.id!);
-          }).toList());
-      _quotationRepository.createQuotation(quotation: quotation).then(
-        (val) {
-          if (val == null) {
-            change(null, status: RxStatus.error());
-            btnController.error();
-            MyAlert.showMyDialog(
-                title: 'Error al generar la cotización!',
-                message: 'se produjo un error inesperado, intenta de nuevo.',
-                color: Colors.red);
-            return Timer(
-                Duration(seconds: 3), () => this.btnController.reset());
-          }
-          switch (val.statusCode) {
-            case 201:
-              change(null, status: RxStatus.success());
-              btnController.success();
-              MyAlert.showMyDialog(
-                  title: 'Cotización guardado correctamente!',
-                  message: 'Se generará un pdf y lo podrás visualizar',
-                  color: Colors.green);
-              PDF().generateFile(quotation: quotation);
-              break;
-            default:
-              change(null, status: RxStatus.error(val.statusMessage));
-              MyAlert.showMyDialog(
-                  title: 'Error al generar la cotización!',
-                  message: '${val.statusMessage}',
-                  color: Colors.green);
-              this.btnController.reset();
-              print('Error: ${val.statusMessage}');
-          }
-        },
-      );
+      await uploadimg();
+      var val =
+          await _quotationRepository.createQuotation(quotation: quotation);
+      if (val == null) {
+        change(null, status: RxStatus.error());
+        btnController.error();
+        MyAlert.showMyDialog(
+            title: 'Error al generar la cotización!',
+            message: 'se produjo un error inesperado, intenta de nuevo.',
+            color: Colors.red);
+        return Timer(Duration(seconds: 3), () => this.btnController.reset());
+      }
+      switch (val.statusCode) {
+        case 201:
+          change(null, status: RxStatus.success());
+          btnController.success();
+          MyAlert.showMyDialog(
+              title: 'Cotización guardado correctamente!',
+              message: 'Se generará un pdf y lo podrás visualizar',
+              color: Colors.green);
+          PDF().generateFile(quotation: quotation);
+          break;
+        default:
+          change(null, status: RxStatus.error(val.statusMessage));
+          MyAlert.showMyDialog(
+              title: 'Error al generar la cotización!',
+              message: '${val.statusMessage}',
+              color: Colors.green);
+          this.btnController.reset();
+          print('Error: ${val.statusMessage}');
+      }
     } catch (e) {}
   }
 
@@ -223,7 +223,6 @@ class NewQuotationCtrl extends GetxController with StateMixin {
     update();
   }
 
-  GetStorage box = GetStorage();
   addproductinList(ProductModel productModel) {
     quotation.product!.products!.add(productModel);
     productModelTemp = ProductModel(category: ProductCategory());

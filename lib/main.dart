@@ -1,5 +1,4 @@
 import 'package:cotizapack/bindings/dashboard_binding.dart';
-import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,11 +19,11 @@ class MyApp extends StatelessWidget {
       enableLog: true,
       debugShowCheckedModeBanner: false,
       color: Colors.grey,
+      initialRoute: Routes.INITIAL,
       title: 'Cotiza Pack',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: SplashPage(),
       getPages: AppPages.pages,
       initialBinding: DashboardBinding(),
     );

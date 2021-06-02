@@ -8,7 +8,7 @@ class Validators {
     }
   }
 
-  static String? nameValidator (value) {
+  static String? nameValidator(value) {
     if (value.isEmpty) {
       return 'Campo obligatorio';
     }
@@ -28,29 +28,28 @@ class Validators {
     }
   }
 
-  static String? passwordValidator (value) {
+  static String? passwordValidator(value) {
     if (value.isEmpty) {
       return 'Campo obligatorio';
     }
     if (value.length < 8) {
-      return 'La contraseña debe contener al menos 8 caracteres';
+      return 'Debe contener al menos 8 caracteres';
     }
     if (!RegExp(r'[A-Z0-9a-z]*').hasMatch(value)) {
       return 'Contraseña muy débil';
     }
   }
 
-
-  static String? addressValidator (value) {
+  static String? addressValidator(value) {
     if (value.isEmpty) {
       return 'Campo obligatorio';
     }
-    if(value.length < 10){
+    if (value.length < 10) {
       return "ingrese una dirección más exacta";
     }
   }
 
-  static String? urlValidator (value) {
+  static String? urlValidator(value) {
     if (!Uri.parse(value).isAbsolute) {
       return 'ingrese un link de pago válido';
     }

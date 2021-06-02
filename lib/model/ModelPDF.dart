@@ -64,7 +64,6 @@ class QuotationModel {
         permissions: Permissions.fromJson(json["\u0024permissions"]),
         title: json["title"],
         description: json["description"],
-        quantity: json["quantity"].toInt(),
         expirationDate: json["expirationDate"].toInt(),
         subTotal: json["subTotal"].toDouble(),
         total: json["total"].toDouble(),
@@ -75,7 +74,9 @@ class QuotationModel {
         product: json["product"] != null
             ? ProductList.fromJson(json["product"])
             : ProductList(products: []),
-        images: List<String>.from(json["images"].map((x) => x)),
+        images: json["images"] != null
+            ? List<String>.from(json["images"].map((x) => x))
+            : [],
       );
 
   Map<String, dynamic> toJson() => {

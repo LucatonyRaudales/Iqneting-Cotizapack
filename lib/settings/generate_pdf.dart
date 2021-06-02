@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:cotizapack/model/ModelPDF.dart';
+import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
 import 'package:cotizapack/settings/get_storage.dart';
@@ -23,7 +24,7 @@ class PDF {
     var img = await networkImage(
         userData?.logo ?? 'https://via.placeholder.com/288x188');
 
-    userData = (await MyGetStorage().listenUserData())!;
+    userData = (await MyGetStorage().listenUserData());
     doc.addPage(
       pw.Page(
         pageFormat: PdfPageFormat.a4,
@@ -57,10 +58,7 @@ class PDF {
                   ),
                 ),
                 pw.Table(
-                  children: [
-                    headerTable(),
-                    listDetailTable(quotation: quotation, color: '#FFFFFFFF'),
-                  ],
+                  children: tableDetail(quotation),
                 ),
                 detalle(quotation),
                 pw.Align(
@@ -121,6 +119,16 @@ class PDF {
       generateFile(quotation: quotation);
     }
     //Timer(Duration(seconds:2), ()=>Get.to(()=>PdfPreviewScreen(file: file,)));
+  }
+
+  List<pw.TableRow> tableDetail(QuotationModel quotation) {
+    var list = [
+      headerTable(),
+    ];
+    quotation.product!.products!
+        .map((e) => list.add(listDetailTable(product: e, color: '#ffffffff')))
+        .toList();
+    return list;
   }
 
   pw.Expanded detalle(QuotationModel quotation) {
@@ -216,8 +224,7 @@ class PDF {
     );
   }
 
-  pw.TableRow listDetailTable(
-      {required QuotationModel quotation, String? color}) {
+  pw.TableRow listDetailTable({required ProductModel product, String? color}) {
     return pw.TableRow(
       repeat: true,
       decoration: pw.BoxDecoration(
@@ -231,7 +238,7 @@ class PDF {
           crossAxisAlignment: pw.CrossAxisAlignment.center,
           children: [
             pw.Text(
-              quotation.quantity.toString(),
+              product.quantity.toString(),
               style: pw.TextStyle(fontSize: 19.0),
             )
           ],
@@ -239,7 +246,7 @@ class PDF {
         pw.Column(
           children: [
             pw.Text(
-              quotation.description.toString().toUpperCase(),
+              product.description.toString().toUpperCase(),
               style: pw.TextStyle(fontSize: 19.0),
             )
           ],
@@ -247,7 +254,7 @@ class PDF {
         pw.Column(
           children: [
             pw.Text(
-              (quotation.subTotal! / quotation.quantity!).toStringAsFixed(2),
+              (product.price! / product.quantity!).toStringAsFixed(2),
               style: pw.TextStyle(fontSize: 19.0),
             )
           ],
@@ -255,7 +262,7 @@ class PDF {
         pw.Column(
           children: [
             pw.Text(
-              quotation.subTotal!.toStringAsFixed(2),
+              product.price!.toStringAsFixed(2),
               style: pw.TextStyle(fontSize: 19.0),
             )
           ],

@@ -221,6 +221,8 @@ class NewProductCtrl extends GetxController {
     }
   }
 
+
+
   void showPicker(BuildContext ctx) {
     showModalBottomSheet(
       context: ctx,
@@ -229,7 +231,8 @@ class NewProductCtrl extends GetxController {
           color: Color(0xFF737373),
           height: 180,
           child: Container(
-            child: listProductCategory.listProductCategory!.isNotEmpty
+            child: listProductCategory.listProductCategory != null &&
+                    listProductCategory.listProductCategory!.isNotEmpty
                 ? ListView.builder(
                     itemCount: listProductCategory.listProductCategory!.length,
                     itemBuilder: (ctx, index) {

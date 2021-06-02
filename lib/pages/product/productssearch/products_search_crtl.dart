@@ -44,7 +44,7 @@ class ProductsSearchController extends GetxController {
     final response = await Get.toNamed(Routes.NEWPRODUCTS,
         arguments: {"editData": false, "data": null});
 
-    if (response) getproduct();
+    if (response != null) getproduct();
   }
 
   searchProduct() {

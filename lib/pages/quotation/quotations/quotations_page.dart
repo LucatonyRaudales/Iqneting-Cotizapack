@@ -50,6 +50,11 @@ class QuotationsPage extends GetView<QuotationsCtrl> {
                     title: new Text(quotation.quantity.toString() + " unds",
                         style: body1),
                     subtitle: new Text('cantidad', style: body2)),
+                // ListTile(
+                //     leading: Icon(LineIcons.moneyBill, color: color500),
+                //     title: new Text(quotation.quantity.toString() + " unds",
+                //         style: body1),
+                //     subtitle: new Text('cantidad', style: body2)),
                 ListTile(
                     leading: Icon(LineIcons.tag, color: color500),
                     title: new Text(

@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/customers.dart';
 import 'package:cotizapack/model/my_account.dart';
@@ -7,11 +8,12 @@ import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
+
 class CustomerRepository {
   MyAccount myAccount = MyAccount();
   CustomerList list = CustomerList();
   MyGetStorage _myGetStorage = MyGetStorage();
-  final String collectionID = "6086a641bf4ab";
+  final String collectionID = Collections.CUSTOMERS;
   //final String productCategoriesCollectionID = '60822a3365a96';
   late Database database;
   UserData _userData = UserData(
@@ -20,8 +22,9 @@ class CustomerRepository {
 
   Future<CustomerList> getMyCustomers() async {
     database = Database(AppwriteSettings.initAppwrite());
+
     try {
-      _userData = (await _myGetStorage.listenUserData())!;
+      _userData = (await MyGetStorage().listenUserData());
       Response res = await database.listDocuments(
           collectionId: collectionID,
           filters: ['userID=${_userData.userID}', 'enable=1']);
@@ -56,7 +59,7 @@ class CustomerRepository {
   Future<bool> updateCustomer({required CustomerModel customer}) async {
     database = Database(AppwriteSettings.initAppwrite());
     try {
-      _userData = (await _myGetStorage.listenUserData())!;
+      _userData = (await MyGetStorage().listenUserData());
       Response res = await database.updateDocument(
           collectionId: collectionID,
           documentId: customer.id!,
@@ -72,8 +75,9 @@ class CustomerRepository {
 
   Future<bool> disableCustomer({required String customerID}) async {
     database = Database(AppwriteSettings.initAppwrite());
+
     try {
-      _userData = (await _myGetStorage.listenUserData())!;
+      _userData = (await MyGetStorage().listenUserData());
       Response res = await database.updateDocument(
           collectionId: collectionID,
           documentId: customerID,

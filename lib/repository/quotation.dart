@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/model/ModelPDF.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/user_data.dart';
@@ -7,8 +8,8 @@ import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
 class QuotationRepository {
-  final String collectionID = "60876e0763613";
-  final String productCategoriesCollectionID = '60822a3365a96';
+  final String collectionID = Collections.QUOTATIONS;
+  final String productCategoriesCollectionID = Collections.CATEGORYPRODUCTS;
   late Database database;
   UserData _userData = UserData(
       category: UserCategory(
@@ -18,6 +19,7 @@ class QuotationRepository {
     try {
       database = Database(AppwriteSettings.initAppwrite());
       quotation.createAt = DateTime.now().millisecondsSinceEpoch;
+      
       Response res = await database.createDocument(
         collectionId: collectionID,
         data: quotation.toJson(),
@@ -34,7 +36,7 @@ class QuotationRepository {
   Future<QuotationsList> getQuotations(int? status) async {
     try {
       database = Database(AppwriteSettings.initAppwrite());
-      this._userData = (await MyGetStorage().listenUserData())!;
+      this._userData = (await MyGetStorage().listenUserData());
       var filter = ["userID=${_userData.userID}", "status=$status"];
       if (status == null) filter = ["userID=${_userData.userID}"];
       var res = await database.listDocuments(

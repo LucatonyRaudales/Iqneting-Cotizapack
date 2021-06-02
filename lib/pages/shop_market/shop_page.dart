@@ -1,12 +1,9 @@
+import 'package:cotizapack/pages/shop_market/shop_ctrl.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class ShopQuotationsPage extends StatefulWidget {
-  @override
-  _ShopQuotationsPageState createState() => _ShopQuotationsPageState();
-}
-
-class _ShopQuotationsPageState extends State<ShopQuotationsPage> {
-    List<Mycard> mycard = [
+class ShopQuotationsPage extends GetView<ShopQuotationsCtrl> {
+  final List<Mycard> mycard = [
     Mycard(Icons.shopping_cart, 'Buying', true),
     Mycard(Icons.shop, 'Selling', false),
     Mycard(Icons.account_balance, 'Trades', true),
@@ -41,32 +38,7 @@ class _ShopQuotationsPageState extends State<ShopQuotationsPage> {
                 crossAxisCount: 2,
                 crossAxisSpacing: 8,
                 mainAxisSpacing: 8,
-                children: mycard
-                    .map(
-                      (e) => InkWell(
-                        onTap: ()=> print('holas'),
-                        child: Card(
-                          color:  null,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Icon(
-                                e.icon,
-                                size: 50,
-                                color:Colors.grey,
-                              ),
-                              SizedBox(height: 10),
-                              Text(
-                                e.title,
-                                style: TextStyle(
-                                    color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    )
-                    .toList(),
+                children: mycard.map((e) => myCard(e)).toList(),
               ),
             ),
           )
@@ -75,24 +47,23 @@ class _ShopQuotationsPageState extends State<ShopQuotationsPage> {
     );
   }
 
-  Widget myCard(){
+  Widget myCard(Mycard e) {
     return InkWell(
-      onTap: ()=> print('holas'),
+      onTap: () => print('holas'),
       child: Card(
-        color:  null,
+        color: null,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(
-              Icons.ac_unit,
+              e.icon,
               size: 50,
-              color:Colors.grey,
+              color: Colors.grey,
             ),
             SizedBox(height: 10),
             Text(
-              "e.title",
-              style: TextStyle(
-                  color: Colors.grey),
+              "${e.title}",
+              style: TextStyle(color: Colors.grey),
             ),
           ],
         ),

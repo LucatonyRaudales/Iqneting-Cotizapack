@@ -112,7 +112,6 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProductsSearchController>(
-      
       builder: (_ctrl) => Scaffold(
         appBar: AppBar(
           backgroundColor: color500,
@@ -424,10 +423,12 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
                               foregroundColor: Colors.white,
                               radius: 35,
                             ))
-                        : CircularProgressIndicator(
-                            backgroundColor: Colors.white,
-                            valueColor:
-                                new AlwaysStoppedAnimation<Color>(color500),
+                        : Center(
+                            child: CircularProgressIndicator(
+                              backgroundColor: Colors.white,
+                              valueColor:
+                                  new AlwaysStoppedAnimation<Color>(color500),
+                            ),
                           );
                   },
                 ),

@@ -38,7 +38,7 @@ class DashboardCtrl extends GetxController {
 
   void getUserData() async {
     try {
-      userData = (await MyGetStorage().listenUserData())!;
+      userData = (await MyGetStorage().listenUserData());
       print('User name: ${userData.businessName}');
       getmystatistics();
     } catch (e) {
@@ -48,7 +48,8 @@ class DashboardCtrl extends GetxController {
 
   void getmystatistics() {
     if (MyGetStorage().haveData(key: 'statistic')) {
-      statistic = Statistic.fromJson(MyGetStorage().readData(key: 'statistic')!);
+      statistic =
+          Statistic.fromJson(MyGetStorage().readData(key: 'statistic')!);
     } else {
       refreshStatistics();
     }

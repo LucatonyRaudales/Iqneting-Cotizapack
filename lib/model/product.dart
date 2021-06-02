@@ -68,7 +68,7 @@ class ProductModel {
         "category": category!.toJson(),
         "enable": enable,
         "quantity": quantity,
-        "type": type
+        "type": type,
       };
 }
 

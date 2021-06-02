@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/statistic.dart';
 import 'package:cotizapack/model/user_data.dart';
@@ -9,7 +10,7 @@ class StatisticsRepository {
   UserData _userData = UserData(
       category: UserCategory(
           collection: '', description: '', name: '', enable: true, id: ''));
-  final String collectionID = "6092f3e7eef5f";
+  final String collectionID = Collections.STATISTIC;
   late Database database;
   Statistic _statistic = Statistic();
 
@@ -49,7 +50,7 @@ class StatisticsRepository {
   Future<Statistic> getMyStatistics() async {
     try {
       database = Database(AppwriteSettings.initAppwrite());
-      this._userData = (await MyGetStorage().listenUserData())!;
+      this._userData = (await MyGetStorage().listenUserData());
       Response res = await database.listDocuments(
           collectionId: collectionID,
           orderType: OrderType.desc,

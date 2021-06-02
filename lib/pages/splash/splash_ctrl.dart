@@ -23,24 +23,23 @@ class SplashCtrl extends GetxController {
   }
 
   void islogin() async {
-    dynamic page;
     try {
       var response = await _userRepository.getSessions();
-      if (response!.statusCode == 200) {
-        _session = Session.fromJson(response.data);
-        bool checked = (await checkuserData(session: _session))!;
-        page = checked ? HomePage() : LoginPage();
-      } else {
-        page = LoginPage();
+      if (response != null) {
+        if (response.statusCode == 200) {
+          _session = Session.fromJson(response.data);
+          bool checked = (await checkuserData(session: _session))!;
+          Timer(
+              Duration(seconds: 1),
+              () => Get.off(() => checked ? HomePage() : LoginPage(),
+                  transition: Transition.zoom));
+        }
       }
-      Timer(Duration(seconds: 1),
-          () => Get.off(page, transition: Transition.zoom));
     } catch (e) {
       print('Error splash: $e');
       Timer(Duration(seconds: 2),
-          () => Get.off(LoginPage(), transition: Transition.zoom));
+          () => Get.off(() => LoginPage(), transition: Transition.zoom));
     }
-    //
   }
 
   Future<bool?> checkuserData({required Session session}) async {

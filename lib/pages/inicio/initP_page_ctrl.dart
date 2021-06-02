@@ -29,7 +29,7 @@ class InitPageCtrl extends GetxController{
 
   void getUserData()async{
     try{
-    userData =  (await MyGetStorage().listenUserData())!;
+    userData =  (await MyGetStorage().listenUserData());
     print('User name: ${userData.businessName}');
     update();
     }catch(e){

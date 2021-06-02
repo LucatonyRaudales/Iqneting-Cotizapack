@@ -14,7 +14,7 @@ class MyGetStorage {
 
   Map<String, dynamic>? readData({required String key}) {
     print('reading key: $key');
-    return box.read(key);
+    return box.read(key) ?? null;
   }
 
   bool haveData({required String key}) {
@@ -36,7 +36,7 @@ class MyGetStorage {
     }
   }
 
-  Future<UserData?> listenUserData() async {
+  Future<UserData> listenUserData()async{
     Session _mySession = Session();
     UserData _userData = UserData(
         category: UserCategory(
@@ -56,6 +56,7 @@ class MyGetStorage {
       }
     } catch (err) {
       print('Error listen User: $err');
+      return _userData;
     }
   }
 }

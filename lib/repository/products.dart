@@ -1,4 +1,5 @@
 import 'package:appwrite/appwrite.dart';
+import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/product.dart';
@@ -10,8 +11,8 @@ import 'package:cotizapack/settings/get_storage.dart';
 
 class ProductRepository {
   MyAccount myAccount = MyAccount();
-  final String collectionID = "608222f2ca95c";
-  final String productCategoriesCollectionID = '60822a3365a96';
+  final String collectionID = Collections.PRODUCTS_SERVICES;
+  final String productCategoriesCollectionID = Collections.CATEGORYPRODUCTS;
   late Database database;
   UserData _userData = UserData(
       category: UserCategory(
@@ -37,7 +38,7 @@ class ProductRepository {
   Future<Response?> getProductsByCategory({required String categoryID}) async {
     database = Database(AppwriteSettings.initAppwrite());
     try {
-      this._userData = (await MyGetStorage().listenUserData())!;
+      this._userData = (await MyGetStorage().listenUserData());
       Response result = await database.listDocuments(
           collectionId: collectionID,
           filters: [
@@ -55,7 +56,6 @@ class ProductRepository {
   Future<Response?> getProducts() async {
     database = Database(AppwriteSettings.initAppwrite());
     try {
-      this._userData = (await MyGetStorage().listenUserData())!;
       Response result =
           await database.listDocuments(collectionId: collectionID, filters: [
         "userID=${_userData.userID}",
@@ -92,7 +92,7 @@ class ProductRepository {
     database = Database(AppwriteSettings.initAppwrite());
     ProductList listProductbyType = ProductList();
     try {
-      this._userData = (await MyGetStorage().listenUserData())!;
+      this._userData = (await MyGetStorage().listenUserData());
       Response result = await database.listDocuments(
           collectionId: collectionID,
           filters: ['userID=${_userData.userID}', 'enable=1']);
@@ -142,7 +142,7 @@ class ProductRepository {
     database = Database(AppwriteSettings.initAppwrite());
     ProductList searchProduct = ProductList();
     try {
-      this._userData = (await MyGetStorage().listenUserData())!;
+      this._userData = (await MyGetStorage().listenUserData());
       Response res = await database.listDocuments(
         collectionId: collectionID,
         filters: ['userID=${_userData.userID}', 'type=${type ?? ''}'],

@@ -12,4 +12,5 @@ abstract class Routes {
   static const CUSTOMERS = '/customers';
   static const PRODUCTSSEARCH = '/productsearch';
   static const NEWPRODUCTS = '/newproducts';
+  static const SHOPQUOTATIONS = '/shopquotations';
 }
