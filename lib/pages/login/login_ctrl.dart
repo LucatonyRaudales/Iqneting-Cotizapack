@@ -2,8 +2,9 @@ import 'dart:async';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/social_auth_models.dart';
 import 'package:cotizapack/model/user_model.dart';
-import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/user.dart';
+import 'package:cotizapack/routes/app_pages.dart';
+import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/settings/social_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,9 @@ class LoginCtrl extends GetxController {
   void signIn() async {
     try {
       _userRepository.signIn(user: user).then((value) async {
+        MyGetStorage().eraseData();
+        var a = MyGetStorage().readData(key: 'userData');
+        print(a);
         switch (value?.statusCode) {
           case 201:
             btnController.success();
@@ -27,10 +31,7 @@ class LoginCtrl extends GetxController {
                 title: '¡Bienvenid@!',
                 message: 'estamos cargando tus datos',
                 color: Colors.green);
-            Timer(
-                Duration(seconds: 2),
-                () => Get.offAll(()=>SplashPage(),
-                    transition: Transition.rightToLeftWithFade));
+            Timer(Duration(seconds: 2), () => Get.offAllNamed(Routes.INITIAL));
             break;
           case 500:
             btnController.error();

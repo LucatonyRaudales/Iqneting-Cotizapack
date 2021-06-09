@@ -110,6 +110,7 @@ class UserRepository {
 
   Future<Response?> updateMyData({required UserData data}) async {
     try {
+      printInfo(info: data.toJson().toString());
       database = Database(AppwriteSettings.initAppwrite());
       Response response = await database.updateDocument(
           collectionId: userCollectionID,

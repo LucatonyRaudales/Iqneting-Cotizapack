@@ -357,7 +357,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                           ? Container(
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: FileImage(ctrl.images[0]!),
+                                    image: FileImage(ctrl.images[1]!),
                                     fit: BoxFit.cover),
                               ),
                             )

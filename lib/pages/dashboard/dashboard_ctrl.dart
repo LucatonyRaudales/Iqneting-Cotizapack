@@ -5,9 +5,9 @@ import 'package:cotizapack/repository/statistics.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-class DashboardCtrl extends GetxController {
+class DashboardCtrl extends GetxController with StateMixin<Statistic?> {
   StatisticsRepository statisticsRepository = StatisticsRepository();
-  Statistic statistic = Statistic();
+  Statistic? statistic = Statistic();
   UserCategory userCategory = UserCategory(
     collection: "fds",
     enable: true,
@@ -25,18 +25,19 @@ class DashboardCtrl extends GetxController {
       category: userCategory);
   @override
   void onInit() {
+    change(null, status: RxStatus.empty());
     print('Welcome to dashboard page');
-
+    getUserData();
     super.onInit();
   }
 
   @override
   void onReady() {
-    getUserData();
     super.onReady();
   }
 
   void getUserData() async {
+    change(null, status: RxStatus.loading());
     try {
       userData = (await MyGetStorage().listenUserData());
       print('User name: ${userData.businessName}');
@@ -47,17 +48,20 @@ class DashboardCtrl extends GetxController {
   }
 
   void getmystatistics() {
+    change(null, status: RxStatus.loading());
     if (MyGetStorage().haveData(key: 'statistic')) {
       statistic =
           Statistic.fromJson(MyGetStorage().readData(key: 'statistic')!);
+      change(statistic, status: RxStatus.success());
     } else {
       refreshStatistics();
     }
   }
 
   void refreshStatistics() async {
+    change(null, status: RxStatus.loading());
     statisticsRepository.getMyStatistics().then((value) {
-      statistic = value;
+      change(value, status: RxStatus.success());
       update();
     });
   }

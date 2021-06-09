@@ -42,7 +42,6 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-
   static final kInitialPosition = LatLng(-33.8567844, 151.213108);
 
   @override
@@ -50,7 +49,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late PickResult selectedPlace;
+  PickResult selectedPlace = PickResult();
 
   @override
   Widget build(BuildContext context) {
@@ -71,7 +70,8 @@ class _HomePageState extends State<HomePage> {
                     MaterialPageRoute(
                       builder: (context) {
                         return PlacePicker(
-                          apiKey: 'pk.eyJ1IjoiY290aXphLXBhY2syMSIsImEiOiJja28xcnZvZWMwMDY3MnFscnZmbDFtcGtxIn0.8o_18IwAU0r8WN_swhEcDA',
+                          apiKey:
+                              'pk.eyJ1IjoiY290aXphLXBhY2syMSIsImEiOiJja28xcnZvZWMwMDY3MnFscnZmbDFtcGtxIn0.8o_18IwAU0r8WN_swhEcDA',
                           initialPosition: HomePage.kInitialPosition,
                           useCurrentLocation: true,
                           selectInitialPosition: true,

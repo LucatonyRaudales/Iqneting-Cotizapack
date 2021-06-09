@@ -6,6 +6,7 @@ import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
+import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -29,6 +30,7 @@ class EditMyDataCtrl extends GetxController {
       collection: "",
       id: "");
   late UserData? userData = UserData(
+      createAt: 0,
       ceoName: "",
       rfc: "",
       nickname: "",
@@ -64,18 +66,18 @@ class EditMyDataCtrl extends GetxController {
   }
 
   void saveMyData() {
+    this.userData!.createAt = DateTime.now().microsecondsSinceEpoch;
+    this.userData!.nickname = this.userData!.ceoName;
+    this.userData!.enable = true;
     _userRepository.saveMyData(data: this.userData!.toJson()).then((value) {
       if (value.id != null) {
         btnController.success();
-        MyGetStorage().replaceData(key: "userData", data: this.userData);
+        MyGetStorage().replaceData(key: "userData", data: value.toJson());
         MyAlert.showMyDialog(
             title: 'Datos guardados',
             message: 'tus datos han sido actualizados satisfactoriamente',
             color: Colors.green);
-        Timer(
-            Duration(seconds: 3),
-            () => Get.off(SplashPage(),
-                transition: Transition.leftToRightWithFade));
+        Timer(Duration(seconds: 3), () => Get.offAllNamed(Routes.INITIAL));
       } else {
         btnController.error();
         //MyGetStorage().replaceData(key: "userData", data: this.userData);
@@ -91,40 +93,25 @@ class EditMyDataCtrl extends GetxController {
   void updateMyData() async {
     try {
       _userRepository.updateMyData(data: this.userData!).then((value) {
-        switch (value!.statusCode) {
-          case 201:
-            btnController.success();
-            MyGetStorage().replaceData(key: "userData", data: this.userData);
-            MyAlert.showMyDialog(
-                title: 'Datos guardados',
-                message: 'tus datos han sido actualizados satisfactoriamente',
-                color: Colors.green);
-            Timer(
-                Duration(seconds: 3),
-                () => Get.off(SplashPage(),
-                    transition: Transition.leftToRightWithFade));
-            break;
-          case 200:
-            btnController.success();
-            MyGetStorage().replaceData(key: "userData", data: this.userData);
-            MyAlert.showMyDialog(
-                title: 'Datos guardados',
-                message: 'tus datos han sido actualizados satisfactoriamente',
-                color: Colors.green);
-            Timer(
-                Duration(seconds: 3),
-                () => Get.off(SplashPage(),
-                    transition: Transition.leftToRightWithFade));
-            break;
-          default:
-            btnController.error();
-            MyAlert.showMyDialog(
-                title: 'Error',
-                message:
-                    'hubo un problema al gardar tus datos, intenta de nuevo',
-                color: Colors.red);
-            Timer(Duration(seconds: 3), () => btnController.reset());
-            break;
+        if (value == null) {
+          btnController.error();
+          MyAlert.showMyDialog(
+              title: 'Error',
+              message: 'hubo un problema al gardar tus datos, intenta de nuevo',
+              color: Colors.red);
+          Timer(Duration(seconds: 3), () => btnController.reset());
+          return;
+        }
+
+        if (value.statusCode! >= 200 && value.statusCode! <= 299) {
+          btnController.success();
+          MyGetStorage()
+              .replaceData(key: "userData", data: this.userData!.toJson());
+          MyAlert.showMyDialog(
+              title: 'Datos guardados',
+              message: 'tus datos han sido actualizados satisfactoriamente',
+              color: Colors.green);
+          Timer(Duration(seconds: 3), () => Get.offAllNamed(Routes.INITIAL));
         }
       });
     } catch (e) {
@@ -199,7 +186,7 @@ class EditMyDataCtrl extends GetxController {
       //_session = Session.fromJson(value!.data);
       _userRepository.logout().then((value) async {
         await MyGetStorage().eraseData();
-        Get.off(SplashPage(), transition: Transition.cupertino);
+        Get.offNamed(Routes.INITIAL);
       });
       //});
     } catch (e) {}

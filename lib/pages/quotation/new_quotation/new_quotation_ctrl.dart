@@ -109,6 +109,12 @@ class NewQuotationCtrl extends GetxController with StateMixin {
         var a = await uploadImage(e!);
         if (a) quotation.images?.add(myFile.id!);
       }
+      var subTotal = 0.0;
+      for (var i in quotation.product!.products!) {
+        subTotal += (i.price! * i.quantity!);
+      }
+      quotation.subTotal = subTotal;
+      printInfo(info: subTotal.toString());
       var val =
           await _quotationRepository.createQuotation(quotation: quotation);
       if (val == null) {

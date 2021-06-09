@@ -9,11 +9,11 @@ import 'package:cotizapack/settings/appwrite.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 
 class CustomerRepository {
-  MyAccount myAccount = MyAccount();
   CustomerList list = CustomerList();
   final String collectionID = Collections.CUSTOMERS;
   //final String productCategoriesCollectionID = '60822a3365a96';
   late Database database;
+  MyAccount myAccount = MyAccount();
   UserData _userData = UserData(
       category: UserCategory(
           collection: '', id: '', name: '', description: '', enable: true));

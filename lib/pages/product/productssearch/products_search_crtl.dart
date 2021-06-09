@@ -5,7 +5,8 @@ import 'package:cotizapack/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class ProductsSearchController extends GetxController {
+class ProductsSearchController extends GetxController
+    with StateMixin<RxList<ProductModel>> {
   final ProductRepository _repository = ProductRepository();
   final formKey = GlobalKey<FormState>();
   RxList<ProductModel> products = <ProductModel>[].obs;
@@ -16,8 +17,9 @@ class ProductsSearchController extends GetxController {
 
   @override
   void onInit() {
-    super.onInit();
+    change(null, status: RxStatus.empty());
     getproduct();
+    super.onInit();
   }
 
   @override
@@ -31,10 +33,19 @@ class ProductsSearchController extends GetxController {
   }
 
   void getproduct() {
+    change(null, status: RxStatus.loading());
     _repository.getProductsByType().then(
       (value) {
-        if (value == null) return;
+        if (value == null) {
+          change(null, status: RxStatus.error('Los no hay datos'));
+          return;
+        }
+        if (value.products!.length == 0) {
+          change(null, status: RxStatus.error('No hay datos'));
+          return;
+        }
         products.value = value.products!;
+        change(products, status: RxStatus.success());
         update();
       },
     );
@@ -48,13 +59,26 @@ class ProductsSearchController extends GetxController {
   }
 
   searchProduct() {
+    change(null, status: RxStatus.loading());
     products.clear();
     var order =
         ordenprice.value == 'Mayor a menor' ? OrderType.desc : OrderType.asc;
     var type = typeopcion.value == 'Servicio' ? 1 : 0;
     _repository.searchProduct(order: order, type: type).then((value) {
-      products.value = value!.products!;
+      if (value == null) {
+        change(null, status: RxStatus.error('Los no hay datos'));
+        return;
+      }
+      if (value.products!.length == 0) {
+        change(null, status: RxStatus.error('No hay datos'));
+        return;
+      }
+
+      change(null, status: RxStatus.success());
+      products.value = value.products!;
       update();
+    }).onError((error, stackTrace) {
+      change(null, status: RxStatus.error('$error'));
     });
     update();
   }

@@ -13,7 +13,6 @@ import 'home_controller.dart';
 class HomePage extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
-    Get.put<HomeController>(HomeController());
     return GetBuilder<HomeController>(
       builder: (_) {
         return Scaffold(

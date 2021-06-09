@@ -19,7 +19,7 @@ class QuotationRepository {
     try {
       database = Database(AppwriteSettings.initAppwrite());
       quotation.createAt = DateTime.now().millisecondsSinceEpoch;
-      
+
       Response res = await database.createDocument(
         collectionId: collectionID,
         data: quotation.toJson(),

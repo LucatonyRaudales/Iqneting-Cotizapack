@@ -44,9 +44,7 @@ class MyStorage {
   Future<Uint8List?> getFilePreview({required String fileId}) async {
     try {
       storage = Storage(AppwriteSettings.initAppwrite());
-      final res = await storage
-          .getFilePreview(fileId: fileId)
-          .timeout(Duration(seconds: 5));
+      var res = await storage.getFilePreview(fileId: fileId);
       return res.data;
     } catch (e) {
       print('Error delete File: $e');

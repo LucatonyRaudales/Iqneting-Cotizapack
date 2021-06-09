@@ -6,4 +6,5 @@ class Collections {
   static const PRODUCTS_SERVICES = '60b580c1a1fb1';
   static const QUOTATIONS = '60b584194207e';
   static const STATISTIC = '60b589e03736f';
+  static const PACKAGE = '60bae155f03e2';
 }

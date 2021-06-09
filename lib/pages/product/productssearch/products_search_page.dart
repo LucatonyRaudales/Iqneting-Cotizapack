@@ -115,6 +115,7 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
       builder: (_ctrl) => Scaffold(
         appBar: AppBar(
           backgroundColor: color500,
+          brightness: Brightness.dark,
           centerTitle: true,
           title: new Text(
             'Productos',
@@ -123,6 +124,7 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
         ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
+          backgroundColor: color500,
           onPressed: () => _ctrl.createNewProduct(),
         ),
         body: Container(
@@ -131,39 +133,43 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
             children: [
               _widgetsearch(_ctrl),
               Expanded(
-                child: _ctrl.products.length != 0
-                    ? CustomScrollView(
-                        slivers: <Widget>[
-                          SliverGrid(
-                            gridDelegate:
-                                SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 200,
-                              mainAxisSpacing: 14.0,
-                              crossAxisSpacing: 1.0,
-                              childAspectRatio: 1.0,
-                            ),
-                            delegate: SliverChildBuilderDelegate(
-                              (BuildContext context, int index) {
-                                final product = _ctrl.products[index];
-                                return myCards(
-                                  product: product,
-                                  index: index,
-                                  context: context,
-                                );
-                              },
-                              childCount: _ctrl.products.length,
-                            ),
-                          )
-                        ],
-                      )
-                    : Center(
-                        child: Center(
-                          child: SpinKitPulse(
-                            color: color500,
-                            size: 50.0,
-                          ),
+                child: _ctrl.obx(
+                  (state) => CustomScrollView(
+                    slivers: <Widget>[
+                      SliverGrid(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          mainAxisSpacing: 14.0,
+                          crossAxisSpacing: 1.0,
+                          childAspectRatio: 1.0,
                         ),
-                      ),
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            final product = _ctrl.products[index];
+                            return myCards(
+                              product: product,
+                              index: index,
+                              context: context,
+                            );
+                          },
+                          childCount: _ctrl.products.length,
+                        ),
+                      )
+                    ],
+                  ),
+                  onLoading: Center(
+                    child: SpinKitPulse(
+                      color: color500,
+                      size: 50.0,
+                    ),
+                  ),
+                  onError: (error) => Center(
+                    child: Text('$error'),
+                  ),
+                  onEmpty: Center(
+                    child: Text('No hay datos Cargados.'),
+                  ),
+                ),
               ),
             ],
           ),

@@ -293,6 +293,5 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
   }
 
   @override
-  // TODO: implement wantKeepAlive
   bool get wantKeepAlive => true;
 }

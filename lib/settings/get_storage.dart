@@ -18,7 +18,6 @@ class MyGetStorage {
   }
 
   bool haveData({required String key}) {
-    box.erase();
     print(box.read(key));
     return box.hasData(key);
   }
@@ -36,7 +35,7 @@ class MyGetStorage {
     }
   }
 
-  Future<UserData> listenUserData()async{
+  Future<UserData> listenUserData() async {
     Session _mySession = Session();
     UserData _userData = UserData(
         category: UserCategory(

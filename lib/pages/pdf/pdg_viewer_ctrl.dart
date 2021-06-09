@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:cotizapack/model/statistic.dart';
 import 'package:cotizapack/repository/statistics.dart';
+import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/settings/share.dart';
 import 'package:flutter/material.dart';
@@ -35,7 +36,6 @@ class PDFCtrl extends GetxController {
 
   void getBack(File file) async {
     if (isDeleted == false) await file.delete();
-    Get.back();
-    // Get.off(SplashPage(), transition: Transition.rightToLeftWithFade);
+    Get.offNamedUntil(Routes.INITIAL, (route) => false);
   }
 }
