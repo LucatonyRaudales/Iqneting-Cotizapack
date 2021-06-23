@@ -9,7 +9,6 @@ import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
 import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/settings/get_storage.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';

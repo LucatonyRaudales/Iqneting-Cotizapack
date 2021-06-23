@@ -226,7 +226,7 @@ class ProfileCtrl extends GetxController {
       //_userRepository.getSessions()
       //.then((value){
       //_session = Session.fromJson(value!.data);
-      var val = await _userRepository.logout();
+      await _userRepository.logout();
 
       await MyGetStorage().eraseData();
       Get.offAllNamed(Routes.INITIAL);

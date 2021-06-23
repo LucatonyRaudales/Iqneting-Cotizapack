@@ -309,5 +309,6 @@ class DashboardPage extends GetView<DashboardCtrl> {
   }
 
   @override
+  // ignore: override_on_non_overriding_member
   bool get wantKeepAlive => true;
 }

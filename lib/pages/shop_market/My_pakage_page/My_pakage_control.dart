@@ -1,13 +1,12 @@
 import 'dart:typed_data';
 import 'package:cotizapack/model/PakageModel.dart';
-import 'package:cotizapack/model/categories.dart';
-import 'package:cotizapack/model/user_data.dart';
-import 'package:cotizapack/settings/get_storage.dart';
+import 'package:cotizapack/repository/mypackage_repository.dart';
 import 'package:get/get.dart';
 
 class ListPakageController extends GetxController
     with StateMixin<List<Pakageclass>> {
   Uint8List? image;
+  List<Pakageclass> packages = <Pakageclass>[];
   @override
   void onInit() {
     change(null, status: RxStatus.empty());
@@ -15,14 +14,12 @@ class ListPakageController extends GetxController
     super.onInit();
   }
 
-  UserData _userData = UserData(
-      category: UserCategory(
-          collection: '', id: '', name: '', description: '', enable: true));
   getmyPackages() async {
     try {
       change(null, status: RxStatus.loading());
-      _userData = (await MyGetStorage().listenUserData());
-      change(_userData.packages, status: RxStatus.success());
+      var data = await MyPackaRepository().getPackages();
+      data!.map((e) => packages.add(e.package!)).toList();
+      change(packages, status: RxStatus.success());
     } catch (e) {
       change(
         null,

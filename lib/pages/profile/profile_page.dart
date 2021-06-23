@@ -129,6 +129,18 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Icon(LineIcons.cog, color: color700),
                     ),
                   ),
+                  ListTile(
+                    title: Text(
+                      "Mi tarjeta de credito",
+                      style: body1,
+                    ),
+                    trailing: InkWell(
+                      onTap: () {
+                        Get.toNamed(Routes.PAYPAKAGE);
+                      },
+                      child: Icon(LineIcons.creditCard, color: color700),
+                    ),
+                  ),
                 ],
               ),
               leading: Icon(LineIcons.envelope, color: color700),

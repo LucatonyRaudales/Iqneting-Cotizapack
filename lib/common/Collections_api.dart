@@ -7,4 +7,5 @@ class Collections {
   static const QUOTATIONS = '60b584194207e';
   static const STATISTIC = '60b589e03736f';
   static const PACKAGE = '60bae155f03e2';
+  static const MYPACKAGE = '60d2270ee3686';
 }

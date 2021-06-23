@@ -2,6 +2,7 @@ import 'package:cotizapack/bindings/My_pakage_binding.dart';
 import 'package:cotizapack/bindings/duotations_binding.dart';
 import 'package:cotizapack/bindings/home_binding.dart';
 import 'package:cotizapack/bindings/login_binding.dart';
+import 'package:cotizapack/bindings/creditcard_binding.dart';
 import 'package:cotizapack/bindings/products_search_binding.dart';
 import 'package:cotizapack/bindings/splash_binding.dart';
 import 'package:cotizapack/pages/customer/customers/customers_page.dart';
@@ -15,6 +16,7 @@ import 'package:cotizapack/pages/product/productssearch/products_search_page.dar
 import 'package:cotizapack/pages/quotation/new_quotation/new_quotation_page.dart';
 import 'package:cotizapack/pages/quotation/quotations/quotations_page.dart';
 import 'package:cotizapack/pages/shop_market/My_pakage_page/My_pakage_page.dart';
+import 'package:cotizapack/pages/shop_market/creditcard_pakage/creditcard_page.dart';
 
 import 'package:cotizapack/pages/shop_market/shop_page.dart';
 import 'package:cotizapack/pages/splash/splash_screen.dart';
@@ -77,6 +79,12 @@ abstract class AppPages {
       page: () => MyPakagePage(),
       transition: Transition.rightToLeftWithFade,
       binding: MyPakageBinding(),
+    ),
+    GetPage(
+      name: Routes.PAYPAKAGE,
+      page: () => CreditcardPage(),
+      transition: Transition.zoom,
+      binding: CreeditCardBinding(),
     ),
     GetPage(
       name: Routes.HOME,

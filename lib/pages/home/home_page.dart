@@ -35,30 +35,36 @@ class HomePage extends GetView<HomeController> {
               selectedIndex: _.currentIndex.value,
               onItemSelected: (index) {
                 _.currentIndex.value = index;
-                _.pageController.animateToPage(index,
-                    duration: Duration(milliseconds: 300),
-                    curve: Curves.linear);
+                _.pageController.animateToPage(
+                  index,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.linear,
+                );
               },
               showElevation: false,
               backgroundColor: color500,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               items: <BottomNavyBarItem>[
                 BottomNavyBarItem(
-                    activeColor: Colors.white,
-                    title: Text('Dashboard'),
-                    icon: Icon(LineIcons.pieChart)),
+                  activeColor: Colors.white,
+                  title: Text('Dashboard'),
+                  icon: Icon(LineIcons.pieChart),
+                ),
                 BottomNavyBarItem(
-                    activeColor: Colors.white,
-                    title: Text('Inicio'),
-                    icon: Icon(LineIcons.home)),
+                  activeColor: Colors.white,
+                  title: Text('Inicio'),
+                  icon: Icon(LineIcons.home),
+                ),
                 BottomNavyBarItem(
-                    activeColor: Colors.white,
-                    title: Text('Negocios'),
-                    icon: Icon(LineIcons.rocket)),
+                  activeColor: Colors.white,
+                  title: Text('Negocios'),
+                  icon: Icon(LineIcons.rocket),
+                ),
                 BottomNavyBarItem(
-                    activeColor: Colors.white,
-                    title: Text('Perfil'),
-                    icon: Icon(LineIcons.userAlt)),
+                  activeColor: Colors.white,
+                  title: Text('Perfil'),
+                  icon: Icon(LineIcons.userAlt),
+                ),
               ],
             ),
           ),

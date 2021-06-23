@@ -19,8 +19,8 @@ class CategoriesPage extends StatefulWidget {
   _CategoriesPageState createState() => _CategoriesPageState();
 }
 
-class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAliveClientMixin{
-
+class _CategoriesPageState extends State<CategoriesPage>
+    with AutomaticKeepAliveClientMixin {
   void showProductDetail(BuildContext context, UserData user, Uint8List image) {
     MyBottomSheet().show(
       context,
@@ -157,13 +157,14 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
                       child: new Swiper(
                         itemBuilder: (BuildContext context, int index) {
                           return new Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: Image.network(
-                                "https://via.placeholder.com/288x188",
-                                fit: BoxFit.cover,
-                              ));
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Image.network(
+                              "https://via.placeholder.com/288x188",
+                              fit: BoxFit.cover,
+                            ),
+                          );
                         },
                         itemCount: 10,
                         viewportFraction: 0.8,

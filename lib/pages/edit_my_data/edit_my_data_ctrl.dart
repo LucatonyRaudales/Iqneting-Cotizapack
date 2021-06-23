@@ -3,7 +3,6 @@ import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_data.dart';
-import 'package:cotizapack/pages/splash/splash_screen.dart';
 import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/routes/app_pages.dart';

@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:typed_data';
 
+import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/PakageModel.dart';
 import 'package:cotizapack/pages/shop_market/shop_ctrl.dart';
@@ -157,7 +158,10 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                         Container(
                           width: 100,
                           child: ElevatedButton(
-                            onPressed: () => print('hola 12'),
+                            onPressed: () {
+                              controller.opcion.value = 0;
+                              showBuyPackage(Get.context!, data);
+                            },
                             child: Text(
                               'Comprar',
                               style: TextStyle(color: color100),
@@ -375,6 +379,22 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
     );
   }
 
+  void showBuyPackage(BuildContext context, Pakageclass data) {
+    MyBottomSheet()
+        .show(context, Get.height / 1.9, Obx(() => opcionsbuy(data)));
+  }
+
+  opcionsbuy(Pakageclass data) {
+    switch (controller.opcion.value) {
+      case 0:
+        return opcionone(data);
+      case 1:
+        return opciontwo(data);
+
+      default:
+    }
+  }
+
   Positioned bannerOnSale(Pakageclass data) {
     return Positioned(
       top: -5,
@@ -428,6 +448,207 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
           ),
         ),
       ),
+    );
+  }
+
+  opcionone(Pakageclass data) {
+    return ListView(
+      children: <Widget>[
+        Stack(
+          children: [
+            Container(
+              height: 90,
+              child: Center(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+                  child: Column(
+                    //crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      new Text(data.name, style: subtitulo),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      new Text(data.description, style: body1),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            if (data.onSale) bannerOnSale(data)
+          ],
+        ),
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          child: Column(
+            //crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                leading: Icon(LineIcons.moneyBill, color: color500),
+                title: new RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    text: '\$' +
+                        (data.onSale
+                            ? (data.price / ((data.percentage / 100) + 1))
+                                    .toStringAsFixed(2) +
+                                " /"
+                            : "${data.price.toStringAsFixed(2)}"),
+                    children: [
+                      if (data.onSale)
+                        TextSpan(
+                          text: '${data.price.toStringAsFixed(2)} ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            decorationStyle: TextDecorationStyle.wavy,
+                            decorationColor: Colors.red,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                subtitle: new Text('Precio', style: body2),
+              ),
+              ListTile(
+                leading: Icon(LineIcons.fileInvoice, color: color500),
+                title: new Text(data.quotations.toString(), style: body1),
+                subtitle: new Text('Cotizaciones', style: body2),
+              ),
+              if (data.onSale)
+                ListTile(
+                  leading: Icon(LineIcons.calendarAlt, color: color500),
+                  title: new Text(
+                      '${DateFormat.yMMMMEEEEd('es_US').format(DateTime.fromMillisecondsSinceEpoch(data.expirationPromo))}',
+                      style: body1),
+                  subtitle:
+                      new Text('Finalizacion de la promocion', style: body2),
+                ),
+            ],
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            controller.opcion.value = 1;
+          },
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: color500,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: Text(
+                  "Comprar",
+                  style: subtituloblanco,
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
+    );
+  }
+
+  opciontwo(Pakageclass data) {
+    return ListView(
+      children: <Widget>[
+        Padding(
+          padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+          child: Column(
+            //crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              controller.creditcard.cardNumber.length == 0
+                  ? ListTile(
+                      leading: Icon(LineIcons.creditCard, color: color500),
+                      title: new Text('No hay una tarjeta registrada',
+                          style: body1),
+                      subtitle: new Text('', style: body2),
+                    )
+                  : ListTile(
+                      leading: Icon(LineIcons.creditCard, color: color500),
+                      title: new Text(
+                          controller.creditcard.cardNumber
+                              .replaceAll(RegExp(r'(?<=.{4})\d(?=.{4})'), '*'),
+                          style: body1),
+                      subtitle: new Text(controller.creditcard.expiryDate,
+                          style: body2),
+                    ),
+              ListTile(
+                leading: Icon(LineIcons.moneyBill, color: color500),
+                title: new RichText(
+                  text: TextSpan(
+                    style: TextStyle(color: Colors.grey, fontSize: 16),
+                    text: '\$' +
+                        (data.onSale
+                            ? (data.price / ((data.percentage / 100) + 1))
+                                    .toStringAsFixed(2) +
+                                " /"
+                            : "${data.price.toStringAsFixed(2)}"),
+                    children: [
+                      if (data.onSale)
+                        TextSpan(
+                          text: '${data.price.toStringAsFixed(2)} ',
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            decoration: TextDecoration.lineThrough,
+                            decorationStyle: TextDecorationStyle.wavy,
+                            decorationColor: Colors.red,
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                subtitle: new Text('Precio', style: body2),
+              ),
+              ListTile(
+                leading: Icon(LineIcons.fileInvoice, color: color500),
+                title: new Text(data.quotations.toString(), style: body1),
+                subtitle: new Text('Cotizaciones', style: body2),
+              ),
+              if (data.onSale)
+                ListTile(
+                  leading: Icon(LineIcons.calendarAlt, color: color500),
+                  title: new Text(
+                      '${DateFormat.yMMMMEEEEd('es_US').format(DateTime.fromMillisecondsSinceEpoch(data.expirationPromo))}',
+                      style: body1),
+                  subtitle:
+                      new Text('Finalizacion de la promocion', style: body2),
+                ),
+            ],
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            if (controller.creditcard.cardNumber.length == 0)
+              return MyAlert.showMyDialog(
+                title: 'Tarjeta',
+                message: 'No cuenta con una tarjeta registrada',
+                color: Colors.red,
+              );
+            controller.payPakage(data);
+          },
+          child: Padding(
+            padding: EdgeInsets.all(20),
+            child: Container(
+              height: 45,
+              decoration: BoxDecoration(
+                color: color500,
+                borderRadius: BorderRadius.circular(30),
+              ),
+              child: Center(
+                child: Text(
+                  "Pagar",
+                  style: subtituloblanco,
+                ),
+              ),
+            ),
+          ),
+        )
+      ],
     );
   }
 }
