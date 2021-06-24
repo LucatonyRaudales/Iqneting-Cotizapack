@@ -40,11 +40,22 @@ class DashboardPage extends GetView<DashboardCtrl> {
             _ctrl.obx(
               (statistic) => Column(
                 children: [
-                  Card(
-                    elevation: 4.0,
-                    color: Colors.white,
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 16.0, horizontal: 12),
+                  Container(
+                    // elevation: 6.0,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.5),
+                          spreadRadius: 3,
+                          blurRadius: 5,
+                          offset: Offset(0, 3),
+                        ),
+                      ],
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    // color: Colors.white,
+                    margin: const EdgeInsets.all(16.0),
                     child: Row(
                       children: <Widget>[
                         Expanded(
@@ -135,23 +146,69 @@ class DashboardPage extends GetView<DashboardCtrl> {
                       children: <Widget>[
                         Expanded(
                           flex: 2,
-                          child: _buildTile(
-                            color: Colors.pink,
-                            icon: Icons.portrait,
-                            title: "Mis cotizaciones",
-                            data: "${statistic.totalQuotes}",
-                            function: () => Get.toNamed(Routes.QUOTATIONS),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.pink.shade600,
+                                  Colors.pink.shade400,
+                                  Colors.pink.shade300,
+                                  Colors.pink.shade100,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: _buildTile(
+                              color: Colors.transparent,
+                              icon: Icons.portrait,
+                              title: "Mis cotizaciones",
+                              data: "${statistic.totalQuotes}",
+                              function: () => Get.toNamed(Routes.QUOTATIONS),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16.0),
                         Expanded(
-                          child: _buildTile(
-                            color: Colors.green,
-                            icon: Icons.portrait,
-                            title: "Enviados",
-                            data: "${statistic.quotesSent}",
-                            function: () =>
-                                Get.toNamed(Routes.QUOTATIONS, arguments: 1),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.green.shade700,
+                                  Colors.green.shade500,
+                                  Colors.green.shade400,
+                                  Colors.green.shade100,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: _buildTile(
+                              color: Colors.transparent,
+                              icon: Icons.portrait,
+                              title: "Enviados",
+                              data: "${statistic.quotesSent}",
+                              function: () =>
+                                  Get.toNamed(Routes.QUOTATIONS, arguments: 1),
+                            ),
                           ),
                         ),
                       ],
@@ -163,32 +220,103 @@ class DashboardPage extends GetView<DashboardCtrl> {
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          child: _buildTile(
-                            color: Colors.blue,
-                            icon: LineIcons.tags,
-                            title: "Categorías",
-                            data: "${statistic.myCategories}",
-                            function: () => Get.toNamed(Routes.CATEGORY),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.blue.shade800,
+                                  Colors.blue.shade700,
+                                  Colors.blue.shade500,
+                                  Colors.blue.shade100,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: _buildTile(
+                              color: Colors.transparent,
+                              icon: LineIcons.tags,
+                              title: "Categorías",
+                              data: "${statistic.myCategories}",
+                              function: () => Get.toNamed(Routes.CATEGORY),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16.0),
                         Expanded(
-                          child: _buildTile(
-                            color: Colors.pink,
-                            icon: LineIcons.list,
-                            title: "Productos",
-                            data: "${statistic.myProducts}",
-                            function: () => Get.toNamed(Routes.PRODUCTSSEARCH),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.pink.shade600,
+                                  Colors.pink.shade400,
+                                  Colors.pink.shade300,
+                                  Colors.pink.shade200,
+                                  Colors.pink.shade100,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: _buildTile(
+                              color: Colors.transparent,
+                              icon: LineIcons.list,
+                              title: "Productos",
+                              data: "${statistic.myProducts}",
+                              function: () =>
+                                  Get.toNamed(Routes.PRODUCTSSEARCH),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16.0),
                         Expanded(
-                          child: _buildTile(
-                            color: Colors.blue,
-                            icon: LineIcons.users,
-                            title: "Clientes",
-                            data: "${statistic.myClients}",
-                            function: () => Get.toNamed(Routes.CUSTOMERS),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.5),
+                                  spreadRadius: 5,
+                                  blurRadius: 7,
+                                  offset: Offset(0, 3),
+                                ),
+                              ],
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.blue.shade800,
+                                  Colors.blue.shade700,
+                                  Colors.blue.shade500,
+                                  Colors.blue.shade100,
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: _buildTile(
+                              color: Colors.transparent,
+                              icon: LineIcons.users,
+                              title: "Clientes",
+                              data: "${statistic.myClients}",
+                              function: () => Get.toNamed(Routes.CUSTOMERS),
+                            ),
                           ),
                         ),
                       ],
@@ -218,7 +346,24 @@ class DashboardPage extends GetView<DashboardCtrl> {
           bottomLeft: Radius.circular(20.0),
           bottomRight: Radius.circular(20.0),
         ),
-        color: color500,
+        // color: color500,
+        gradient: LinearGradient(
+          colors: [
+            color700,
+            color500,
+            color400,
+            color300,
+          ],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.5),
+            spreadRadius: 3,
+            blurRadius: 5,
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
