@@ -6,11 +6,7 @@ import 'WaveClippers.dart';
 class Header extends StatelessWidget {
   final Widget widgetToShow;
   final double? height;
-    Header({
-    Key? key,
-    required this.widgetToShow,
-    this.height
-    });
+  Header({Key? key, required this.widgetToShow, this.height});
 
   @override
   Widget build(BuildContext context) {
@@ -23,8 +19,7 @@ class Header extends StatelessWidget {
             width: double.infinity,
             height: height ?? 300,
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [color400, color200])),
+                gradient: LinearGradient(colors: [color400, color200])),
           ),
         ),
         ClipPath(
@@ -32,10 +27,9 @@ class Header extends StatelessWidget {
           child: Container(
             child: Column(),
             width: double.infinity,
-            height: height?? 300,
+            height: height ?? 300,
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    colors: [color500, color300])),
+                gradient: LinearGradient(colors: [color500, color300])),
           ),
         ),
         ClipPath(
@@ -46,7 +40,16 @@ class Header extends StatelessWidget {
             height: height ?? 300,
             decoration: BoxDecoration(
                 gradient: LinearGradient(
-                    colors: [color700, color500])),
+              colors: [
+                color700,
+                color500,
+                color400,
+                color300,
+              ],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              //colors: [color700, color500]
+            )),
           ),
         ),
       ],

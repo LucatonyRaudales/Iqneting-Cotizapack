@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:animate_do/animate_do.dart';
@@ -33,6 +34,7 @@ class _CategoriesPageState extends State<CategoriesPage>
               width: Get.width,
               height: 290,
               decoration: BoxDecoration(
+                color: Colors.grey.shade200,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(25),
                   topRight: const Radius.circular(25),
@@ -108,6 +110,7 @@ class _CategoriesPageState extends State<CategoriesPage>
       init: CategoriesCtrl(),
       builder: (_ctrl) {
         return Scaffold(
+          backgroundColor: Colors.grey.shade200,
           body: SafeArea(
             child: RefreshIndicator(
               color: color700,
@@ -115,7 +118,8 @@ class _CategoriesPageState extends State<CategoriesPage>
               child: CustomScrollView(
                 slivers: <Widget>[
                   SliverAppBar(
-                    backgroundColor: Colors.white,
+                    //backgroundColor: Colors.white,
+                    backgroundColor: Colors.grey.shade200,
                     pinned: false,
                     // Allows the user to reveal the app bar if they begin scrolling
                     // back up the list of items.
@@ -151,7 +155,9 @@ class _CategoriesPageState extends State<CategoriesPage>
                     floating: true,
                     // Display a placeholder widget to visualize the shrinking size.
                     flexibleSpace: Container(
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade200,
+                      ),
                       height: 200,
                       width: Get.width,
                       child: new Swiper(
@@ -212,81 +218,82 @@ class _CategoriesPageState extends State<CategoriesPage>
     Uint8List image = Uint8List(0);
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
-      child: Container(
-        child: Card(
-          color: Colors.white,
-          elevation: 4,
-          child: InkWell(
-            onTap: () => showProductDetail(context, user,
-                image), //Get.to(ProductDetail(), arguments: product),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                user.logo != ''
-                    ? FutureBuilder<Uint8List?>(
-                        future: MyStorage().getFilePreview(
-                          fileId: user.logo!,
-                        ), //works for both public file and private file, for private files you need to be logged in
-                        builder: (context, snapshot) {
-                          if (snapshot.data != null) image = snapshot.data!;
-                          return snapshot.hasData && snapshot.data != null
-                              ? CircleAvatar(
-                                  backgroundColor: color200,
-                                  backgroundImage: MemoryImage(
-                                    snapshot.data!,
-                                  ),
-                                  foregroundColor: Colors.white,
-                                  radius: 35,
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Colors.white,
-                                    valueColor:
-                                        new AlwaysStoppedAnimation<Color>(
-                                            color500),
-                                  ),
-                                );
-                        },
-                      )
-                    : CircleAvatar(
-                        backgroundColor: color200,
-                        backgroundImage:
-                            AssetImage('assets/images/logo_colors.png'),
-                        foregroundColor: Colors.white,
-                        radius: 35,
-                      ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(user.businessName.toString(),
-                    style: subtitulo,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(user.address.toString(),
-                    style: body1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center),
-                SizedBox(
-                  height: 5,
-                ),
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(user.category.name.toString(),
-                        style: body1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center),
-                    Icon(LineIcons.appNet, color: color500, size: 15)
-                  ],
-                )
-              ],
-            ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        color: Colors.white,
+        shadowColor: color500,
+        elevation: 2,
+        child: InkWell(
+          onTap: () => showProductDetail(context, user,
+              image), //Get.to(ProductDetail(), arguments: product),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              user.logo != ''
+                  ? FutureBuilder<Uint8List?>(
+                      future: MyStorage().getFilePreview(
+                        fileId: user.logo!,
+                      ), //works for both public file and private file, for private files you need to be logged in
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null) image = snapshot.data!;
+                        return snapshot.hasData && snapshot.data != null
+                            ? CircleAvatar(
+                                backgroundColor: color200,
+                                backgroundImage: MemoryImage(
+                                  snapshot.data!,
+                                ),
+                                foregroundColor: Colors.white,
+                                radius: 35,
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: CircularProgressIndicator(
+                                  backgroundColor: Colors.white,
+                                  valueColor: new AlwaysStoppedAnimation<Color>(
+                                      color500),
+                                ),
+                              );
+                      },
+                    )
+                  : CircleAvatar(
+                      backgroundColor: color200,
+                      backgroundImage:
+                          AssetImage('assets/images/logo_colors.png'),
+                      foregroundColor: Colors.white,
+                      radius: 35,
+                    ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(user.businessName.toString(),
+                  style: subtitulo,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center),
+              SizedBox(
+                height: 5,
+              ),
+              Text(user.address.toString(),
+                  style: body1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center),
+              SizedBox(
+                height: 5,
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(user.category.name.toString(),
+                      style: body1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center),
+                  Icon(LineIcons.appNet, color: color500, size: 15)
+                ],
+              )
+            ],
           ),
         ),
       ),

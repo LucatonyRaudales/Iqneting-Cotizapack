@@ -189,7 +189,7 @@ class ProductsPage extends StatelessWidget {
       },
     );
   }
-  
+
   Widget myCards(
       {required ProductModel product,
       required int index,
@@ -201,6 +201,8 @@ class ProductsPage extends StatelessWidget {
       child: Container(
         child: Card(
           color: Colors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           elevation: 4,
           child: InkWell(
             onLongPress: () => showModalBottomSheet<void>(
@@ -346,8 +348,5 @@ class ProductsPage extends StatelessWidget {
         ),
       ),
     );
-    
   }
-
-  
 }

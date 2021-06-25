@@ -193,6 +193,8 @@ class CustomerPage extends StatelessWidget {
       delay: Duration(milliseconds: 200 * index),
       child: Container(
         child: Card(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           color: Colors.white,
           elevation: 4,
           child: InkWell(

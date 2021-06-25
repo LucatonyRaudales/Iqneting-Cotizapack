@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -12,6 +14,16 @@ import 'dashboard_ctrl.dart';
 
 class DashboardPage extends GetView<DashboardCtrl> {
   final TextStyle whiteText = TextStyle(color: Colors.white);
+  final Random random = new Random();
+  final List colors = [
+    [Colors.blue.shade400, Colors.blue.shade200],
+    [Colors.pink.shade400, Colors.pink.shade200],
+    [Colors.green.shade400, Colors.green.shade200],
+    [color200, color100],
+    [Colors.red.shade400, Colors.red.shade200],
+    [Colors.purple.shade400, Colors.purple.shade200],
+    [Colors.orange.shade400, Colors.orange.shade200],
+  ];
   @override
   Widget build(BuildContext context) {
     controller.onInit();
@@ -157,12 +169,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                                 ),
                               ],
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.pink.shade600,
-                                  Colors.pink.shade400,
-                                  Colors.pink.shade300,
-                                  Colors.pink.shade100,
-                                ],
+                                colors: colors[random.nextInt(colors.length)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -190,12 +197,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                                 ),
                               ],
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.green.shade700,
-                                  Colors.green.shade500,
-                                  Colors.green.shade400,
-                                  Colors.green.shade100,
-                                ],
+                                colors: colors[random.nextInt(colors.length)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -231,12 +233,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                                 ),
                               ],
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue.shade800,
-                                  Colors.blue.shade700,
-                                  Colors.blue.shade500,
-                                  Colors.blue.shade100,
-                                ],
+                                colors: colors[random.nextInt(colors.length)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -264,13 +261,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                                 ),
                               ],
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.pink.shade600,
-                                  Colors.pink.shade400,
-                                  Colors.pink.shade300,
-                                  Colors.pink.shade200,
-                                  Colors.pink.shade100,
-                                ],
+                                colors: colors[random.nextInt(colors.length)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
@@ -299,12 +290,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                                 ),
                               ],
                               gradient: LinearGradient(
-                                colors: [
-                                  Colors.blue.shade800,
-                                  Colors.blue.shade700,
-                                  Colors.blue.shade500,
-                                  Colors.blue.shade100,
-                                ],
+                                colors: colors[random.nextInt(colors.length)],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),

@@ -76,7 +76,7 @@ class InitPage extends StatelessWidget {
       function: function,
       leading: Icon(
         icon,
-        color: color700,
+        color: Colors.white,
       ),
       content: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -84,13 +84,13 @@ class InitPage extends StatelessWidget {
         children: <Widget>[
           Text(
             title,
-            style: subtitulo,
+            style: subtituloblanco,
             overflow: TextOverflow.visible,
           ),
           SizedBox(
             height: 8,
           ),
-          Text(subtitle, style: body1),
+          Text(subtitle, style: body1blanco),
         ],
       ),
     );

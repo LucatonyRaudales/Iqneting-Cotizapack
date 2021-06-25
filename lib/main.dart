@@ -24,6 +24,7 @@ class MyApp extends StatelessWidget {
       title: 'Cotiza Pack',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        scaffoldBackgroundColor: Colors.grey.shade200,
       ),
       getPages: AppPages.pages,
       initialBinding: DashboardBinding(),
