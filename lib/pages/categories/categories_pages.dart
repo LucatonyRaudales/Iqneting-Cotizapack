@@ -149,58 +149,84 @@ class _CategoriesPageState extends State<CategoriesPage>
                     expandedHeight: 200,
                   ),
                   SliverAppBar(
+                    backgroundColor: Colors.grey.shade200,
                     pinned: true,
                     // Allows the user to reveal the app bar if they begin scrolling
                     // back up the list of items.
                     floating: true,
                     // Display a placeholder widget to visualize the shrinking size.
-                    flexibleSpace: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                      ),
-                      height: 200,
-                      width: Get.width,
-                      child: new Swiper(
-                        itemBuilder: (BuildContext context, int index) {
-                          return new Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Image.network(
-                              "https://via.placeholder.com/288x188",
-                              fit: BoxFit.cover,
-                            ),
-                          );
-                        },
-                        itemCount: 10,
-                        viewportFraction: 0.8,
-                        scale: 0.9,
-                        autoplay: true,
+                    flexibleSpace: Padding(
+                      padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade200,
+                        ),
+                        height: 200,
+                        width: MediaQuery.of(context).size.width,
+                        child: new Swiper(
+                          itemBuilder: (BuildContext context, int index) {
+                            return new Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Image.network(
+                                "https://via.placeholder.com/288x188",
+                                fit: BoxFit.cover,
+                              ),
+                            );
+                          },
+                          itemCount: 10,
+                          viewportFraction: 0.8,
+                          scale: 0.9,
+                          autoplay: true,
+                        ),
                       ),
                     ),
                     // Make the initial height of the SliverAppBar larger than normal.
                     expandedHeight: 200,
                   ),
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      mainAxisSpacing: 14.0,
-                      crossAxisSpacing: 1.0,
-                      childAspectRatio: 1.0,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return myCards(
-                            user: _ctrl.userList.users![index],
-                            index: index,
-                            context: context,
-                            ctrl: _ctrl);
-                      },
-                      childCount: _ctrl.userList.users == null
-                          ? 0
-                          : _ctrl.userList.users!.length,
-                    ),
-                  )
+                  SliverPadding(
+                      padding: EdgeInsets.all(8.0),
+                      sliver: SliverGrid(
+                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                          maxCrossAxisExtent: 200,
+                          mainAxisSpacing: 14.0,
+                          crossAxisSpacing: 1.0,
+                          childAspectRatio: 1.0,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            return myCards(
+                                user: _ctrl.userList.users![index],
+                                index: index,
+                                context: context,
+                                ctrl: _ctrl);
+                          },
+                          childCount: _ctrl.userList.users == null
+                              ? 0
+                              : _ctrl.userList.users!.length,
+                        ),
+                      )),
+                  // SliverGrid(
+                  //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                  //     maxCrossAxisExtent: 200,
+                  //     mainAxisSpacing: 14.0,
+                  //     crossAxisSpacing: 1.0,
+                  //     childAspectRatio: 1.0,
+                  //   ),
+                  //   delegate: SliverChildBuilderDelegate(
+                  //     (BuildContext context, int index) {
+                  //       return myCards(
+                  //           user: _ctrl.userList.users![index],
+                  //           index: index,
+                  //           context: context,
+                  //           ctrl: _ctrl);
+                  //     },
+                  //     childCount: _ctrl.userList.users == null
+                  //         ? 0
+                  //         : _ctrl.userList.users!.length,
+                  //   ),
+                  // )
                 ],
               ),
             ),
