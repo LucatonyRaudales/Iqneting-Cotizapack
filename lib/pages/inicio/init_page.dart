@@ -5,7 +5,6 @@ import 'package:cotizapack/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:line_icons/line_icons.dart';
-import '../../styles/colors.dart';
 import '../../styles/typography.dart';
 import 'initP_page_ctrl.dart';
 
@@ -53,13 +52,13 @@ class InitPage extends StatelessWidget {
                 function: () => Get.toNamed(Routes.CUSTOMERS),
                 icon: LineIcons.userPlus,
                 title: 'Mis clientes',
-                subtitle: 'gestionar mis clientes'),
+                subtitle: 'Gestionar mis clientes'),
             card(
                 function: () => Get.to(ProductsCategoryPage(),
                     transition: Transition.rightToLeftWithFade),
                 icon: LineIcons.conciergeBell,
                 title: 'Mis Productos y servicio',
-                subtitle: 'gestiona mis categorías, productos y servicios'),
+                subtitle: 'Gestiona mis categorías, productos y servicios'),
             const SizedBox(height: 10.0),
           ],
         ),

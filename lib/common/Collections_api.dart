@@ -8,4 +8,5 @@ class Collections {
   static const STATISTIC = '60b589e03736f';
   static const PACKAGE = '60bae155f03e2';
   static const MYPACKAGE = '60d2270ee3686';
+  static const BANNERS = '60c2345bcd31e';
 }

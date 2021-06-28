@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:animate_do/animate_do.dart';
@@ -15,13 +14,7 @@ import '../../styles/colors.dart';
 import '../../styles/typography.dart';
 import 'categories_ctrl.dart';
 
-class CategoriesPage extends StatefulWidget {
-  @override
-  _CategoriesPageState createState() => _CategoriesPageState();
-}
-
-class _CategoriesPageState extends State<CategoriesPage>
-    with AutomaticKeepAliveClientMixin {
+class CategoriesPage extends GetView<CategoriesCtrl> {
   void showProductDetail(BuildContext context, UserData user, Uint8List image) {
     MyBottomSheet().show(
       context,
@@ -105,7 +98,6 @@ class _CategoriesPageState extends State<CategoriesPage>
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return GetBuilder<CategoriesCtrl>(
       init: CategoriesCtrl(),
       builder: (_ctrl) {
@@ -127,20 +119,25 @@ class _CategoriesPageState extends State<CategoriesPage>
                     // Display a placeholder widget to visualize the shrinking size.
                     flexibleSpace: Header(
                       widgetToShow: Column(
+                        mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Expanded(
                             child: SizedBox(height: 10.0),
                           ),
-                          Text(
-                            'Negocios',
-                            style: tituloblanco,
+                          Expanded(
+                            child: Text(
+                              'Negocios',
+                              style: tituloblanco,
+                            ),
                           ),
-                          SizedBox(height: 10.0),
-                          Icon(
-                            LineIcons.tags,
-                            color: Colors.white,
-                            size: 40,
+                          Expanded(child: SizedBox(height: 10.0)),
+                          Expanded(
+                            child: Icon(
+                              LineIcons.tags,
+                              color: Colors.white,
+                              size: 40,
+                            ),
                           )
                         ],
                       ),
@@ -161,18 +158,20 @@ class _CategoriesPageState extends State<CategoriesPage>
                       height: 200,
                       width: Get.width,
                       child: new Swiper(
+                        controller: controller.newController(),
                         itemBuilder: (BuildContext context, int index) {
-                          return new Container(
+                          return Container(
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
                             ),
-                            child: Image.network(
-                              "https://via.placeholder.com/288x188",
-                              fit: BoxFit.cover,
+                            child: Image(
+                              image: MemoryImage(
+                                controller.bannersImges[index],
+                              ),
                             ),
                           );
                         },
-                        itemCount: 10,
+                        itemCount: controller.bannersImges.length,
                         viewportFraction: 0.8,
                         scale: 0.9,
                         autoplay: true,
@@ -299,7 +298,4 @@ class _CategoriesPageState extends State<CategoriesPage>
       ),
     );
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
