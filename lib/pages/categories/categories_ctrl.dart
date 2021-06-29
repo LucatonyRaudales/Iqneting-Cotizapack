@@ -12,11 +12,12 @@ class CategoriesCtrl extends GetxController {
   UserList userList = UserList();
   List<BannersModel> banners = <BannersModel>[];
   List<Uint8List> bannersImges = <Uint8List>[];
-  SwiperController contSwiper = SwiperController();
+  late SwiperController? contSwiper = SwiperController();
   bool haveUsers = true;
 
   @override
   void onInit() {
+    if (contSwiper == null) contSwiper = SwiperController();
     loadData();
     super.onInit();
   }
@@ -57,7 +58,7 @@ class CategoriesCtrl extends GetxController {
 
   @override
   void onClose() {
-    contSwiper.dispose();
+    contSwiper!.dispose();
     super.onClose();
   }
 }

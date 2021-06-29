@@ -112,7 +112,7 @@ class CustomerPage extends StatelessWidget {
             backgroundColor: color500,
             onPressed: () {
               Get.to(
-                NewCustomerPage(),
+                () => NewCustomerPage(),
                 transition: Transition.rightToLeftWithFade,
                 arguments: {"editData": false, "data": null},
               );

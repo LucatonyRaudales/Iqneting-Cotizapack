@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 class InputText extends StatefulWidget {
   final String name;
   final Widget prefixIcon;
+  final Widget? suffixIcon;
   final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
   final void Function(String) onChanged;
@@ -21,6 +22,7 @@ class InputText extends StatefulWidget {
       required this.onChanged,
       required this.textInputType,
       this.obscureText,
+      this.suffixIcon,
       this.validator,
       this.autofillHints,
       this.maxLines,
@@ -71,6 +73,7 @@ class _InputTextState extends State<InputText> {
               fillColor: Color(0xffFAFAFA),
               hintText: widget.name,
               hintStyle: body1,
+              suffixIcon: widget.suffixIcon,
               prefixIcon: Material(
                 elevation: 0,
                 borderRadius: BorderRadius.circular(30),

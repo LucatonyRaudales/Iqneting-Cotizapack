@@ -67,7 +67,9 @@ class QuotationModel {
         total: json["total"].toDouble(),
         userId: json["userID"],
         createAt: json["create_at"],
-        customer: CustomerModel.fromJson(json["customer"]),
+        customer: json["customer"] == null
+            ? CustomerModel()
+            : CustomerModel.fromJson(json["customer"]),
         status: json["status"],
         product: json["product"] != null
             ? ProductList.fromJson(json["product"])

@@ -296,7 +296,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
           ),
         ),
         SizedBox(height: 15),
-        buttonNext(ctrl)
+        if (ctrl.quotation.customer != null) buttonNext(ctrl)
       ],
     );
   }

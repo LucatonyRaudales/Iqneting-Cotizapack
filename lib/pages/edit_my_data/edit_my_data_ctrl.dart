@@ -7,14 +7,18 @@ import 'package:cotizapack/repository/categories.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/get_storage.dart';
+import 'package:cotizapack/settings/google_map.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:google_maps_place_picker/google_maps_place_picker.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
+
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class EditMyDataCtrl extends GetxController {
   final RoundedLoadingButtonController btnController =
@@ -38,7 +42,7 @@ class EditMyDataCtrl extends GetxController {
       paymentUrl: "",
       userID: "",
       category: userCategory,
-      address: 'Dirección default mientras hay una api key');
+      address: '');
   var arguments = Get.arguments;
   bool isUpdate = false;
 
@@ -57,6 +61,74 @@ class EditMyDataCtrl extends GetxController {
     }
     getUserCategories();
     getSession();
+  }
+
+  void getAddress({required BuildContext context}) async {
+    final kInitialPosition = LatLng(-33.8567844, 151.213108);
+    Get.to(
+      () => PlacePicker(
+        apiKey: GoogleMapSettings.api,
+        initialPosition: kInitialPosition,
+        useCurrentLocation: true,
+
+        //usePlaceDetailSearch: true,
+        onPlacePicked: (result) {
+          userData!.address = result.formattedAddress;
+          if (result.adrAddress != null) userData!.address = result.adrAddress;
+
+          Get.back();
+          update();
+        },
+        selectedPlaceWidgetBuilder:
+            (context, selectedPlace, state, isSearchBarFocused) {
+          return isSearchBarFocused
+              ? Container()
+              : FloatingCard(
+                  bottomPosition: MediaQuery.of(context).size.height * 0.05,
+                  leftPosition: MediaQuery.of(context).size.width * 0.025,
+                  rightPosition: MediaQuery.of(context).size.width * 0.025,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  borderRadius: BorderRadius.circular(30),
+                  elevation: 4,
+                  child: Container(
+                    margin: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          selectedPlace?.formattedAddress ?? '',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(color500)),
+                          onPressed: () {
+                            userData!.address = selectedPlace!.formattedAddress;
+                            if (selectedPlace.adrAddress != null &&
+                                !selectedPlace.adrAddress!.contains('<span'))
+                              userData!.address = selectedPlace.adrAddress;
+
+                            Get.back();
+                            update();
+                          },
+                          child: Text("Selecionar"),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+        },
+        forceSearchOnZoomChanged: true,
+        automaticallyImplyAppBarLeading: true,
+        autocompleteLanguage: "es",
+        region: 'mx',
+        selectInitialPosition: true,
+      ),
+      fullscreenDialog: true,
+      popGesture: true,
+    );
   }
 
   void getSession() async {

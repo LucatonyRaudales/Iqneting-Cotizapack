@@ -9,4 +9,5 @@ class Collections {
   static const PACKAGE = '60bae155f03e2';
   static const MYPACKAGE = '60d2270ee3686';
   static const BANNERS = '60c2345bcd31e';
+  static const CONEKTAAPI = 'key_NCCdwwxtxGV1sHfZ1DB5QXQ';
 }

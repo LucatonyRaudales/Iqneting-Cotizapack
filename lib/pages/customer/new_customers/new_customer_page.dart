@@ -113,6 +113,8 @@ class NewCustomerPage extends StatelessWidget {
                                   _ctrl.customer.address! == ''
                                       ? 'Agregar dirección'
                                       : _ctrl.customer.address!,
+                                  overflow: TextOverflow.ellipsis,
+                                  maxLines: 1,
                                   style: subtitulo),
                               subtitle: new Text(
                                 'Dirección',

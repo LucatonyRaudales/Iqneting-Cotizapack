@@ -1,11 +1,18 @@
+import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:conekta_flutter/conekta_card.dart';
+import 'package:conekta_flutter/conekta_flutter.dart';
+import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
 import 'package:cotizapack/model/MyPackage.dart';
 import 'package:cotizapack/model/PakageModel.dart';
 import 'package:cotizapack/model/creditcard_model.dart';
+import 'package:cotizapack/model/my_account.dart';
+import 'package:cotizapack/repository/ProcessPay_Service.dart';
+import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/mypackage_repository.dart';
 import 'package:cotizapack/repository/packageRepository.dart';
 import 'package:cotizapack/routes/app_pages.dart';
@@ -22,9 +29,11 @@ class ShopQuotationsCtrl extends GetxController
   Uint8List? image;
   RxInt opcion = 0.obs;
   var creditcard = CreditCardModelLocal();
+  final conektaFlutter = ConektaFlutter();
   @override
   void onInit() {
     change(null, status: RxStatus.empty());
+    conektaFlutter.setApiKey(Collections.CONEKTAAPI);
     getPakage();
     super.onInit();
   }
@@ -86,26 +95,12 @@ class ShopQuotationsCtrl extends GetxController
           titleStyle: TextStyle(color: color700),
           onConfirm: () async {
             if (cvvconfirm == creditcard.cvvCode) {
+              Get.back();
               MyAlert.showMyDialog(
                   title: 'Tarjeta',
                   message: 'Confirmada Procesando su compra',
                   color: Colors.green);
-              var res = await MyPackaRepository()
-                  .saveMyPackage(mypackage: Mypackage(package: data))
-                  .onError((error, stackTrace) {
-                printError(info: error.toString());
-              });
-              if (res == null) return;
-
-              if (res.statusCode! > 400) return;
-
-              if (res.statusCode! >= 200 && res.statusCode! < 300) {
-                Get.offAllNamed(Routes.INITIAL);
-                MyAlert.showMyDialog(
-                    title: 'Exito',
-                    message: 'Su compra se realizo con éxito',
-                    color: Colors.green);
-              }
+              processbuy(data);
             } else {
               MyAlert.showMyDialog(
                 title: 'Tarjeta',
@@ -117,5 +112,74 @@ class ShopQuotationsCtrl extends GetxController
     } catch (e) {
       printError(info: e.toString());
     } finally {}
+  }
+
+  processbuy(Pakageclass data) async {
+    try {
+      final conektaCard = ConektaCard(
+        cardName: creditcard.cardHolderName,
+        cardNumber: creditcard.cardNumber,
+        cvv: creditcard.cvvCode,
+        expirationMonth: creditcard.expiryDate.split("/")[0],
+        expirationYear: creditcard.expiryDate.split("/")[1],
+      );
+      final String token = await conektaFlutter.createCardToken(conektaCard);
+
+      BuyProvider buyProvider = BuyProvider();
+      var user = await MyGetStorage().listenUserData();
+      var datauser = await readUserData();
+      var resutl = await buyProvider.buyPackage(
+          name: user.ceoName!,
+          phone: user.phone!,
+          email: datauser.email!,
+          itemName: data.name,
+          unitprice: data.price * 100,
+          quantity: 1,
+          tokenID: "$token");
+      if (resutl == null)
+        return MyAlert.showMyDialog(
+          title: 'Pago',
+          message: 'Pago no realizado',
+          color: Colors.red,
+        );
+      if (resutl.statusCode! >= 400) {
+        Get.back();
+        return MyAlert.showMyDialog(
+          title: 'Pago',
+          message: 'Pago no realizado',
+          color: Colors.red,
+        );
+      }
+      if (resutl.statusCode == 201) {
+        var res = await MyPackaRepository()
+            .saveMyPackage(mypackage: Mypackage(package: data))
+            .onError((error, stackTrace) {
+          printError(info: error.toString());
+        });
+        if (res == null) return;
+
+        if (res.statusCode! > 400) return;
+
+        if (res.statusCode! >= 200 && res.statusCode! < 300) {
+          3.delay(() => Get.offAllNamed(Routes.INITIAL));
+          MyAlert.showMyDialog(
+              title: 'Exito',
+              message: 'Su compra se realizo con éxito',
+              color: Colors.green);
+        }
+      }
+    } catch (e) {}
+  }
+
+  Future<MyAccount> readUserData() async {
+    MyAccount myAccount;
+    if (MyGetStorage().haveData(key: 'accountData')) {
+      myAccount =
+          MyAccount.fromJson(MyGetStorage().readData(key: 'accountData')!);
+    } else {
+      myAccount = (await AccountRepository().getAccount())!;
+    }
+    print('ID del usuario ${myAccount.id}');
+    return myAccount;
   }
 }

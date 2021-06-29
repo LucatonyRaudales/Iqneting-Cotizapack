@@ -11,6 +11,7 @@ import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/settings/google_map.dart';
+import 'package:cotizapack/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -69,60 +70,60 @@ class NewCustomerCtrl extends GetxController {
 
   void getAddress({required BuildContext context}) async {
     final kInitialPosition = LatLng(-33.8567844, 151.213108);
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) {
-          return PlacePicker(
-            apiKey: GoogleMapSettings.api,
-            initialPosition: kInitialPosition,
-            useCurrentLocation: true,
-            selectInitialPosition: true,
+    Get.to(
+      () => PlacePicker(
+        apiKey: GoogleMapSettings.api,
+        initialPosition: kInitialPosition,
+        useCurrentLocation: true,
+        selectedPlaceWidgetBuilder:
+            (context, selectedPlace, state, isSearchBarFocused) {
+          return isSearchBarFocused
+              ? Container()
+              : FloatingCard(
+                  bottomPosition: MediaQuery.of(context).size.height * 0.05,
+                  leftPosition: MediaQuery.of(context).size.width * 0.025,
+                  rightPosition: MediaQuery.of(context).size.width * 0.025,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  borderRadius: BorderRadius.circular(30),
+                  elevation: 4,
+                  child: Container(
+                    margin: EdgeInsets.all(20),
+                    child: Column(
+                      children: <Widget>[
+                        Text(
+                          selectedPlace?.formattedAddress ?? '',
+                          style: TextStyle(fontSize: 18),
+                          textAlign: TextAlign.center,
+                        ),
+                        SizedBox(height: 10),
+                        ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(color500)),
+                          onPressed: () {
+                            customer.address = selectedPlace!.formattedAddress;
+                            if (selectedPlace.adrAddress != null &&
+                                !selectedPlace.adrAddress!.contains('<span'))
+                              customer.address = selectedPlace.adrAddress;
 
-            //usePlaceDetailSearch: true,
-            onPlacePicked: (result) {
-              customer.address = result.adrAddress;
-              Navigator.of(context).pop();
-              update();
-            },
-            //forceSearchOnZoomChanged: true,
-            //automaticallyImplyAppBarLeading: false,
-            //autocompleteLanguage: "ko",
-            //region: 'au',
-            //selectInitialPosition: true,
-            // selectedPlaceWidgetBuilder: (_, selectedPlace, state, isSearchBarFocused) {
-            //   print("state: $state, isSearchBarFocused: $isSearchBarFocused");
-            //   return isSearchBarFocused
-            //       ? Container()
-            //       : FloatingCard(
-            //           bottomPosition: 0.0, // MediaQuery.of(context) will cause rebuild. See MediaQuery document for the information.
-            //           leftPosition: 0.0,
-            //           rightPosition: 0.0,
-            //           width: 500,
-            //           borderRadius: BorderRadius.circular(12.0),
-            //           child: state == SearchingState.Searching
-            //               ? Center(child: CircularProgressIndicator())
-            //               : RaisedButton(
-            //                   child: Text("Pick Here"),
-            //                   onPressed: () {
-            //                     // IMPORTANT: You MUST manage selectedPlace data yourself as using this build will not invoke onPlacePicker as
-            //                     //            this will override default 'Select here' Button.
-            //                     print("do something with [selectedPlace] data");
-            //                     Navigator.of(context).pop();
-            //                   },
-            //                 ),
-            //         );
-            // },
-            // pinBuilder: (context, state) {
-            //   if (state == PinState.Idle) {
-            //     return Icon(Icons.favorite_border);
-            //   } else {
-            //     return Icon(Icons.favorite);
-            //   }
-            // },
-          );
+                            Get.back();
+                            update();
+                          },
+                          child: Text("Selecionar"),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
         },
+        forceSearchOnZoomChanged: true,
+        automaticallyImplyAppBarLeading: true,
+        autocompleteLanguage: "es",
+        region: 'mx',
+        selectInitialPosition: true,
       ),
+      fullscreenDialog: true,
+      popGesture: true,
     );
   }
 

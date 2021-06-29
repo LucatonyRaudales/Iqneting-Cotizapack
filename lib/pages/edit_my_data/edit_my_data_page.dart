@@ -128,8 +128,7 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                     ),
                     FadeInUp(
                         child: InkWell(
-                      onTap: () => print(
-                          'get address'), //_ctrl.getAddress(context:context),
+                      onTap: () => _ctrl.getAddress(context: context),
                       child: Container(
                           height: 70,
                           child: Material(
@@ -143,6 +142,8 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                                             _ctrl.userData!.address! == ''
                                         ? 'Agregar dirección'
                                         : _ctrl.userData!.address!,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 1,
                                     style: subtitulo),
                                 subtitle: new Text(
                                   'Dirección',

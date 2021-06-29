@@ -1,3 +1,3 @@
-class GoogleMapSettings{
-  static String api = 'AIzaSyCEKW1ZjGXOBqYaa94nmddouzv_shllRz0';
+class GoogleMapSettings {
+  static String api = 'AIzaSyCxyFsUuFODYNFkLSNabseR9_VAWX9u21Y';
 }

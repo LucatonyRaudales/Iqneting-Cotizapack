@@ -1,5 +1,6 @@
 import 'package:conekta_flutter/conekta_card.dart';
 import 'package:conekta_flutter/conekta_flutter.dart';
+import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/creditcard_model.dart';
 import 'package:cotizapack/routes/app_pages.dart';
@@ -26,7 +27,8 @@ class CreditcardController extends GetxController
       RoundedLoadingButtonController();
   @override
   void onInit() {
-    conektaFlutter.setApiKey('key_AsSsrC4am4q8qp3zdTsqyHg');
+    // conektaFlutter.setApiKey('key_AsSsrC4am4q8qp3zdTsqyHg');
+    conektaFlutter.setApiKey(Collections.CONEKTAAPI);
 
     if (MyGetStorage().haveData(key: 'tokencreditCard')) {
       var data = MyGetStorage().readData(key: 'creditCard');
