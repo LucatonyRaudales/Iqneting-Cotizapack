@@ -61,7 +61,6 @@ flutter:
   assets:
     - assets/images/logo_colors.png
     - assets/images/logo_white.png
-    - assets/gifs/cotizapack.gif
     - assets/gifs/cotizapackgif.gif
  
 
