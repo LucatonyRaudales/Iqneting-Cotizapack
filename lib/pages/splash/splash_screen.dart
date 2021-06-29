@@ -7,20 +7,22 @@ class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder(
-      init: SplashCtrl(),
-      builder: (ctrl){
-        return  Scaffold(
-          body: new SafeArea(
-            child: new Center(
+        init: SplashCtrl(),
+        builder: (ctrl) {
+          return Scaffold(
+            backgroundColor: Colors.white,
+            body: new SafeArea(
+                child: new Center(
               child: ZoomIn(
-                child: Image.asset(
-                  'assets/images/logo_colors.png',
-                  width: 200,
-                )
-              ),
-            )
-          ),
-        );
-      });
+                  //duration: Duration(milliseconds: 1000),
+                  child: Image.asset('assets/gifs/cotizapackgif.gif')
+                  //     Image.asset(
+                  //   'assets/images/logo_colors.png',
+                  //   width: 200,
+                  // )
+                  ),
+            )),
+          );
+        });
   }
 }
