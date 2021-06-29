@@ -149,34 +149,29 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
                 // back up the list of items.
                 floating: true,
                 // Display a placeholder widget to visualize the shrinking size.
-                flexibleSpace: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.grey.shade200,
-                  ),
-                  height: 200,
-                  width: Get.width,
-                  child: new Swiper(
-                    controller: controller.newController(),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Image(
-                          image: MemoryImage(
-                            controller.bannersImges[index],
-                          ),
-                        ),
-                      );
-                    },
-                    itemCount: controller.bannersImges.length,
-                    viewportFraction: 0.8,
-                    scale: 0.9,
-                    autoplay: true,
-                  ),
+                flexibleSpace: Swiper(
+                  controller: controller.newController(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(16),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: MemoryImage(
+                              controller.bannersImges[index],
+                            ),
+                          )),
+                    );
+                  },
+                  itemCount: controller.bannersImges.length,
+                  viewportFraction: 0.8,
+                  scale: 0.9,
+                  autoplay: true,
                 ),
                 // Make the initial height of the SliverAppBar larger than normal.
                 expandedHeight: 200,
+                leadingWidth: MediaQuery.of(context).size.width,
               ),
               SliverPadding(
                 padding: EdgeInsets.all(8.0),
