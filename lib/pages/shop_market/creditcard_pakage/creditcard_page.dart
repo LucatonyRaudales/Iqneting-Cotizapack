@@ -84,8 +84,7 @@ class CreditcardPage extends GetView<CreditcardController> {
                     function: () {
                       if (controller.formKey.currentState!.validate()) {
                         print('valid!');
-                        controller.savecard();
-                        controller.roundedLoadingButtonController.success();
+                        controller.confirmar();
                       } else {
                         print('invalid!');
                         controller.roundedLoadingButtonController.error();

@@ -136,7 +136,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                     trailing: InkWell(
                       onTap: () {
-                        Get.toNamed(Routes.PAYPAKAGE);
+                        Get.toNamed(Routes.CREDITCARD);
                       },
                       child: Icon(LineIcons.creditCard, color: color700),
                     ),

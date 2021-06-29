@@ -81,7 +81,7 @@ abstract class AppPages {
       binding: MyPakageBinding(),
     ),
     GetPage(
-      name: Routes.PAYPAKAGE,
+      name: Routes.CREDITCARD,
       page: () => CreditcardPage(),
       transition: Transition.zoom,
       binding: CreeditCardBinding(),

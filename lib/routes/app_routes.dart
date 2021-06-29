@@ -14,5 +14,5 @@ abstract class Routes {
   static const NEWPRODUCTS = '/newproducts';
   static const SHOPPACKAGE = '/shopquotations';
   static const MYPACKAGE = '/mypackage';
-  static const PAYPAKAGE = '/paypackage';
+  static const CREDITCARD = '/creditcard';
 }

@@ -42,19 +42,21 @@ class ProductsCategoryPage extends GetView<ProductCategoriesCtrl> {
                   ? Padding(
                       padding: EdgeInsets.symmetric(horizontal: 25),
                       child: new Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            new Icon(LineIcons.hushedFace,
-                                size: 50, color: color500),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Text(
-                              'No tienes categorías guardadas, presiona (+) para agregar uno nuevo.',
-                              style: subtitulo,
-                              textAlign: TextAlign.center,
-                            )
-                          ]))
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          new Icon(LineIcons.hushedFace,
+                              size: 50, color: color500),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Text(
+                            'No tienes categorías guardadas, presiona (+) para agregar uno nuevo.',
+                            style: subtitulo,
+                            textAlign: TextAlign.center,
+                          )
+                        ],
+                      ),
+                    )
                   : (_ctrl.productCategoryList.listProductCategory == null ||
                           _ctrl
                               .productCategoryList.listProductCategory!.isEmpty)

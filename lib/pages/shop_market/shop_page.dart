@@ -6,6 +6,7 @@ import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/PakageModel.dart';
 import 'package:cotizapack/pages/shop_market/shop_ctrl.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/encript.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -564,8 +565,23 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
               controller.creditcard.cardNumber.length == 0
                   ? ListTile(
                       leading: Icon(LineIcons.creditCard, color: color500),
-                      title: new Text('No hay una tarjeta registrada',
-                          style: body1),
+                      title: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('No hay una tarjeta registrada', style: body1),
+                          IconButton(
+                            onPressed: () {
+                              Get.back();
+                              Get.back();
+                              Get.toNamed(Routes.CREDITCARD);
+                            },
+                            icon: Icon(
+                              LineIcons.plusCircle,
+                              color: color500,
+                            ),
+                          )
+                        ],
+                      ),
                       subtitle: new Text('', style: body2),
                     )
                   : ListTile(

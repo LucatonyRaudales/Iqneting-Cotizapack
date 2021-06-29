@@ -50,6 +50,32 @@ class CreditcardController extends GetxController
     update();
   }
 
+  confirmar() {
+    Get.defaultDialog(
+        title: "¡Advertencia!",
+        textCancel: 'Cancelar',
+        textConfirm: "Confirmar",
+        middleText:
+            "Los datos de la tarjeta se guardarán bajo un estricto sistema de encriptación",
+        middleTextStyle: TextStyle(color: color700),
+        confirmTextColor: Colors.white,
+        cancelTextColor: color700,
+        buttonColor: color700,
+        titleStyle: TextStyle(color: color700),
+        onCancel: () {
+          2.delay(() => roundedLoadingButtonController.reset());
+        },
+        onWillPop: () {
+          Get.back();
+          2.delay(() => roundedLoadingButtonController.reset());
+          return Future.value(true);
+        },
+        onConfirm: () async {
+          Get.back();
+          savecard();
+        });
+  }
+
   savecard() async {
     var creditcard = CreditCardModelLocal(
       cardHolderName: cardHolderName,

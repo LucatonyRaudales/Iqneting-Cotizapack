@@ -16,7 +16,7 @@ class LoginCtrl extends GetxController {
       new RoundedLoadingButtonController();
   UserRepository _userRepository = UserRepository();
   UserModel user = UserModel();
-  RxBool viewPass = false.obs;
+  RxBool viewPass = true.obs;
 
   void signIn() async {
     try {

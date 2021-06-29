@@ -166,8 +166,23 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
                   onError: (error) => Center(
                     child: Text('$error'),
                   ),
-                  onEmpty: Center(
-                    child: Text('No hay datos Cargados.'),
+                  onEmpty: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 25),
+                    child: new Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        new Icon(LineIcons.hushedFace,
+                            size: 50, color: color500),
+                        SizedBox(
+                          height: 20,
+                        ),
+                        Text(
+                          'No tienes productos guardados, presiona (+) para agregar uno nuevo.',
+                          style: subtitulo,
+                          textAlign: TextAlign.center,
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
