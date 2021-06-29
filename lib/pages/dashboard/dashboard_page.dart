@@ -26,7 +26,6 @@ class DashboardPage extends GetView<DashboardCtrl> {
   ];
   @override
   Widget build(BuildContext context) {
-    controller.onInit();
     return Scaffold(
       backgroundColor: Colors.white,
       body: _buildBody(context),
@@ -34,292 +33,289 @@ class DashboardPage extends GetView<DashboardCtrl> {
   }
 
   Widget _buildBody(BuildContext context) {
-    return GetBuilder<DashboardCtrl>(
-      builder: (_ctrl) => SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            _buildHeader(ctrl: _ctrl),
-            const SizedBox(height: 20.0),
-            Padding(
-              padding: const EdgeInsets.only(left: 16.0),
-              child: Text(
-                "Estadísticas - ${DateFormat.yMMMMEEEEd('es_US').format(DateTime.now())}",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          _buildHeader(ctrl: controller),
+          const SizedBox(height: 20.0),
+          Padding(
+            padding: const EdgeInsets.only(left: 16.0),
+            child: Text(
+              "Estadísticas - ${DateFormat.yMMMMEEEEd('es_US').format(DateTime.now())}",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18.0),
+            ),
+          ),
+          controller.obx(
+            (statistic) => Column(
+              children: [
+                Container(
+                  // elevation: 6.0,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 3,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  // color: Colors.white,
+                  margin: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: ListTile(
+                          leading: Container(
+                            alignment: Alignment.bottomCenter,
+                            width: 45.0,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Container(
+                                  height: 20,
+                                  width: 8.0,
+                                  color: Colors.green.shade100,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Container(
+                                  height: 25,
+                                  width: 8.0,
+                                  color: Colors.green.shade300,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Container(
+                                  height: 40,
+                                  width: 8.0,
+                                  color: Colors.green,
+                                ),
+                              ],
+                            ),
+                          ),
+                          title: Text(
+                            "Aceptados",
+                            style: body1,
+                          ),
+                          subtitle: Text(
+                            '${statistic!.quotesSent}',
+                            style: subtituloVerde,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      Expanded(
+                        child: ListTile(
+                          leading: Container(
+                            alignment: Alignment.bottomCenter,
+                            width: 45.0,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: <Widget>[
+                                Container(
+                                  height: 20,
+                                  width: 8.0,
+                                  color: Colors.red.shade100,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Container(
+                                  height: 25,
+                                  width: 8.0,
+                                  color: Colors.red.shade300,
+                                ),
+                                const SizedBox(width: 4.0),
+                                Container(
+                                  height: 40,
+                                  width: 8.0,
+                                  color: Colors.red,
+                                ),
+                              ],
+                            ),
+                          ),
+                          title: Text(
+                            "Cancelados",
+                            style: body1,
+                            textAlign: TextAlign.center,
+                          ),
+                          subtitle: Text(
+                            '${statistic.quotesCanceled}',
+                            style: subtituloRojo,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            gradient: LinearGradient(
+                              colors: colors[random.nextInt(colors.length)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: _buildTile(
+                            color: Colors.transparent,
+                            icon: Icons.portrait,
+                            title: "Mis cotizaciones",
+                            data: "${statistic.totalQuotes}",
+                            function: () => Get.toNamed(Routes.QUOTATIONS),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            gradient: LinearGradient(
+                              colors: colors[random.nextInt(colors.length)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: _buildTile(
+                            color: Colors.transparent,
+                            icon: Icons.portrait,
+                            title: "Enviados",
+                            data: "${statistic.quotesSent}",
+                            function: () =>
+                                Get.toNamed(Routes.QUOTATIONS, arguments: 1),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            gradient: LinearGradient(
+                              colors: colors[random.nextInt(colors.length)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: _buildTile(
+                            color: Colors.transparent,
+                            icon: LineIcons.tags,
+                            title: "Categorías",
+                            data: "${statistic.myCategories}",
+                            function: () => Get.toNamed(Routes.CATEGORY),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            gradient: LinearGradient(
+                              colors: colors[random.nextInt(colors.length)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: _buildTile(
+                            color: Colors.transparent,
+                            icon: LineIcons.list,
+                            title: "Productos",
+                            data: "${statistic.myProducts}",
+                            function: () => Get.toNamed(Routes.PRODUCTSSEARCH),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            gradient: LinearGradient(
+                              colors: colors[random.nextInt(colors.length)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: _buildTile(
+                            color: Colors.transparent,
+                            icon: LineIcons.users,
+                            title: "Clientes",
+                            data: "${statistic.myClients}",
+                            function: () => Get.toNamed(Routes.CUSTOMERS),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 20.0),
+              ],
+            ),
+            onLoading: Center(
+              child: SpinKitPulse(
+                color: color500,
+                size: 50.0,
               ),
             ),
-            _ctrl.obx(
-              (statistic) => Column(
-                children: [
-                  Container(
-                    // elevation: 6.0,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey.withOpacity(0.5),
-                          spreadRadius: 3,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    // color: Colors.white,
-                    margin: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: ListTile(
-                            leading: Container(
-                              alignment: Alignment.bottomCenter,
-                              width: 45.0,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  Container(
-                                    height: 20,
-                                    width: 8.0,
-                                    color: Colors.green.shade100,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Container(
-                                    height: 25,
-                                    width: 8.0,
-                                    color: Colors.green.shade300,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Container(
-                                    height: 40,
-                                    width: 8.0,
-                                    color: Colors.green,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            title: Text(
-                              "Aceptados",
-                              style: body1,
-                            ),
-                            subtitle: Text(
-                              '${statistic!.quotesSent}',
-                              style: subtituloVerde,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            leading: Container(
-                              alignment: Alignment.bottomCenter,
-                              width: 45.0,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                children: <Widget>[
-                                  Container(
-                                    height: 20,
-                                    width: 8.0,
-                                    color: Colors.red.shade100,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Container(
-                                    height: 25,
-                                    width: 8.0,
-                                    color: Colors.red.shade300,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Container(
-                                    height: 40,
-                                    width: 8.0,
-                                    color: Colors.red,
-                                  ),
-                                ],
-                              ),
-                            ),
-                            title: Text(
-                              "Cancelados",
-                              style: body1,
-                              textAlign: TextAlign.center,
-                            ),
-                            subtitle: Text(
-                              '${statistic.quotesCanceled}',
-                              style: subtituloRojo,
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 2,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                              gradient: LinearGradient(
-                                colors: colors[random.nextInt(colors.length)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: _buildTile(
-                              color: Colors.transparent,
-                              icon: Icons.portrait,
-                              title: "Mis cotizaciones",
-                              data: "${statistic.totalQuotes}",
-                              function: () => Get.toNamed(Routes.QUOTATIONS),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                              gradient: LinearGradient(
-                                colors: colors[random.nextInt(colors.length)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: _buildTile(
-                              color: Colors.transparent,
-                              icon: Icons.portrait,
-                              title: "Enviados",
-                              data: "${statistic.quotesSent}",
-                              function: () =>
-                                  Get.toNamed(Routes.QUOTATIONS, arguments: 1),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                              gradient: LinearGradient(
-                                colors: colors[random.nextInt(colors.length)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: _buildTile(
-                              color: Colors.transparent,
-                              icon: LineIcons.tags,
-                              title: "Categorías",
-                              data: "${statistic.myCategories}",
-                              function: () => Get.toNamed(Routes.CATEGORY),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                              gradient: LinearGradient(
-                                colors: colors[random.nextInt(colors.length)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: _buildTile(
-                              color: Colors.transparent,
-                              icon: LineIcons.list,
-                              title: "Productos",
-                              data: "${statistic.myProducts}",
-                              function: () =>
-                                  Get.toNamed(Routes.PRODUCTSSEARCH),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: Offset(0, 3),
-                                ),
-                              ],
-                              gradient: LinearGradient(
-                                colors: colors[random.nextInt(colors.length)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: _buildTile(
-                              color: Colors.transparent,
-                              icon: LineIcons.users,
-                              title: "Clientes",
-                              data: "${statistic.myClients}",
-                              function: () => Get.toNamed(Routes.CUSTOMERS),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                ],
-              ),
-              onLoading: Center(
-                child: SpinKitPulse(
-                  color: color500,
-                  size: 50.0,
-                ),
-              ),
-            )
-          ],
-        ),
+          )
+        ],
       ),
     );
   }
@@ -438,8 +434,4 @@ class DashboardPage extends GetView<DashboardCtrl> {
       ),
     );
   }
-
-  @override
-  // ignore: override_on_non_overriding_member
-  bool get wantKeepAlive => true;
 }

@@ -4,6 +4,7 @@ import 'package:cotizapack/common/Collections_api.dart';
 import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/model/creditcard_model.dart';
 import 'package:cotizapack/routes/app_pages.dart';
+import 'package:cotizapack/settings/encript.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +31,11 @@ class CreditcardController extends GetxController
     // conektaFlutter.setApiKey('key_AsSsrC4am4q8qp3zdTsqyHg');
     conektaFlutter.setApiKey(Collections.CONEKTAAPI);
 
-    if (MyGetStorage().haveData(key: 'tokencreditCard')) {
+    if (MyGetStorage().haveData(key: 'creditCard')) {
       var data = MyGetStorage().readData(key: 'creditCard');
       creditcard = CreditCardModelLocal.fromMap(data!);
-      cardNumber = creditcard.cardNumber;
-      expiryDate = creditcard.expiryDate;
+      cardNumber = Encript().desencription(creditcard.cardNumber);
+      expiryDate = Encript().desencription(creditcard.expiryDate);
       cardHolderName = creditcard.cardHolderName;
     }
     super.onInit();
@@ -52,24 +53,23 @@ class CreditcardController extends GetxController
   savecard() async {
     var creditcard = CreditCardModelLocal(
       cardHolderName: cardHolderName,
-      cardNumber: cardNumber,
-      cvvCode: cvvCode,
-      expiryDate: expiryDate,
+      cardNumber: Encript().encription(cardNumber),
+      cvvCode: Encript().encription(cvvCode),
+      expiryDate: Encript().encription(expiryDate),
     );
     try {
       final conektaCard = ConektaCard(
         cardName: creditcard.cardHolderName,
-        cardNumber: creditcard.cardNumber,
-        cvv: creditcard.cvvCode,
-        expirationMonth: creditcard.expiryDate.split("/")[0],
-        expirationYear: creditcard.expiryDate.split("/")[1],
+        cardNumber: Encript().desencription(creditcard.cardNumber),
+        cvv: Encript().desencription(creditcard.cvvCode),
+        expirationMonth:
+            Encript().desencription(creditcard.expiryDate).split("/")[0],
+        expirationYear:
+            Encript().desencription(creditcard.expiryDate).split("/")[1],
       );
-      final String token = await conektaFlutter.createCardToken(conektaCard);
+      await conektaFlutter.createCardToken(conektaCard);
       await MyGetStorage()
           .saveData(key: 'creditCard', data: creditcard.toMap());
-
-      await MyGetStorage().saveData(key: 'tokencreditCard', data: token);
-      print(token);
       MyAlert.showMyDialog(
         title: '¡Exito!',
         message: 'Datos guardados de forma segura.',
@@ -115,7 +115,6 @@ class CreditcardController extends GetxController
         buttonColor: color700,
         titleStyle: TextStyle(color: color700),
         onConfirm: () async {
-          await MyGetStorage().box.remove('tokencreditCard');
           await MyGetStorage().box.remove('creditCard');
           Get.back();
           Get.back();

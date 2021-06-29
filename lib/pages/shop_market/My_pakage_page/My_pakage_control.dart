@@ -19,6 +19,8 @@ class ListPakageController extends GetxController
       change(null, status: RxStatus.loading());
       var data = await MyPackaRepository().getPackages();
       data!.map((e) => packages.add(e.package!)).toList();
+      if (packages.length == 0)
+        return change(packages, status: RxStatus.empty());
       change(packages, status: RxStatus.success());
     } catch (e) {
       change(

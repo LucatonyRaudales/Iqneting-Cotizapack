@@ -48,6 +48,7 @@ dependencies:
       url: >-
         https://github.com/apeiro-tech/conekta_flutter.git
       ref: master
+  encrypt: ^5.0.0
 dev_dependencies:
   flutter_test:
             sdk: flutter

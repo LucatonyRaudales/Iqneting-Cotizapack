@@ -169,7 +169,7 @@ class MyPakagePage extends GetResponsiveView<ListPakageController> {
                 "Intentar de nuevo?",
                 style: body1,
               ),
-              onPressed: () => null,
+              onPressed: controller.getmyPackages,
             ),
           ],
         ),

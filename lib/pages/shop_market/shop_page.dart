@@ -6,6 +6,7 @@ import 'package:cotizapack/common/modalBottomSheet.dart';
 import 'package:cotizapack/model/PakageModel.dart';
 import 'package:cotizapack/pages/shop_market/shop_ctrl.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/settings/encript.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
@@ -570,10 +571,13 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                   : ListTile(
                       leading: Icon(LineIcons.creditCard, color: color500),
                       title: new Text(
-                          controller.creditcard.cardNumber
+                          Encript()
+                              .desencription(controller.creditcard.cardNumber)
                               .replaceAll(RegExp(r'(?<=.{4})\d(?=.{4})'), '*'),
                           style: body1),
-                      subtitle: new Text(controller.creditcard.expiryDate,
+                      subtitle: new Text(
+                          Encript()
+                              .desencription(controller.creditcard.expiryDate),
                           style: body2),
                     ),
               ListTile(

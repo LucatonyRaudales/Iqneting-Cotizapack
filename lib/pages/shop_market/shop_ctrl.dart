@@ -16,6 +16,7 @@ import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/mypackage_repository.dart';
 import 'package:cotizapack/repository/packageRepository.dart';
 import 'package:cotizapack/routes/app_pages.dart';
+import 'package:cotizapack/settings/encript.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class ShopQuotationsCtrl extends GetxController
           buttonColor: color700,
           titleStyle: TextStyle(color: color700),
           onConfirm: () async {
-            if (cvvconfirm == creditcard.cvvCode) {
+            if (cvvconfirm == Encript().desencription(creditcard.cvvCode)) {
               Get.back();
               MyAlert.showMyDialog(
                   title: 'Tarjeta',
@@ -118,10 +119,12 @@ class ShopQuotationsCtrl extends GetxController
     try {
       final conektaCard = ConektaCard(
         cardName: creditcard.cardHolderName,
-        cardNumber: creditcard.cardNumber,
-        cvv: creditcard.cvvCode,
-        expirationMonth: creditcard.expiryDate.split("/")[0],
-        expirationYear: creditcard.expiryDate.split("/")[1],
+        cardNumber: Encript().desencription(creditcard.cardNumber),
+        cvv: Encript().desencription(creditcard.cvvCode),
+        expirationMonth:
+            Encript().desencription(creditcard.expiryDate).split("/")[0],
+        expirationYear:
+            Encript().desencription(creditcard.expiryDate).split("/")[1],
       );
       final String token = await conektaFlutter.createCardToken(conektaCard);
 
@@ -133,7 +136,11 @@ class ShopQuotationsCtrl extends GetxController
           phone: user.phone!,
           email: datauser.email!,
           itemName: data.name,
-          unitprice: data.price * 100,
+          unitprice: ((data.onSale
+                      ? (data.price / ((data.percentage / 100) + 1))
+                      : data.price) *
+                  100)
+              .toInt(),
           quantity: 1,
           tokenID: "$token");
       if (resutl == null)

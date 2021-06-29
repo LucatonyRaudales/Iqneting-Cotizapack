@@ -98,138 +98,133 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CategoriesCtrl>(
-      init: CategoriesCtrl(),
-      builder: (_ctrl) {
-        return Scaffold(
-          backgroundColor: Colors.grey.shade200,
-          body: SafeArea(
-            child: RefreshIndicator(
-              color: color700,
-              onRefresh: _ctrl.loadData,
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    //backgroundColor: Colors.white,
-                    backgroundColor: Colors.grey.shade200,
-                    pinned: false,
-                    // Allows the user to reveal the app bar if they begin scrolling
-                    // back up the list of items.
-                    floating: true,
-                    // Display a placeholder widget to visualize the shrinking size.
-                    flexibleSpace: Header(
-                      widgetToShow: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: SizedBox(height: 10.0),
-                          ),
-                          Expanded(
-                            child: Text(
-                              'Negocios',
-                              style: tituloblanco,
-                            ),
-                          ),
-                          Expanded(child: SizedBox(height: 10.0)),
-                          Expanded(
-                            child: Icon(
-                              LineIcons.tags,
-                              color: Colors.white,
-                              size: 40,
-                            ),
-                          )
-                        ],
+    return Scaffold(
+      backgroundColor: Colors.grey.shade200,
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: color700,
+          onRefresh: controller.loadData,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                //backgroundColor: Colors.white,
+                backgroundColor: Colors.grey.shade200,
+                pinned: false,
+                // Allows the user to reveal the app bar if they begin scrolling
+                // back up the list of items.
+                floating: true,
+                // Display a placeholder widget to visualize the shrinking size.
+                flexibleSpace: Header(
+                  widgetToShow: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: SizedBox(height: 10.0),
                       ),
-                    ),
-                    // Make the initial height of the SliverAppBar larger than normal.
-                    expandedHeight: 200,
+                      Expanded(
+                        child: Text(
+                          'Negocios',
+                          style: tituloblanco,
+                        ),
+                      ),
+                      Expanded(child: SizedBox(height: 10.0)),
+                      Expanded(
+                        child: Icon(
+                          LineIcons.tags,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      )
+                    ],
                   ),
-                  SliverAppBar(
-                    backgroundColor: Colors.grey.shade200,
-                    pinned: true,
-                    // Allows the user to reveal the app bar if they begin scrolling
-                    // back up the list of items.
-                    floating: true,
-                    // Display a placeholder widget to visualize the shrinking size.
-                    flexibleSpace: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade200,
-                      ),
-                      height: 200,
-                      width: Get.width,
-                      child: new Swiper(
-                        controller: controller.newController(),
-                        itemBuilder: (BuildContext context, int index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                            ),
-                            child: Image(
-                              image: MemoryImage(
-                                controller.bannersImges[index],
-                              ),
-                            ),
-                          );
-                        },
-                        itemCount: controller.bannersImges.length,
-                        viewportFraction: 0.8,
-                        scale: 0.9,
-                        autoplay: true,
-                      ),
-                    ),
-                    // Make the initial height of the SliverAppBar larger than normal.
-                    expandedHeight: 200,
-                  ),
-                  SliverPadding(
-                    padding: EdgeInsets.all(8.0),
-                    sliver: SliverGrid(
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 200,
-                        mainAxisSpacing: 14.0,
-                        crossAxisSpacing: 1.0,
-                        childAspectRatio: 1.0,
-                      ),
-                      delegate: SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                          return myCards(
-                              user: _ctrl.userList.users![index],
-                              index: index,
-                              context: context,
-                              ctrl: _ctrl);
-                        },
-                        childCount: _ctrl.userList.users == null
-                            ? 0
-                            : _ctrl.userList.users!.length,
-                      ),
-                    ),
-                  ),
-                  // SliverGrid(
-                  //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  //     maxCrossAxisExtent: 200,
-                  //     mainAxisSpacing: 14.0,
-                  //     crossAxisSpacing: 1.0,
-                  //     childAspectRatio: 1.0,
-                  //   ),
-                  //   delegate: SliverChildBuilderDelegate(
-                  //     (BuildContext context, int index) {
-                  //       return myCards(
-                  //           user: _ctrl.userList.users![index],
-                  //           index: index,
-                  //           context: context,
-                  //           ctrl: _ctrl);
-                  //     },
-                  //     childCount: _ctrl.userList.users == null
-                  //         ? 0
-                  //         : _ctrl.userList.users!.length,
-                  //   ),
-                  // )
-                ],
+                ),
+                // Make the initial height of the SliverAppBar larger than normal.
+                expandedHeight: 200,
               ),
-            ),
+              SliverAppBar(
+                backgroundColor: Colors.grey.shade200,
+                pinned: true,
+                // Allows the user to reveal the app bar if they begin scrolling
+                // back up the list of items.
+                floating: true,
+                // Display a placeholder widget to visualize the shrinking size.
+                flexibleSpace: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                  ),
+                  height: 200,
+                  width: Get.width,
+                  child: new Swiper(
+                    controller: controller.newController(),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Image(
+                          image: MemoryImage(
+                            controller.bannersImges[index],
+                          ),
+                        ),
+                      );
+                    },
+                    itemCount: controller.bannersImges.length,
+                    viewportFraction: 0.8,
+                    scale: 0.9,
+                    autoplay: true,
+                  ),
+                ),
+                // Make the initial height of the SliverAppBar larger than normal.
+                expandedHeight: 200,
+              ),
+              SliverPadding(
+                padding: EdgeInsets.all(8.0),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                    maxCrossAxisExtent: 200,
+                    mainAxisSpacing: 14.0,
+                    crossAxisSpacing: 1.0,
+                    childAspectRatio: 1.0,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return myCards(
+                          user: controller.userList.users![index],
+                          index: index,
+                          context: context,
+                          ctrl: controller);
+                    },
+                    childCount: controller.userList.users == null
+                        ? 0
+                        : controller.userList.users!.length,
+                  ),
+                ),
+              ),
+              // SliverGrid(
+              //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              //     maxCrossAxisExtent: 200,
+              //     mainAxisSpacing: 14.0,
+              //     crossAxisSpacing: 1.0,
+              //     childAspectRatio: 1.0,
+              //   ),
+              //   delegate: SliverChildBuilderDelegate(
+              //     (BuildContext context, int index) {
+              //       return myCards(
+              //           user: _ctrl.userList.users![index],
+              //           index: index,
+              //           context: context,
+              //           ctrl: _ctrl);
+              //     },
+              //     childCount: _ctrl.userList.users == null
+              //         ? 0
+              //         : _ctrl.userList.users!.length,
+              //   ),
+              // )
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 

@@ -10,4 +10,5 @@ class Collections {
   static const MYPACKAGE = '60d2270ee3686';
   static const BANNERS = '60c2345bcd31e';
   static const CONEKTAAPI = 'key_NCCdwwxtxGV1sHfZ1DB5QXQ';
+  static const KEYENCRIPT = 'my 32 length key................';
 }
