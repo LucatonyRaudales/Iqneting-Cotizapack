@@ -22,12 +22,12 @@ dependencies:
   animate_do: ^2.0.0
   get: ^4.1.4
   get_storage: ^2.0.2
-  # appwrite: ^0.6.4
-  appwrite:
-    git:
-      url: >-
-        https://github.com/appwrite/sdk-for-flutter.git
-      ref: feat-null-safety-new
+  appwrite: ^0.6.4
+  # appwrite:
+  #   git:
+  #     url: >-
+  #       https://github.com/appwrite/sdk-for-flutter.git
+  #     ref: feat-null-safety-new
   image_cropper: ^1.4.0
   pdf: ^3.3.0
   printing: ^5.2.1
@@ -61,6 +61,9 @@ flutter:
   assets:
     - assets/images/logo_colors.png
     - assets/images/logo_white.png
+    - assets/gifs/cotizapack.gif
+    - assets/gifs/cotizapackgif.gif
+ 
 
 
   # To add assets to your application, add an assets section, like this:

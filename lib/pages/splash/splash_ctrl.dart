@@ -28,7 +28,7 @@ class SplashCtrl extends GetxController {
           _session = Session.fromJson(response.data);
           bool checked = (await checkuserData(session: _session))!;
           Timer(
-              Duration(seconds: 1),
+              Duration(milliseconds: 5294),
               () => Get.offNamed(
                     checked ? Routes.HOME : Routes.LOGIN,
                   ));
