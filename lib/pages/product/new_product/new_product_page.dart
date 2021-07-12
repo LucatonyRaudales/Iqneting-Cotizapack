@@ -128,27 +128,30 @@ class NewProductPage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    FadeInUp(
-                      child: InkWell(
-                        onTap: () => _ctrl.showPicker(context),
-                        child: Container(
-                          height: 70,
-                          child: Material(
-                            elevation: 2.0,
-                            borderRadius: BorderRadius.all(Radius.circular(30)),
-                            child: ListTile(
-                              trailing: new Icon(Icons.arrow_drop_down),
-                              title: new Text(_ctrl.product.category!.name!,
-                                  style: subtitulo),
-                              subtitle: new Text('Categoría', style: body1),
+                    if (_ctrl.arguments["category"] == null)
+                      SizedBox(
+                        height: 20,
+                      ),
+                    if (_ctrl.arguments["category"] == null)
+                      FadeInUp(
+                        child: InkWell(
+                          onTap: () => _ctrl.showPicker(context),
+                          child: Container(
+                            height: 70,
+                            child: Material(
+                              elevation: 2.0,
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(30)),
+                              child: ListTile(
+                                trailing: new Icon(Icons.arrow_drop_down),
+                                title: new Text(_ctrl.product.category!.name!,
+                                    style: subtitulo),
+                                subtitle: new Text('Categoría', style: body1),
+                              ),
                             ),
                           ),
                         ),
                       ),
-                    ),
                     SizedBox(
                       height: 20,
                     ),

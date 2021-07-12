@@ -10,6 +10,7 @@ abstract class Routes {
   static const CATEGORY = '/category';
   static const PRODUCTS = '/products';
   static const CUSTOMERS = '/customers';
+  static const EDITMYDATA = '/editmydata';
   static const PRODUCTSSEARCH = '/productsearch';
   static const NEWPRODUCTS = '/newproducts';
   static const SHOPPACKAGE = '/shopquotations';

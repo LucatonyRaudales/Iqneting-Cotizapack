@@ -4,8 +4,6 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'bindings/dashboard_binding.dart';
-
 void main() async {
   await GetStorage.init();
   initializeDateFormatting('es_US');
@@ -27,7 +25,6 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: Colors.grey.shade200,
       ),
       getPages: AppPages.pages,
-      initialBinding: DashboardBinding(),
     );
   }
 }

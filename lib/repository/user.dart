@@ -27,8 +27,9 @@ class UserRepository {
           password: user.password.toString(),
           name: user.nickname.toString());
       return result;
-    } catch (err) {
-      print('ERROR: $err');
+    } on AppwriteException catch (err) {
+      print('ERROR: ${err.message}');
+      throw err;
     }
   }
 
@@ -108,16 +109,32 @@ class UserRepository {
     }
   }
 
+  Future<bool> validateNickName({required String nickName}) async {
+    try {
+      database = Database(AppwriteSettings.initAppwrite());
+      Response response = await database.listDocuments(
+        collectionId: userCollectionID,
+        search: nickName,
+      );
+      if (response.data['sum'] > 0) return true;
+      return false;
+    } on AppwriteException catch (e) {
+      print(e.message);
+      return true;
+    }
+  }
+
   Future<Response?> updateMyData({required UserData data}) async {
     try {
       printInfo(info: data.toJson().toString());
       database = Database(AppwriteSettings.initAppwrite());
       Response response = await database.updateDocument(
-          collectionId: userCollectionID,
-          documentId: data.id!,
-          data: data.toJson(),
-          read: ["*"],
-          write: ["user:${data.userID}"]);
+        collectionId: userCollectionID,
+        documentId: data.id!,
+        data: data.toJson(),
+        read: ["*"],
+        write: ["user:${data.userID}"],
+      );
       return response;
     } catch (e) {
       print(e);

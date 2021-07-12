@@ -155,11 +155,8 @@ class CustomerPage extends StatelessWidget {
                           slivers: <Widget>[
                             SliverGrid(
                               gridDelegate:
-                                  SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 200,
-                                mainAxisSpacing: 14.0,
-                                crossAxisSpacing: 1.0,
-                                childAspectRatio: 1.0,
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
                               ),
                               delegate: SliverChildBuilderDelegate(
                                 (BuildContext context, int index) {

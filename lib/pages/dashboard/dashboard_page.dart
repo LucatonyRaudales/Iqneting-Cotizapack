@@ -38,7 +38,9 @@ class DashboardPage extends GetView<DashboardCtrl> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          _buildHeader(ctrl: controller),
+          Obx(
+            () => _buildHeader(ctrl: controller),
+          ),
           const SizedBox(height: 20.0),
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
@@ -352,7 +354,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
         children: <Widget>[
           ListTile(
               title: Text(
-                ctrl.userData.businessName!.toUpperCase(),
+                ctrl.userData.value.businessName!.toUpperCase(),
                 style: tituloblanco,
               ),
               trailing: Padding(
@@ -380,7 +382,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
           Padding(
             padding: const EdgeInsets.only(left: 16.0),
             child: Text(
-              ctrl.userData.ceoName!,
+              ctrl.userData.value.ceoName!,
               style: subtituloblanco,
             ),
           ),

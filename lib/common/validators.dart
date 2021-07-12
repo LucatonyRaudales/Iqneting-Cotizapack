@@ -1,3 +1,5 @@
+import 'package:get/utils.dart';
+
 class Validators {
   static String? phoneValidator(String? value) {
     if (value!.isEmpty) {
@@ -46,6 +48,21 @@ class Validators {
     }
     if (value.length < 10) {
       return "ingrese una dirección más exacta";
+    }
+  }
+
+  static String? numberValidator(value) {
+    if (value.isEmpty) {
+      return 'Campo obligatorio';
+    }
+    if (!GetUtils.isNum(value)) {
+      return 'No es es un numero';
+    }
+    if (int.parse(value) == 0) {
+      return 'El numero no puede ser 0';
+    }
+    if (value.isEmpty) {
+      return 'Campo obligatorio';
     }
   }
 

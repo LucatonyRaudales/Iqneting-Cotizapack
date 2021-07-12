@@ -25,8 +25,7 @@ class NewCustomerCtrl extends GetxController {
       new RoundedLoadingButtonController();
   File image = File('');
   CustomerRepository _customerRepository = CustomerRepository();
-  CustomerModel customer =
-      CustomerModel(address: 'mi dirección default para quitar luego');
+  CustomerModel customer = CustomerModel(address: '');
   late MyFile myFile;
 
   var arguments = Get.arguments;

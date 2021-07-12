@@ -107,6 +107,10 @@ class StatisticsRepository {
         return _statistic.totalQuotes != value
             ? await updateStatistic(data: {"totalQuotes": value})
             : null;
+      case "totalQuotesCanceled":
+        return _statistic.totalQuotes != value
+            ? await updateStatistic(data: {"totalQuotes": value})
+            : null;
       default:
         print('asaber papito');
     }

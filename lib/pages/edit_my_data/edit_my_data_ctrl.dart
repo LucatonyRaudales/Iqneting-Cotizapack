@@ -136,10 +136,20 @@ class EditMyDataCtrl extends GetxController {
     this.userData!.userID = sesionData.userId;
   }
 
-  void saveMyData() {
+  Future<bool> validateNickName() async {
+    return true;
+  }
+
+  void saveMyData() async {
     this.userData!.createAt = DateTime.now().microsecondsSinceEpoch;
-    this.userData!.nickname = this.userData!.ceoName;
     this.userData!.enable = true;
+    if (await _userRepository.validateNickName(
+        nickName: this.userData!.nickname!))
+      return MyAlert.showMyDialog(
+          title: 'Error',
+          message: 'Ya existe un usuario con ese alias.',
+          color: Colors.red);
+
     _userRepository.saveMyData(data: this.userData!.toJson()).then((value) {
       if (value.id != null) {
         btnController.success();

@@ -70,6 +70,7 @@ class CustomerModel {
         "address": address == null ? null : address,
         "notes": notes == null ? null : notes,
         "image": image == null ? null : image,
+        "enable": true,
         "\u0024permissions": permissions == null ? null : permissions!.toJson(),
       };
 }

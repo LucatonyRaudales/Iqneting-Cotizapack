@@ -67,6 +67,9 @@ class NewProductCtrl extends GetxController {
         product = arguments["data"];
       }
     }
+    if (arguments["category"] != null) {
+      product.category = arguments["category"];
+    }
     await readUserData();
     getProductCategory();
   }
@@ -220,8 +223,6 @@ class NewProductCtrl extends GetxController {
       Timer(Duration(seconds: 2), () => this.btnController.reset());
     }
   }
-
-
 
   void showPicker(BuildContext ctx) {
     showModalBottomSheet(

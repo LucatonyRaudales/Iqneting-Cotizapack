@@ -7,6 +7,7 @@ import 'package:cotizapack/bindings/products_search_binding.dart';
 import 'package:cotizapack/bindings/splash_binding.dart';
 import 'package:cotizapack/pages/customer/customers/customers_page.dart';
 import 'package:cotizapack/bindings/shopquotations_binding.dart';
+import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/home/home_page.dart';
 import 'package:cotizapack/pages/login/login_page.dart';
 import 'package:cotizapack/pages/product/new_product/new_product_page.dart';
@@ -34,6 +35,11 @@ abstract class AppPages {
     GetPage(
       name: Routes.CATEGORY,
       page: () => ProductsCategoryPage(),
+      transition: Transition.rightToLeftWithFade,
+    ),
+    GetPage(
+      name: Routes.EDITMYDATA,
+      page: () => EditMyDataPage(),
       transition: Transition.rightToLeftWithFade,
     ),
     GetPage(

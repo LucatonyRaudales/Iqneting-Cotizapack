@@ -132,7 +132,11 @@ class ProductsPage extends StatelessWidget {
             onPressed: () {
               Get.to(NewProductPage(),
                   transition: Transition.rightToLeftWithFade,
-                  arguments: {"editData": false, "data": null});
+                  arguments: {
+                    "editData": false,
+                    "data": null,
+                    'category': _ctrl.category
+                  });
             },
           ),
           body: SafeArea(
@@ -163,11 +167,8 @@ class ProductsPage extends StatelessWidget {
                           slivers: <Widget>[
                             SliverGrid(
                               gridDelegate:
-                                  SliverGridDelegateWithMaxCrossAxisExtent(
-                                maxCrossAxisExtent: 200,
-                                mainAxisSpacing: 14.0,
-                                crossAxisSpacing: 1.0,
-                                childAspectRatio: 1.0,
+                                  SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
                               ),
                               delegate: SliverChildBuilderDelegate(
                                 (BuildContext context, int index) {

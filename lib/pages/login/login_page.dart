@@ -1,6 +1,7 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/button.dart';
 import 'package:cotizapack/common/headerPaint.dart';
+import 'package:cotizapack/common/socials.dart';
 // import 'package:cotizapack/common/socials.dart';
 import 'package:cotizapack/common/textfields.dart';
 import 'package:cotizapack/common/validators.dart';
@@ -112,15 +113,10 @@ class LoginPage extends StatelessWidget {
                           SizedBox(
                             height: 20,
                           ),
-                          // SocialNetwork(
-                          //   facebookFunction: () => _ctrl.loginWithFacebook(),
-                          //   googleFunction: () => ScaffoldMessenger.of(context)
-                          //       .showSnackBar(SnackBar(
-                          //           content: Text(
-                          //               'Hubo un problema, estamos trabajando en ello',
-                          //               style: body1blanco),
-                          //           backgroundColor: Colors.red)),
-                          // ),
+                          SocialNetwork(
+                            facebookFunction: () => _ctrl.loginWithFacebook(),
+                            googleFunction: _ctrl.loginWithGoogle,
+                          ),
                           SizedBox(
                             height: 30,
                           ),
@@ -134,12 +130,15 @@ class LoginPage extends StatelessWidget {
                               InkWell(
                                 onTap: () => Get.to(SignUpPage(),
                                     transition: Transition.rightToLeftWithFade),
-                                child: Text("Regístrate",
-                                    style: TextStyle(
-                                        color: color500,
-                                        fontWeight: FontWeight.w500,
-                                        fontSize: 12,
-                                        decoration: TextDecoration.underline)),
+                                child: Text(
+                                  "Regístrate",
+                                  style: TextStyle(
+                                    color: color500,
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                    decoration: TextDecoration.underline,
+                                  ),
+                                ),
                               )
                             ],
                           ),

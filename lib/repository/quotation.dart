@@ -43,8 +43,9 @@ class QuotationRepository {
         collectionId: collectionID,
         filters: filter,
       );
-      StatisticsRepository()
-          .compareStatistics(key: 'totalQuotes', value: res.data["sum"]);
+      if (status == null)
+        StatisticsRepository()
+            .compareStatistics(key: 'totalQuotes', value: res.data["sum"]);
       return QuotationsList.fromJson(res.data['documents']);
     } catch (e) {
       print('Error get quotations: $e');

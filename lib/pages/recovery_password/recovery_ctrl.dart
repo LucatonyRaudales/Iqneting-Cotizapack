@@ -13,7 +13,7 @@ class RecoveryCtrl extends GetxController {
   AccountRepository _accountRepository = AccountRepository();
   TokenReset tokenReset = TokenReset();
   RxInt activeStep = 0.obs;
-  RxInt dotCount = 4.obs;
+  RxInt dotCount = 2.obs;
   String email = '', newPassword1 = '', newPassword2 = '';
 
   void sendEmail() async {

@@ -103,6 +103,26 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                       height: 20,
                     ),
                     InputText(
+                      initialValue: _ctrl.userData!.nickname,
+                      name: 'Alias',
+                      validator: Validators.nameValidator,
+                      autofillHints:
+                          _ctrl.isUpdate ? null : [AutofillHints.name],
+                      textInputType: TextInputType.name,
+                      prefixIcon: Icon(LineIcons.userEdit),
+                      readOnly: _ctrl.isUpdate,
+                      onChanged: (val) => _ctrl.userData!.nickname = val,
+                      onEditingComplete: () {
+                        MyAlert.showMyDialog(
+                            title: "Cuidado",
+                            message: "Su alias es unico y no se podra editar",
+                            color: Colors.red);
+                      },
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    InputText(
                       initialValue: _ctrl.userData!.businessName,
                       name: 'Razón social o nombre del grupo',
                       validator: Validators.nameValidator,
@@ -127,31 +147,34 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                       height: 25,
                     ),
                     FadeInUp(
-                        child: InkWell(
-                      onTap: () => _ctrl.getAddress(context: context),
-                      child: Container(
+                      child: InkWell(
+                        onTap: () => _ctrl.getAddress(context: context),
+                        child: Container(
                           height: 70,
                           child: Material(
-                              elevation: 2.0,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              child: ListTile(
-                                trailing: new Icon(Icons.arrow_drop_down),
-                                title: new Text(
-                                    _ctrl.userData!.address == null ||
-                                            _ctrl.userData!.address! == ''
-                                        ? 'Agregar dirección'
-                                        : _ctrl.userData!.address!,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 1,
-                                    style: subtitulo),
-                                subtitle: new Text(
-                                  'Dirección',
-                                  style: body1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))),
-                    )),
+                            elevation: 2.0,
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            child: ListTile(
+                              trailing: new Icon(Icons.arrow_drop_down),
+                              title: new Text(
+                                _ctrl.userData!.address == null ||
+                                        _ctrl.userData!.address! == ''
+                                    ? 'Agregar dirección'
+                                    : _ctrl.userData!.address!,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 1,
+                                style: subtitulo,
+                              ),
+                              subtitle: new Text(
+                                'Dirección',
+                                style: body1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 25,
                     ),
@@ -168,25 +191,27 @@ class _EditMyDataPageState extends State<EditMyDataPage> {
                       height: 25,
                     ),
                     FadeInUp(
-                        child: InkWell(
-                      onTap: () => _ctrl.showPicker(context),
-                      child: Container(
+                      child: InkWell(
+                        onTap: () => _ctrl.showPicker(context),
+                        child: Container(
                           height: 70,
                           child: Material(
-                              elevation: 2.0,
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(30)),
-                              child: ListTile(
-                                trailing: new Icon(Icons.arrow_drop_down),
-                                title: new Text(_ctrl.userData!.category.name,
-                                    style: subtitulo),
-                                subtitle: new Text(
-                                  _ctrl.userData!.category.description,
-                                  style: body1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ))),
-                    )),
+                            elevation: 2.0,
+                            borderRadius: BorderRadius.all(Radius.circular(30)),
+                            child: ListTile(
+                              trailing: new Icon(Icons.arrow_drop_down),
+                              title: new Text(_ctrl.userData!.category.name,
+                                  style: subtitulo),
+                              subtitle: new Text(
+                                _ctrl.userData!.category.description,
+                                style: body1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
                     SizedBox(
                       height: 25,
                     ),

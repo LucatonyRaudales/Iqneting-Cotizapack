@@ -31,6 +31,7 @@ class UserData {
     this.address,
     this.paymentUrl,
     this.createAt,
+    this.quotations,
     required this.category,
   });
 
@@ -48,6 +49,7 @@ class UserData {
   String? address;
   String? paymentUrl;
   int? createAt;
+  int? quotations;
   UserCategory category;
 
   factory UserData.fromJson(Map<String, dynamic> json) => UserData(
@@ -70,6 +72,7 @@ class UserData {
         address: json["address"] ?? '',
         paymentUrl: json["giro"] ?? '',
         createAt: json["create_at"] ?? 0,
+        quotations: json["quotations"] ?? 0,
         category: UserCategory.fromJson(json["category"]),
       );
 
@@ -90,6 +93,7 @@ class UserData {
             : List<dynamic>.from(packages!.map((e) => e.toMap()).toList()),
         "giro": paymentUrl,
         "create_at": createAt,
+        "quotations": createAt,
         "category": category.toJson(),
       };
 }

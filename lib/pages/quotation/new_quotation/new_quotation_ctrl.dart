@@ -46,9 +46,12 @@ class NewQuotationCtrl extends GetxController with StateMixin {
   RxInt dotCount = 4.obs;
   List<File?> images = [];
   ProductModel productModelTemp = ProductModel(category: ProductCategory());
+  TextEditingController priceController = TextEditingController();
+  TextEditingController quantityController = TextEditingController();
 
   @override
   void onInit() {
+    quantityController.text = "1";
     getCustomers();
     super.onInit();
   }
@@ -62,6 +65,8 @@ class NewQuotationCtrl extends GetxController with StateMixin {
       var data = (await MyGetStorage().listenUserData());
       quotation.userId = data.userID;
       getProducts();
+      if (_customerList.customers!.isEmpty)
+        change(null, status: RxStatus.empty());
     });
   }
 
@@ -114,6 +119,8 @@ class NewQuotationCtrl extends GetxController with StateMixin {
         subTotal += (i.price! * i.quantity!);
       }
       quotation.subTotal = subTotal;
+      double ivs = subTotal * (0.15); //real = (ivs/100)+1;
+      quotation.total = ivs + subTotal;
       printInfo(info: subTotal.toString());
       var val =
           await _quotationRepository.createQuotation(quotation: quotation);
@@ -164,7 +171,19 @@ class NewQuotationCtrl extends GetxController with StateMixin {
                               return InkWell(
                                 onTap: () {
                                   productModelTemp =
+                                      ProductModel(category: ProductCategory());
+                                  productModelTemp =
                                       _productList.products![index];
+                                  if (quantityController.text != "") {
+                                    priceController.text =
+                                        (double.parse(quantityController.text) *
+                                                productModelTemp.price!
+                                                    .toDouble())
+                                            .toString();
+
+                                    productModelTemp.quantity =
+                                        int.parse(quantityController.text);
+                                  }
                                   update();
                                   Get.back();
                                 },
@@ -225,7 +244,17 @@ class NewQuotationCtrl extends GetxController with StateMixin {
   }
 
   addproductinList(ProductModel productModel) {
-    quotation.product!.products!.add(productModel);
+    bool updateProduct = false;
+    quotation.product?.products?.forEach((e) {
+      int quantity = e.quantity!;
+      if (e.id == productModel.id) {
+        e.quantity = quantity + productModel.quantity!;
+
+        updateProduct = true;
+      }
+    });
+    if (!updateProduct) quotation.product?.products?.add(productModel);
+
     productModelTemp = ProductModel(category: ProductCategory());
     MyAlert.showMyDialog(
         title: 'Producto guardado correctamente!',
@@ -233,6 +262,7 @@ class NewQuotationCtrl extends GetxController with StateMixin {
         color: Colors.green);
     btnControllerSave.success();
     Timer(Duration(seconds: 1), () {
+      quantityController.text = "1";
       btnControllerSave.reset();
       update();
     });
@@ -246,44 +276,43 @@ class NewQuotationCtrl extends GetxController with StateMixin {
           color: Color(0xFF737373),
           height: Get.height / 2.4,
           child: Container(
-            child: _customerList.customers!.isNotEmpty
-                ? this.obx(
-                    (state) => ListView.builder(
-                      itemCount: _customerList.customers!.length,
-                      itemBuilder: (ctx, index) {
-                        return InkWell(
-                          onTap: () {
-                            customerSelected = _customerList.customers![index];
-                            quotation.customer = customerSelected;
-                            update();
-                            Get.back();
-                          },
-                          child: ListTile(
-                            trailing: new Icon(
-                              Icons.arrow_forward_ios,
-                              color: color500,
-                            ),
-                            title: new Text(
-                              _customerList.customers![index].name!,
-                              style: subtitulo,
-                            ),
-                            subtitle: new Text(
-                              _customerList.customers![index].address!,
-                              style: body2,
-                            ),
+            child: _customerList.customers!.length > 0
+                ? ListView.builder(
+                    itemCount: _customerList.customers!.length,
+                    itemBuilder: (ctx, index) {
+                      return InkWell(
+                        onTap: () {
+                          customerSelected = _customerList.customers![index];
+                          quotation.customer = customerSelected;
+                          update();
+                          Get.back();
+                        },
+                        child: ListTile(
+                          trailing: new Icon(
+                            Icons.arrow_forward_ios,
+                            color: color500,
                           ),
-                        );
-                      },
-                    ),
-                    onLoading: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                    onError: (error) => Text(error.toString()),
+                          title: new Text(
+                            _customerList.customers![index].name!,
+                            style: subtitulo,
+                          ),
+                          subtitle: new Text(
+                            _customerList.customers![index].address!,
+                            style: body2,
+                          ),
+                        ),
+                      );
+                    },
                   )
-                : new Center(
+                : Center(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        new Text('No se encontraron datos.'),
+                        Text(
+                          'No tienes clientes guardadas.',
+                          style: subtitulo,
+                          textAlign: TextAlign.center,
+                        ),
                         SizedBox(
                           height: 12,
                         ),

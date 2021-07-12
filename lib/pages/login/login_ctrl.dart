@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/common/alert.dart';
-import 'package:cotizapack/model/social_auth_models.dart';
 import 'package:cotizapack/model/user_model.dart';
 import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/routes/app_pages.dart';
@@ -62,36 +62,32 @@ class LoginCtrl extends GetxController {
     Timer(Duration(seconds: 2), () {});
   }
 
+  void loginWithGoogle() async {
+    try {
+      await SocialAuth().googleSignIn();
+      Get.offAllNamed(Routes.INITIAL);
+    } on AppwriteException catch (e) {
+      print('Error $e');
+      return MyAlert.showMyDialog(
+        title: 'Google Error',
+        message: 'hubo un problema al obtener los datos de Google',
+        color: Colors.red,
+      );
+    }
+    Timer(Duration(seconds: 2), () {});
+  }
+
   void loginWithFacebook() async {
     try {
-      FacebookData? data = await SocialAuth().facebookLogin();
-      if (data == null)
-        return MyAlert.showMyDialog(
-            title: 'Facebook Error',
-            message: 'hubo un problema al obtener los datos de facebook',
-            color: Colors.blue);
-      user.email = data.email;
-      user.password = data.id.toString();
-      signIn();
-      /*_userRepository.signIn(user: user)
-      .then((value)async{
-        switch(value?.statusCode){
-          case 201:
-            MyAlert.showMyDialog(title: '¡Bienvenid@!', message: 'estamos cargando tus datos', color: Colors.green);
-            Timer(Duration(seconds:2), ()=> Get.offAll(SplashPage(), transition: Transition.rightToLeftWithFade));
-          break;
-          case 500:
-            MyAlert.showMyDialog(title: 'Error', message: 'por favor, intenta de nuevo', color: Colors.red);
-            Timer(Duration(seconds: 3), (){
-            });
-          break;
-          default:
-          MyAlert.showMyDialog(title: 'Credenciales incorrectas', message: 'por favor, revisa las credenciales ingresadas o crea un nuevo perfíl', color: Colors.red);
-            print('asaber');
-        }
-      });*/
-    } catch (e) {
+      await SocialAuth().facebookSignIn();
+      Get.offAllNamed(Routes.INITIAL);
+    } on AppwriteException catch (e) {
       print('Error $e');
+      return MyAlert.showMyDialog(
+        title: 'Google Error',
+        message: 'hubo un problema al obtener los datos de Facebook',
+        color: Colors.blue,
+      );
     }
     Timer(Duration(seconds: 2), () {});
   }

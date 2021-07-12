@@ -137,11 +137,8 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
                   (state) => CustomScrollView(
                     slivers: <Widget>[
                       SliverGrid(
-                        gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                          maxCrossAxisExtent: 200,
-                          mainAxisSpacing: 14.0,
-                          crossAxisSpacing: 1.0,
-                          childAspectRatio: 1.0,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
                         ),
                         delegate: SliverChildBuilderDelegate(
                           (BuildContext context, int index) {

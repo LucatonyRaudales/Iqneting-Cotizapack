@@ -239,7 +239,9 @@ class PDF {
                     alignment: pw.Alignment.centerRight,
                     child: pw.Padding(
                       padding: pw.EdgeInsets.only(right: 15),
-                      child: pw.Text(0.0.toString(), style: estilo),
+                      child: pw.Text(
+                          (quotation.subTotal! * 0.15).toStringAsFixed(1),
+                          style: estilo),
                     ),
                   ),
                 )

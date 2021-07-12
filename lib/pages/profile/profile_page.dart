@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:cotizapack/common/headerPaint.dart';
-import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/profile/profile_ctrl.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:cotizapack/routes/app_pages.dart';
@@ -221,8 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                     MaterialStateProperty.all<Color>(color500)),
                             child: Text("Agregar mis datos",
                                 style: subtituloblanco),
-                            onPressed: () => Get.to(EditMyDataPage(),
-                                transition: Transition.rightToLeftWithFade,
+                            onPressed: () => Get.toNamed(Routes.EDITMYDATA,
                                 arguments: {"editData": false, "data": null}),
                           ),
                           SizedBox(height: 25),
@@ -235,8 +233,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         leading: Icon(LineIcons.userCheck, color: color700),
                         trailing: InkWell(
-                          onTap: () => Get.to(EditMyDataPage(),
-                              transition: Transition.rightToLeftWithFade,
+                          onTap: () => Get.toNamed(Routes.EDITMYDATA,
                               arguments: {
                                 "editData": true,
                                 "data": _ctrl.userData
@@ -268,7 +265,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           ListTile(
                             title: Text(_ctrl.userData.nickname!, style: body1),
-                            leading: Text("Nick name:", style: body2),
+                            leading: Text("Alias:", style: body2),
                           ),
                         ]),
                       ),

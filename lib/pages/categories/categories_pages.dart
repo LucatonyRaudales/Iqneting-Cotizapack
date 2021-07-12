@@ -176,11 +176,8 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
               SliverPadding(
                 padding: EdgeInsets.all(8.0),
                 sliver: SliverGrid(
-                  gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                    maxCrossAxisExtent: 200,
-                    mainAxisSpacing: 14.0,
-                    crossAxisSpacing: 1.0,
-                    childAspectRatio: 1.0,
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
                   ),
                   delegate: SliverChildBuilderDelegate(
                     (BuildContext context, int index) {

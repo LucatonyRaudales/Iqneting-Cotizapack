@@ -26,54 +26,57 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GetBuilder<NewQuotationCtrl>(
+    return GetBuilder<NewQuotationCtrl>(
         init: NewQuotationCtrl(),
-        builder: (_ctrl) => Form(
-          key: _formKey,
-          child: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  Header(
-                    height: 260,
-                    widgetToShow: Padding(
-                      padding: EdgeInsets.only(top: 25, bottom: 100),
-                      child: FadeInDown(
-                        child: new Column(
+        builder: (_ctrl) {
+          return Scaffold(
+            body: Form(
+              autovalidateMode: AutovalidateMode.always,
+              key: _formKey,
+              child: SafeArea(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Header(
+                        height: 260,
+                        widgetToShow: Padding(
+                          padding: EdgeInsets.only(top: 25, bottom: 100),
+                          child: FadeInDown(
+                            child: new Column(
+                              children: [
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Icon(LineIcons.swatchbook,
+                                    color: Colors.white, size: 49),
+                                SizedBox(
+                                  height: 25,
+                                ),
+                                new Text(
+                                  'Crear cotización',
+                                  style: subtituloblanco,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
                           children: [
-                            SizedBox(
-                              height: 15,
-                            ),
-                            Icon(LineIcons.swatchbook,
-                                color: Colors.white, size: 49),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            new Text(
-                              'Crear cotización',
-                              style: subtituloblanco,
-                            ),
+                            Obx(() => viewToShow(ctrl: _ctrl)),
                           ],
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      children: [
-                        Obx(() => viewToShow(ctrl: _ctrl)),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
-        ),
-      ),
-    );
+            bottomNavigationBar: Obx(() => buttonNext(_ctrl)),
+          );
+        });
   }
 
   Widget viewToShow({required NewQuotationCtrl ctrl}) {
@@ -122,23 +125,35 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
         SizedBox(
           height: 25,
         ),
-        buttonNext(ctrl),
       ],
     );
   }
 
-  Button buttonNext(NewQuotationCtrl ctrl) {
-    return Button(
-      btnController: ctrl.btnController,
-      name: 'Siguiente',
-      function: () {
-        if (!_formKey.currentState!.validate()) {
-          return ctrl.btnController.reset();
-        }
-        ctrl.activeStep++;
-        ctrl.btnController.reset();
-      },
-    );
+  Widget buttonNext(NewQuotationCtrl ctrl) {
+    return ctrl.activeStep.value != 4
+        ? Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Button(
+              btnController: ctrl.btnController,
+              name: 'Siguiente',
+              function: () {
+                if (ctrl.activeStep.value == 1) {
+                  if (ctrl.quotation.product!.products!.length == 0)
+                    return ctrl.btnController.reset();
+                }
+                if (ctrl.activeStep.value == 3) {
+                  if (ctrl.quotation.customer?.name == null)
+                    return ctrl.btnController.reset();
+                }
+                if (!_formKey.currentState!.validate()) {
+                  return ctrl.btnController.reset();
+                }
+                ctrl.activeStep++;
+                ctrl.btnController.reset();
+              },
+            ),
+          )
+        : Padding(padding: EdgeInsets.all(ctrl.activeStep.value.toDouble()));
   }
 
   Widget _productWidget({required NewQuotationCtrl ctrl}) {
@@ -180,27 +195,33 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                   ),
                   InputText(
                     name: 'Cantitdad (opcional)',
-                    validator: Validators.nameValidator,
-                    initialValue: '1',
+                    validator: Validators.numberValidator,
+                    controller: ctrl.quantityController,
                     autofillHints: [AutofillHints.telephoneNumber],
                     textInputType: TextInputType.number,
                     prefixIcon: Icon(LineIcons.productHunt),
-                    onChanged: (val) =>
-                        ctrl.productModelTemp.quantity = int.parse(val),
+                    onChanged: (val) {
+                      ctrl.priceController.text = "";
+                      ctrl.productModelTemp.quantity = int.parse(val);
+                      if (val != "")
+                        ctrl.priceController.text =
+                            (ctrl.productModelTemp.quantity! *
+                                    ctrl.productModelTemp.price!)
+                                .toString();
+                    },
                   ),
                   SizedBox(
                     height: 25,
                   ),
                   InputText(
+                    controller: ctrl.priceController,
                     key: UniqueKey(),
-                    initialValue: ctrl.productModelTemp.price.toString(),
+                    readOnly: true,
                     name: 'Precio',
                     validator: Validators.nameValidator,
-                    autofillHints: [AutofillHints.name],
                     textInputType: TextInputType.number,
                     prefixIcon: Icon(LineIcons.dollarSign),
-                    onChanged: (val) =>
-                        ctrl.quotation.subTotal = double.parse(val),
+                    onChanged: (val) {},
                   ),
                   SizedBox(height: 15),
                   Button(
@@ -218,7 +239,47 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
               )
             : SizedBox(),
         SizedBox(height: 15),
-        buttonNext(ctrl)
+        DataTable(
+          columnSpacing: 50,
+          headingTextStyle: body1.copyWith(fontWeight: FontWeight.bold),
+          dataTextStyle: body1,
+          columns: [
+            DataColumn(label: Text("Cantidad")),
+            DataColumn(label: Text("Producto")),
+            DataColumn(label: Text("Sub Total")),
+          ],
+          rows: List.generate(
+            ctrl.quotation.product!.products!.length,
+            (index) => DataRow(
+              cells: [
+                DataCell(
+                  Text(
+                    ctrl.quotation.product!.products![index].quantity
+                        .toString(),
+                  ),
+                ),
+                DataCell(
+                  Container(
+                    width: Get.width / 4,
+                    child: Text(
+                      ctrl.quotation.product!.products![index].name!,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ),
+                DataCell(
+                  Text(
+                    (ctrl.quotation.product!.products![index].price! *
+                            ctrl.quotation.product!.products![index].quantity!
+                                .toDouble())
+                        .toStringAsFixed(2),
+                  ),
+                )
+              ],
+            ),
+          ),
+        )
       ],
     );
   }
@@ -228,43 +289,44 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         FadeInDown(
-            child: InkWell(
-          onTap: () => DatePicker.showDatePicker(context,
-              showTitleActions: true,
-              minTime: DateTime.now(),
-              maxTime: DateTime(DateTime.now().year, DateTime.now().month + 1,
-                  DateTime.now().day), onChanged: (date) {
-            print('change $date');
-          }, onConfirm: (date) {
-            print('confirm $date');
-            setState(() =>
-                ctrl.quotation.expirationDate = date.millisecondsSinceEpoch);
-          },
-              currentTime: DateTime(DateTime.now().year, DateTime.now().month,
-                  DateTime.now().day + 1),
-              locale: LocaleType.es),
-          child: Container(
-            height: 70,
-            child: Material(
-              elevation: 2.0,
-              borderRadius: BorderRadius.all(Radius.circular(30)),
-              child: ListTile(
-                trailing: new Icon(Icons.arrow_drop_down),
-                title: new Text(
-                    DateFormat.yMMMMEEEEd('es_US')
-                        .format(DateTime.fromMillisecondsSinceEpoch(
-                            ctrl.quotation.expirationDate!))
-                        .toString(),
-                    style: subtitulo),
-                subtitle: new Text(
-                  'Fecha de expiración',
-                  style: body1,
-                  overflow: TextOverflow.ellipsis,
+          child: InkWell(
+            onTap: () => DatePicker.showDatePicker(context,
+                showTitleActions: true,
+                minTime: DateTime.now(),
+                maxTime: DateTime(DateTime.now().year, DateTime.now().month + 1,
+                    DateTime.now().day), onChanged: (date) {
+              print('change $date');
+            }, onConfirm: (date) {
+              print('confirm $date');
+              setState(() =>
+                  ctrl.quotation.expirationDate = date.millisecondsSinceEpoch);
+            },
+                currentTime: DateTime(DateTime.now().year, DateTime.now().month,
+                    DateTime.now().day + 1),
+                locale: LocaleType.es),
+            child: Container(
+              height: 70,
+              child: Material(
+                elevation: 2.0,
+                borderRadius: BorderRadius.all(Radius.circular(30)),
+                child: ListTile(
+                  trailing: new Icon(Icons.arrow_drop_down),
+                  title: new Text(
+                      DateFormat.yMMMMEEEEd('es_US')
+                          .format(DateTime.fromMillisecondsSinceEpoch(
+                              ctrl.quotation.expirationDate!))
+                          .toString(),
+                      style: subtitulo),
+                  subtitle: new Text(
+                    'Fecha de expiración',
+                    style: body1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
               ),
             ),
           ),
-        )),
+        ),
         SizedBox(
           height: 25,
         ),
@@ -296,7 +358,6 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
           ),
         ),
         SizedBox(height: 15),
-        if (ctrl.quotation.customer != null) buttonNext(ctrl)
       ],
     );
   }
@@ -310,6 +371,14 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
             onTap: () {},
             child: Column(
               children: [
+                Text(
+                  "Agregar imagenes a la cotización (opcional)",
+                  style: subtitulo,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(
+                  height: 20,
+                ),
                 GestureDetector(
                   onTap: () =>
                       ctrl.images.length < 1 ? getImage(ctrl: ctrl) : null,
@@ -376,7 +445,6 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
           ),
         ),
         SizedBox(height: 15),
-        buttonNext(ctrl)
       ],
     );
   }
