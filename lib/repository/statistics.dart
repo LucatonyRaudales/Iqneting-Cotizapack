@@ -50,7 +50,7 @@ class StatisticsRepository {
   Future<Statistic> getMyStatistics() async {
     try {
       database = Database(AppwriteSettings.initAppwrite());
-      this._userData = (await MyGetStorage().listenUserData());
+      this._userData = (await MyGetStorage().listenUserData(actualizar: true));
       Response res = await database.listDocuments(
           collectionId: collectionID,
           orderType: OrderType.desc,

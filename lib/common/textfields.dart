@@ -1,4 +1,5 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -68,6 +69,7 @@ class InputText extends GetView {
           validator: validator,
           autofillHints: autofillHints,
           onChanged: onChanged,
+          style: TextStyle(color: azulObscuro),
           cursorColor: Colors.deepOrange,
           decoration: InputDecoration(
               filled: true,

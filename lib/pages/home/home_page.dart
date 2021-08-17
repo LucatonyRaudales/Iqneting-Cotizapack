@@ -42,7 +42,7 @@ class HomePage extends GetView<HomeController> {
                 );
               },
               showElevation: false,
-              backgroundColor: color500,
+              backgroundColor: color700,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               items: <BottomNavyBarItem>[
                 BottomNavyBarItem(

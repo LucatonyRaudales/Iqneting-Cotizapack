@@ -309,10 +309,9 @@ class ProductsPage extends StatelessWidget {
                               foregroundColor: Colors.white,
                               radius: 35,
                             ))
-                        : CircularProgressIndicator(
-                            backgroundColor: Colors.white,
-                            valueColor:
-                                new AlwaysStoppedAnimation<Color>(color500),
+                        : SpinKitPulse(
+                            color: color500,
+                            size: 50.0,
                           );
                   },
                 ),

@@ -6,9 +6,9 @@ import 'package:cotizapack/settings/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
-class DashboardCtrl extends GetxController with StateMixin<Statistic?> {
+class DashboardCtrl extends GetxController with StateMixin<Rx<Statistic?>> {
   StatisticsRepository statisticsRepository = StatisticsRepository();
-  Statistic? statistic = Statistic();
+  Rx<Statistic?> statistic = Statistic().obs;
   UserCategory userCategory = UserCategory(
     collection: "",
     enable: true,
@@ -34,14 +34,15 @@ class DashboardCtrl extends GetxController with StateMixin<Statistic?> {
   }
 
   @override
-  void onReady() {
+  void onReady() async {
+    userData.value = (await MyGetStorage().listenUserData());
     super.onReady();
   }
 
   void getUserData() async {
     change(null, status: RxStatus.loading());
     try {
-      userData.value = (await MyGetStorage().listenUserData());
+      userData.value = (await MyGetStorage().listenUserData(actualizar: true));
       print('User name: ${userData.value.businessName}');
       userData.refresh();
       getmystatistics();
@@ -53,7 +54,7 @@ class DashboardCtrl extends GetxController with StateMixin<Statistic?> {
   void getmystatistics() {
     change(null, status: RxStatus.loading());
     if (MyGetStorage().haveData(key: 'statistic')) {
-      statistic =
+      statistic.value =
           Statistic.fromJson(MyGetStorage().readData(key: 'statistic')!);
       change(statistic, status: RxStatus.success());
     } else {
@@ -63,8 +64,9 @@ class DashboardCtrl extends GetxController with StateMixin<Statistic?> {
 
   void refreshStatistics() async {
     change(null, status: RxStatus.loading());
-    statisticsRepository.getMyStatistics().then((value) {
-      change(value, status: RxStatus.success());
+    statisticsRepository.getMyStatistics().then((value) async {
+      userData.value = (await MyGetStorage().listenUserData());
+      change(value.obs, status: RxStatus.success());
       update();
     });
   }

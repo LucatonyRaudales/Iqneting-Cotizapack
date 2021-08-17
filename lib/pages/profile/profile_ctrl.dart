@@ -100,6 +100,8 @@ class ProfileCtrl extends GetxController {
                     validator: Validators.passwordValidator,
                     prefixIcon: Icon(LineIcons.lock),
                     onChanged: (val) => this.oldPassword = val,
+                    obscureText: true,
+                    maxLines: 1,
                   ),
                   SizedBox(
                     height: 20,
@@ -110,6 +112,8 @@ class ProfileCtrl extends GetxController {
                     validator: Validators.passwordValidator,
                     prefixIcon: Icon(LineIcons.lock),
                     onChanged: (val) => this.newPassword = val,
+                    obscureText: true,
+                    maxLines: 1,
                   ),
                   SizedBox(
                     height: 30,

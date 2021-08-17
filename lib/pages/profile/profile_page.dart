@@ -66,9 +66,11 @@ class _ProfilePageState extends State<ProfilePage> {
                                                     color: Colors.red)
                                                 : snapshot.hasData &&
                                                         snapshot.data != null
-                                                    ? Image.memory(
-                                                        snapshot.data!)
-                                                    : CircularProgressIndicator();
+                                                    ? viewImage(snapshot)
+                                                    : SpinKitPulse(
+                                                        color: color500,
+                                                        size: 50.0,
+                                                      );
                                           },
                                         ),
                                 ),
@@ -326,6 +328,33 @@ class _ProfilePageState extends State<ProfilePage> {
           ],
         ),
       ),
+    );
+  }
+
+  InkWell viewImage(AsyncSnapshot<Uint8List?> snapshot) {
+    return InkWell(
+      onTap: () {
+        Get.dialog(
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              Center(
+                  child: Container(
+                clipBehavior: Clip.hardEdge,
+                decoration:
+                    BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                width: Get.width / 1.5,
+                height: Get.width / 1.5,
+                child: Image.memory(
+                  snapshot.data!,
+                ),
+              )),
+            ],
+          ),
+        );
+      },
+      child: Image.memory(snapshot.data!),
     );
   }
 

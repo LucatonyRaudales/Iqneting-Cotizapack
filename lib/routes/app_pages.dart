@@ -10,6 +10,7 @@ import 'package:cotizapack/bindings/shopquotations_binding.dart';
 import 'package:cotizapack/pages/edit_my_data/edit_my_data_page.dart';
 import 'package:cotizapack/pages/home/home_page.dart';
 import 'package:cotizapack/pages/login/login_page.dart';
+import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
 import 'package:cotizapack/pages/product/new_product/new_product_page.dart';
 import 'package:cotizapack/pages/product/product_category/product_categories_page.dart';
 import 'package:cotizapack/pages/product/products/products_page.dart';
@@ -31,6 +32,11 @@ abstract class AppPages {
       page: () => SplashPage(),
       transition: Transition.rightToLeftWithFade,
       binding: SplashBinding(),
+    ),
+    GetPage(
+      name: Routes.GENERATEPDF,
+      page: () => PdfPreviewScreen(),
+      transition: Transition.rightToLeftWithFade,
     ),
     GetPage(
       name: Routes.CATEGORY,

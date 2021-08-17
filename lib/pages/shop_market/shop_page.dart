@@ -166,11 +166,11 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                             },
                             child: Text(
                               'Comprar',
-                              style: TextStyle(color: color100),
+                              style: TextStyle(color: color50),
                             ),
                             style: ButtonStyle(
                               backgroundColor:
-                                  MaterialStateProperty.all(color500),
+                                  MaterialStateProperty.all(color700),
                             ),
                           ),
                         )
@@ -205,7 +205,7 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                         boxShadow: [
                           BoxShadow(
                             blurRadius: 3,
-                            color: color300,
+                            color: color700,
                           ),
                         ],
                         color: Colors.red,
@@ -219,7 +219,7 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                           child: Text(
                             'Oferta ${data.percentage}%',
                             style: TextStyle(
-                              color: color100,
+                              color: color50,
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
                               shadows: [
@@ -276,7 +276,10 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                                     fit: BoxFit.fill,
                                   )
                                 : Center(
-                                    child: CircularProgressIndicator(),
+                                    child: SpinKitPulse(
+                                      color: color500,
+                                      size: 50.0,
+                                    ),
                                   );
                       },
                     ),
@@ -436,7 +439,7 @@ class ShopQuotationsPage extends GetResponsiveView<ShopQuotationsCtrl> {
                 child: Text(
                   'Oferta ${data.percentage}%',
                   style: TextStyle(
-                    color: color100,
+                    color: Colors.white,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                     shadows: [

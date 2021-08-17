@@ -2,12 +2,11 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cotizapack/model/ModelPDF.dart';
-import 'package:cotizapack/model/my_account.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/pages/pdf/pdf_viewer.dart';
-import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -23,86 +22,153 @@ class PDF {
   );
 
   late UserData? _userData;
-  late MyAccount? _accountData;
-  AccountRepository _accountRepository = AccountRepository();
   // the function
   void generateFile({required QuotationModel quotation}) async {
     _userData = (await MyGetStorage().listenUserData());
-    _accountData = (await _accountRepository.getAccount())!;
     _userData!.logo = _userData!.logo == '' ? null : _userData!.logo;
     var img = _userData!.logo == null
-        ? networkImage("https://via.placeholder.com/288x188")
+        ? await networkImage("https://via.placeholder.com/288x188")
         : await MyStorage().getFilePreview(fileId: _userData!.logo!);
 
     doc.addPage(
       pw.Page(
-        pageFormat: PdfPageFormat.letter,
+        pageFormat: PdfPageFormat.a4,
         build: (pw.Context context) {
           return pw.Container(
             padding: pw.EdgeInsets.all(5),
             child: pw.Column(
-              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: pw.MainAxisAlignment.start,
+              mainAxisSize: pw.MainAxisSize.max,
               children: [
                 pw.Header(
                   level: 0,
                   child: new pw.Column(
                     children: [
-                      _infodate(quotation: quotation),
-                      pw.SizedBox(width: 30),
+                      _headerPage(img, userData: _userData!),
+                      pw.SizedBox(width: 60),
+                      pw.Divider(
+                        thickness: 4,
+                        color: PdfColor.fromHex("#D6D6D6"),
+                      ),
+                      pw.SizedBox(width: 60),
                       pw.Container(
                         child: pw.Row(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
                           mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                           children: [
-                            imageLogo(img),
-                            pw.SizedBox(width: 10),
-                            pw.Expanded(child: dataEmisor()),
-                            pw.VerticalDivider(
-                              thickness: 0,
-                              color: PdfColor.fromHex('#00000000'),
-                            ),
                             pw.Expanded(
+                                flex: 4,
                                 child: dataReceptor(quotation: quotation)),
+                            pw.SizedBox(width: 10),
+                            pw.Flexible(
+                                flex: 3, child: _infodate(quotation: quotation))
                           ],
                         ),
                       ),
-                      pw.SizedBox(height: 20),
-                      titleBlue(quotation: quotation),
+                      pw.SizedBox(height: 10),
+                      pw.Container(
+                          alignment: pw.Alignment.centerLeft,
+                          child: textCuston(
+                              'Proyecto. ' + quotation.title!, estilo)),
                     ],
                   ),
                 ),
                 pw.Table(
                   children: tableDetail(quotation),
                 ),
+                pw.Divider(
+                  thickness: 4,
+                  color: PdfColor.fromHex("#D6D6D6"),
+                ),
                 detalle(quotation),
+                pw.SizedBox(height: 10),
                 pw.Align(
-                  alignment: pw.Alignment.centerRight,
-                  child: pw.Container(
-                    width: 315,
-                    child: pw.Table(
-                      children: [
-                        pw.TableRow(
-                          decoration: pw.BoxDecoration(
-                            color: PdfColor.fromHex('#E4E2E2'),
-                            border: pw.Border(
-                              bottom: pw.BorderSide(width: 1),
-                            ),
-                          ),
+                  alignment: pw.Alignment.centerLeft,
+                  child: textCuston(
+                    'NO INCLUYE ENVIO',
+                    pw.TextStyle(
+                      fontSize: 12,
+                    ),
+                  ),
+                ),
+                pw.Divider(
+                  thickness: 2,
+                  color: PdfColor.fromHex("#D6D6D6"),
+                ),
+                textCuston(
+                  'Al frmar este documento, el cliente acepta los servicios y condiciones descritos en este contrato.',
+                  pw.TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+                pw.SizedBox(height: 40),
+                pw.Expanded(
+                  child: pw.Row(
+                    children: [
+                      pw.Expanded(
+                        child: pw.Column(
                           children: [
-                            pw.Text("Total: ".toUpperCase(), style: estilo),
+                            pw.Align(
+                              alignment: pw.Alignment.center,
+                              child:
+                                  textCuston('${_userData!.ceoName!}', estilo),
+                            ),
                             pw.Expanded(
-                              child: pw.Align(
-                                alignment: pw.Alignment.centerRight,
-                                child: pw.Padding(
-                                  padding: pw.EdgeInsets.only(right: 15),
-                                  child: pw.Text(quotation.subTotal.toString(),
-                                      style: estilo),
+                              child: pw.Container(
+                                decoration: pw.BoxDecoration(
+                                  border: pw.Border(
+                                    bottom: pw.BorderSide(
+                                      width: 2,
+                                      color: PdfColor.fromHex("#D6D6D6"),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            )
+                            ),
+                            pw.SizedBox(height: 10),
+                            pw.Align(
+                              alignment: pw.Alignment.center,
+                              child: textCuston(
+                                  DateFormat.yMMMd("es_MX").format(
+                                    DateTime.fromMicrosecondsSinceEpoch(
+                                      quotation.createAt!,
+                                    ),
+                                  ),
+                                  estilo),
+                            ),
                           ],
                         ),
-                      ],
-                    ),
+                      ),
+                      pw.SizedBox(width: 30),
+                      pw.Expanded(
+                        child: pw.Column(
+                          children: [
+                            pw.Align(
+                              alignment: pw.Alignment.center,
+                              child: textCuston(
+                                  '${quotation.customer!.name!}', estilo),
+                            ),
+                            pw.Expanded(
+                              child: pw.Container(
+                                decoration: pw.BoxDecoration(
+                                  border: pw.Border(
+                                    bottom: pw.BorderSide(
+                                      width: 2,
+                                      color: PdfColor.fromHex("#D6D6D6"),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            pw.SizedBox(height: 10),
+                            pw.Align(
+                              alignment: pw.Alignment.center,
+                              child: textCuston('(     /    /     )', estilo),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 pw.SizedBox(height: 20),
@@ -174,7 +240,7 @@ class PDF {
 
     file.writeAsBytesSync(await doc.save());
     if (file.path.isNotEmpty) {
-      Get.to(() => PdfPreviewScreen(), arguments: file);
+      Get.toNamed(Routes.GENERATEPDF, arguments: file);
     } else {
       generateFile(quotation: quotation);
     }
@@ -185,101 +251,158 @@ class PDF {
     var list = [
       headerTable(),
     ];
-    quotation.product!.products!
-        .map(
-          (e) => list.add(
-            listDetailTable(product: e, color: '#ffffffff'),
-          ),
-        )
-        .toList();
+
+    for (var i = 0; i < quotation.product!.products!.length; i++) {
+      var e = quotation.product!.products![i];
+      list.add(
+        listDetailTable(product: e, color: i % 2 == 0 ? '#ffffffff' : null),
+      );
+    }
+
     return list;
   }
 
-  pw.Expanded detalle(QuotationModel quotation) {
-    return pw.Expanded(
-        child: pw.Align(
-      alignment: pw.Alignment.centerRight,
-      child: pw.Container(
-        width: 250,
-        alignment: pw.Alignment.bottomRight,
-        child: pw.Table(
-          defaultVerticalAlignment: pw.TableCellVerticalAlignment.middle,
-          children: [
-            pw.TableRow(
-              decoration: pw.BoxDecoration(
-                color: PdfColor.fromHex('#E4E2E2'),
-                border: pw.Border(
-                  bottom: pw.BorderSide(width: 1),
-                ),
-              ),
+  pw.Column detalle(QuotationModel quotation) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.end,
+      children: [
+        pw.Align(
+          alignment: pw.Alignment.centerRight,
+          child: pw.Container(
+            width: 250,
+            alignment: pw.Alignment.bottomRight,
+            child: pw.Column(
               children: [
-                pw.Text("Sub Total: ".toUpperCase(), style: estilo),
-                pw.Expanded(
-                  child: pw.Align(
-                    alignment: pw.Alignment.centerRight,
-                    child: pw.Padding(
-                      padding: pw.EdgeInsets.only(right: 15),
-                      child:
-                          pw.Text(quotation.subTotal.toString(), style: estilo),
+                pw.SizedBox(height: 20),
+                pw.Table(
+                  defaultVerticalAlignment:
+                      pw.TableCellVerticalAlignment.middle,
+                  children: [
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                            child: pw.Text("Subtotal ", style: estilo),
+                            padding: pw.EdgeInsets.only(bottom: 8)),
+                        pw.Expanded(
+                          child: pw.Align(
+                            alignment: pw.Alignment.centerRight,
+                            child: pw.Padding(
+                              padding: pw.EdgeInsets.only(bottom: 8),
+                              child: pw.Text(
+                                  quotation.subTotal.toString() + " \$",
+                                  style: estilo),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  ),
-                )
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                            child: pw.Text("IVA (16%)", style: estilo),
+                            padding: pw.EdgeInsets.only(bottom: 8)),
+                        pw.Expanded(
+                          child: pw.Align(
+                            alignment: pw.Alignment.centerRight,
+                            child: pw.Padding(
+                              padding: pw.EdgeInsets.only(bottom: 8),
+                              child: pw.Text(
+                                  (quotation.subTotal! * 0.16)
+                                          .toStringAsFixed(1) +
+                                      " \$",
+                                  style: estilo),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    pw.TableRow(
+                      children: [
+                        pw.Padding(
+                            child: pw.Text("Total", style: estilo),
+                            padding: pw.EdgeInsets.only(bottom: 8)),
+                        pw.Expanded(
+                          child: pw.Align(
+                            alignment: pw.Alignment.centerRight,
+                            child: pw.Padding(
+                              padding: pw.EdgeInsets.only(bottom: 8),
+                              child: pw.Text(
+                                  (quotation.subTotal! * 1.16)
+                                          .toStringAsFixed(1) +
+                                      " \$",
+                                  style: estilo),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+                pw.Divider(
+                  thickness: 4,
+                  color: PdfColor.fromHex("#D6D6D6"),
+                ),
               ],
             ),
-            pw.TableRow(
-              decoration: pw.BoxDecoration(
-                border: pw.Border(
-                  bottom: pw.BorderSide(width: 1),
-                ),
-              ),
-              children: [
-                pw.Text("IVA: ", style: estilo),
-                pw.Expanded(
-                  child: pw.Align(
-                    alignment: pw.Alignment.centerRight,
-                    child: pw.Padding(
-                      padding: pw.EdgeInsets.only(right: 15),
-                      child: pw.Text(
-                          (quotation.subTotal! * 0.15).toStringAsFixed(1),
-                          style: estilo),
-                    ),
-                  ),
-                )
-              ],
-            ),
-            pw.TableRow(
-              decoration: pw.BoxDecoration(
-                color: PdfColor.fromHex('#E4E2E2'),
-                border: pw.Border(
-                  bottom: pw.BorderSide(width: 1),
-                ),
-              ),
-              children: [
-                pw.Text("ANTICIPO: ", style: estilo),
-                pw.Expanded(
-                  child: pw.Align(
-                    alignment: pw.Alignment.centerRight,
-                    child: pw.Padding(
-                      padding: pw.EdgeInsets.only(right: 15),
-                      child: pw.Text(0.0.toString(), style: estilo),
-                    ),
-                  ),
-                )
-              ],
-            ),
-          ],
+          ),
         ),
-      ),
-    ));
+        pw.Align(
+          alignment: pw.Alignment.centerRight,
+          child: pw.Container(
+            width: 315,
+            child: pw.Table(
+              children: [
+                pw.TableRow(
+                  decoration: pw.BoxDecoration(
+                    color: PdfColor.fromHex('#EBEBEB'),
+                    border: pw.Border(
+                      bottom: pw.BorderSide(
+                        width: 2,
+                        color: PdfColor.fromHex('#D6D6D6'),
+                      ),
+                    ),
+                  ),
+                  children: [
+                    pw.Padding(
+                      child: pw.Text(
+                        "Saldo deudor",
+                        style: estilo.copyWith(
+                          fontWeight: pw.FontWeight.bold,
+                        ),
+                      ),
+                      padding: pw.EdgeInsets.all(8),
+                    ),
+                    pw.Expanded(
+                      child: pw.Align(
+                        alignment: pw.Alignment.centerRight,
+                        child: pw.Padding(
+                          child: pw.Text(
+                            (quotation.subTotal! * 1.16).toStringAsFixed(1) +
+                                " \$",
+                            style: estilo.copyWith(
+                              color: PdfColor.fromHex("#3F6501"),
+                            ),
+                          ),
+                          padding: pw.EdgeInsets.all(8),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   pw.Column imageLogo(img) {
     return pw.Column(
       children: [
-        pw.Text('COTIZACIÓN', style: estilo.copyWith(fontSize: 18)),
         pw.Container(
-          width: 100,
-          height: 100,
+          width: 80,
+          height: 80,
           decoration: pw.BoxDecoration(
             border: pw.Border.all(width: 1),
           ),
@@ -294,73 +417,65 @@ class PDF {
     );
   }
 
-  dataEmisor() {
-    final estilo = pw.TextStyle(
-      fontSize: 14,
-    );
-    if (_userData == null) return pw.Text('No hay data');
-    return pw.Column(
-      crossAxisAlignment: pw.CrossAxisAlignment.start,
-      children: [
-        pw.Text('Emisor ',
-            style: estilo.copyWith(fontWeight: pw.FontWeight.bold)),
-        pw.Text('Nombre: ${_userData!.ceoName}', style: estilo),
-        pw.Text('RFC: ${_userData!.rfc}', style: estilo),
-        pw.Text('Telefono: ${_userData!.phone}', style: estilo),
-        pw.Text('Email: ${_accountData!.email}', style: estilo),
-        pw.Text('Dirección: ${_userData!.address}', style: estilo),
-      ],
-    );
-  }
-
   pw.TableRow listDetailTable({required ProductModel product, String? color}) {
     return pw.TableRow(
       repeat: true,
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromHex(color ?? '#BCBCBC'),
-        border: pw.Border(
-          bottom: pw.BorderSide(width: 1),
-        ),
+        color: PdfColor.fromHex(color ?? '#EBEBEB'),
       ),
       children: [
         pw.Expanded(
           child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Padding(
+                padding: pw.EdgeInsets.all(5),
+                child: textCuston(
+                  product.name.toString(),
+                  pw.TextStyle(fontSize: 14.0, fontWeight: pw.FontWeight.bold),
+                ),
+              ),
+            ],
+          ),
+        ),
+        pw.Expanded(
+          child: pw.Column(
             crossAxisAlignment: pw.CrossAxisAlignment.center,
             children: [
-              pw.Text(
-                product.quantity.toString(),
-                style: pw.TextStyle(fontSize: 14.0),
-              )
+              pw.Padding(
+                padding: pw.EdgeInsets.all(5),
+                child: pw.Text(
+                  product.quantity.toString(),
+                  style: pw.TextStyle(fontSize: 14.0),
+                ),
+              ),
             ],
           ),
         ),
         pw.Expanded(
           child: pw.Column(
             children: [
-              textCuston(
-                product.name.toString().toUpperCase(),
-                pw.TextStyle(fontSize: 14.0),
-              )
+              pw.Padding(
+                padding: pw.EdgeInsets.all(5),
+                child: pw.Text(
+                  (product.price!).toStringAsFixed(2) + " \$",
+                  style: pw.TextStyle(fontSize: 14.0),
+                ),
+              ),
             ],
           ),
         ),
         pw.Expanded(
           child: pw.Column(
             children: [
-              pw.Text(
-                (product.price!).toStringAsFixed(2),
-                style: pw.TextStyle(fontSize: 14.0),
-              )
-            ],
-          ),
-        ),
-        pw.Expanded(
-          child: pw.Column(
-            children: [
-              pw.Text(
-                (product.price! * product.quantity!).toStringAsFixed(2),
-                style: pw.TextStyle(fontSize: 14.0),
-              )
+              pw.Padding(
+                padding: pw.EdgeInsets.all(5),
+                child: pw.Text(
+                  (product.price! * product.quantity!).toStringAsFixed(2) +
+                      " \$",
+                  style: pw.TextStyle(fontSize: 14.0),
+                ),
+              ),
             ],
           ),
         ),
@@ -371,41 +486,60 @@ class PDF {
   pw.TableRow headerTable() {
     return pw.TableRow(
       decoration: pw.BoxDecoration(
-        color: PdfColor.fromHex('#BCBCBC'),
+        color: PdfColor.fromHex('#DEEDF7'),
         border: pw.Border(
           bottom: pw.BorderSide(width: 1),
         ),
       ),
       children: [
+        pw.Expanded(
+          flex: 2,
+          child: pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.start,
+            children: [
+              pw.Padding(
+                padding: pw.EdgeInsets.all(5),
+                child: pw.Text(
+                  'Artículo',
+                  style: pw.TextStyle(fontSize: 16.0),
+                ),
+              )
+            ],
+          ),
+        ),
         pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
-            pw.Text(
-              'CANTIDAD',
-              style: pw.TextStyle(fontSize: 15.0),
+            pw.Padding(
+              padding: pw.EdgeInsets.all(5),
+              child: pw.Text(
+                'Cantidad',
+                style: pw.TextStyle(fontSize: 15.0),
+              ),
             )
           ],
         ),
         pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
-            pw.Text(
-              'CONCEPTO(S)',
-              style: pw.TextStyle(fontSize: 15.0),
+            pw.Padding(
+              padding: pw.EdgeInsets.all(5),
+              child: pw.Text(
+                'Precio',
+                style: pw.TextStyle(fontSize: 15.0),
+              ),
             )
           ],
         ),
         pw.Column(
+          mainAxisAlignment: pw.MainAxisAlignment.center,
           children: [
-            pw.Text(
-              'PRECIO',
-              style: pw.TextStyle(fontSize: 15.0),
-            )
-          ],
-        ),
-        pw.Column(
-          children: [
-            pw.Text(
-              'TOTAL',
-              style: pw.TextStyle(fontSize: 15.0),
+            pw.Padding(
+              padding: pw.EdgeInsets.all(5),
+              child: pw.Text(
+                'Importe',
+                style: pw.TextStyle(fontSize: 15.0),
+              ),
             )
           ],
         ),
@@ -505,28 +639,84 @@ class PDF {
   }
 
   _infodate({required QuotationModel quotation}) {
+    return pw.Column(
+      crossAxisAlignment: pw.CrossAxisAlignment.end,
+      children: [
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text(
+              'Cotización #',
+              textAlign: pw.TextAlign.right,
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
+            pw.Text(
+              quotation.id.toString(),
+              textAlign: pw.TextAlign.right,
+            ),
+          ],
+        ),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text(
+              'Fecha ',
+              textAlign: pw.TextAlign.right,
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
+            pw.Text(
+              DateFormat.yMMMd("es_MX").format(
+                DateTime.now(),
+              ),
+              textAlign: pw.TextAlign.right,
+            ),
+          ],
+        ),
+        pw.Row(
+          mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+          children: [
+            pw.Text(
+              'Vencimiento ',
+              textAlign: pw.TextAlign.right,
+              style: pw.TextStyle(fontWeight: pw.FontWeight.bold),
+            ),
+            pw.Text(
+              DateFormat.yMMMd("es_MX").format(
+                DateTime.fromMillisecondsSinceEpoch(
+                  quotation.expirationDate!,
+                ),
+              ),
+              textAlign: pw.TextAlign.right,
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  _headerPage(img, {required UserData userData}) {
     return new pw.Align(
       alignment: pw.Alignment.centerRight,
-      child: pw.Column(
-        crossAxisAlignment: pw.CrossAxisAlignment.end,
+      child: pw.Row(
+        crossAxisAlignment: pw.CrossAxisAlignment.start,
+        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
         children: [
-          pw.Text(
-            'FECHA: ' +
-                DateFormat("dd-MM-yy").format(
-                  DateTime.now(),
-                ),
-            textAlign: pw.TextAlign.right,
-          ),
-          pw.Text(
-            'FOLIO: ' + quotation.id.toString(),
-            textAlign: pw.TextAlign.right,
-          ),
-          pw.Text(
-            'VIGENCIA: ' +
-                DateFormat("dd-MM-yy").format(
-                    DateTime.fromMillisecondsSinceEpoch(
-                        quotation.expirationDate!)),
-            textAlign: pw.TextAlign.right,
+          imageLogo(img),
+          pw.Column(
+            crossAxisAlignment: pw.CrossAxisAlignment.end,
+            children: [
+              pw.Text('COTIZACIÓN',
+                  textAlign: pw.TextAlign.right,
+                  style: pw.TextStyle(
+                      fontSize: 16, fontWeight: pw.FontWeight.bold)),
+              pw.Text(userData.ceoName!,
+                  textAlign: pw.TextAlign.right,
+                  style: pw.TextStyle(fontWeight: pw.FontWeight.bold)),
+              pw.Text(
+                userData.phone!,
+                textAlign: pw.TextAlign.right,
+              ),
+            ],
           ),
         ],
       ),
@@ -540,13 +730,10 @@ class PDF {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('Receptor: ',
-            style: estilo.copyWith(fontWeight: pw.FontWeight.bold)),
-        textCuston('Nombre: ${quotation.customer!.name!}', estilo),
-        textCuston('RFC: ${quotation.customer!.rfc!}', estilo),
-        textCuston('Telefono: ${quotation.customer!.phone!}', estilo),
-        textCuston('Email: ${quotation.customer!.email!}', estilo),
-        textCuston('Dirección: ${quotation.customer!.address!}', estilo),
+        pw.Text('Para', style: estilo.copyWith(fontWeight: pw.FontWeight.bold)),
+        textCuston('${quotation.customer!.rfc!}', estilo),
+        textCuston('${quotation.customer!.name!}', estilo),
+        textCuston('${quotation.customer!.address!}', estilo),
       ],
     );
   }

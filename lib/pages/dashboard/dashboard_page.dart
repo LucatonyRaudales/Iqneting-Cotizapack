@@ -103,7 +103,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             style: body1,
                           ),
                           subtitle: Text(
-                            '${statistic!.quotesSent}',
+                            '${statistic!.value!.quotesSent}',
                             style: subtituloVerde,
                             textAlign: TextAlign.center,
                           ),
@@ -143,7 +143,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             textAlign: TextAlign.center,
                           ),
                           subtitle: Text(
-                            '${statistic.quotesCanceled}',
+                            '${statistic.value!.quotesCanceled}',
                             style: subtituloRojo,
                             textAlign: TextAlign.center,
                           ),
@@ -157,7 +157,6 @@ class DashboardPage extends GetView<DashboardCtrl> {
                   child: Row(
                     children: <Widget>[
                       Expanded(
-                        flex: 2,
                         child: Container(
                           decoration: BoxDecoration(
                             boxShadow: [
@@ -179,8 +178,38 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             color: Colors.transparent,
                             icon: Icons.portrait,
                             title: "Mis cotizaciones",
-                            data: "${statistic.totalQuotes}",
+                            data: "${statistic.value!.totalQuotes}",
                             function: () => Get.toNamed(Routes.QUOTATIONS),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 5,
+                                blurRadius: 7,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                            gradient: LinearGradient(
+                              colors: colors[random.nextInt(colors.length)],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: Obx(
+                            () => _buildTile(
+                              color: Colors.transparent,
+                              icon: Icons.portrait,
+                              title: "Cotizaciones\nDisponibles",
+                              data: "${controller.userData.value.quotations}",
+                              function: () => Get.toNamed(Routes.SHOPPACKAGE),
+                            ),
                           ),
                         ),
                       ),
@@ -207,7 +236,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             color: Colors.transparent,
                             icon: Icons.portrait,
                             title: "Enviados",
-                            data: "${statistic.quotesSent}",
+                            data: "${statistic.value!.quotesSent}",
                             function: () =>
                                 Get.toNamed(Routes.QUOTATIONS, arguments: 1),
                           ),
@@ -243,7 +272,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             color: Colors.transparent,
                             icon: LineIcons.tags,
                             title: "Categorías",
-                            data: "${statistic.myCategories}",
+                            data: "${statistic.value!.myCategories}",
                             function: () => Get.toNamed(Routes.CATEGORY),
                           ),
                         ),
@@ -271,7 +300,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             color: Colors.transparent,
                             icon: LineIcons.list,
                             title: "Productos",
-                            data: "${statistic.myProducts}",
+                            data: "${statistic.value!.myProducts}",
                             function: () => Get.toNamed(Routes.PRODUCTSSEARCH),
                           ),
                         ),
@@ -299,7 +328,7 @@ class DashboardPage extends GetView<DashboardCtrl> {
                             color: Colors.transparent,
                             icon: LineIcons.users,
                             title: "Clientes",
-                            data: "${statistic.myClients}",
+                            data: "${statistic.value!.myClients}",
                             function: () => Get.toNamed(Routes.CUSTOMERS),
                           ),
                         ),

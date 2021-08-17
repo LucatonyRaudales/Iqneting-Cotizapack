@@ -148,7 +148,7 @@ class QuotationsPage extends GetView<QuotationsCtrl> {
                         height: 20,
                       ),
                       Text(
-                        'No tienes productos o servicios almacenados, presiona (+) para agregar uno nuevo.',
+                        'No tienes cotizaciones realizadas, presiona (+) para agregar uno nueva.',
                         style: subtitulo,
                         textAlign: TextAlign.center,
                       )

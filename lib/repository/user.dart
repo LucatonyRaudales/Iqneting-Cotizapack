@@ -142,18 +142,36 @@ class UserRepository {
     }
   }
 
+  Future<Response?> updateMyPackages(
+      {required UserData data, required int quotation}) async {
+    data.quotations = quotation;
+    try {
+      printInfo(info: data.toJson().toString());
+      database = Database(AppwriteSettings.initAppwrite());
+      Response response = await database.updateDocument(
+        collectionId: userCollectionID,
+        documentId: data.id!,
+        data: data.toJson(),
+        read: ["*"],
+        write: ["user:${data.userID}"],
+      );
+      return response;
+    } catch (e) {
+      print(e);
+      return null;
+    }
+  }
+
   Future<UserData> chargeUserData({required String userID}) async {
     try {
       database = Database(AppwriteSettings.initAppwrite());
       Response response = await database.listDocuments(
-          collectionId: userCollectionID,
-          filters: ["userID=$userID"],
-          limit: 1);
-      var data = response.data["documents"][0];
-      userData = UserData.fromJson(data);
+          collectionId: userCollectionID, filters: ["userID=$userID"]);
+      var data = response.data;
+      userData = UserData.fromJson(data["documents"][0]);
       return userData;
-    } catch (e) {
-      print('Error charge Data $e');
+    } on AppwriteException catch (e) {
+      print('Error charge Data ${e.message}');
       return userData;
     }
   }

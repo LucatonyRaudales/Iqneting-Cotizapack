@@ -7,6 +7,7 @@ import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swipper/flutter_card_swiper.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:line_icons/line_icons.dart';
@@ -15,7 +16,7 @@ import '../../styles/typography.dart';
 import 'categories_ctrl.dart';
 
 class CategoriesPage extends GetView<CategoriesCtrl> {
-  void showProductDetail(BuildContext context, UserData user, Uint8List image) {
+  void showUserDetail(BuildContext context, UserData user, Uint8List image) {
     MyBottomSheet().show(
       context,
       Get.height / 1.09,
@@ -52,11 +53,10 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  new Text(user.businessName!, style: subtitulo),
+                  new Text(user.businessName!, style: titulo),
                   SizedBox(
                     height: 10,
                   ),
-                  new Text(user.category.name, style: body1),
                 ],
               )),
           Padding(
@@ -65,10 +65,29 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                      leading: Icon(LineIcons.locationArrow, color: color500),
-                      title: new Text('Descripción', style: body1),
-                      subtitle: new Text('Descripción de la categoría',
-                          style: body2)),
+                    leading: Icon(LineIcons.list, color: color500),
+                    title: new Text(user.category.name, style: body1),
+                    subtitle: new Text(
+                      user.category.description,
+                      style: body2,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(LineIcons.locationArrow, color: color500),
+                    title: new Text(user.address!, style: body1),
+                    subtitle: new Text(
+                      'Dirección',
+                      style: body2,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(LineIcons.mobilePhone, color: color500),
+                    title: new Text(user.phone!, style: body1),
+                    subtitle: new Text(
+                      'Teléfono',
+                      style: body2,
+                    ),
+                  ),
                 ],
               )),
           InkWell(
@@ -236,7 +255,7 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
         shadowColor: color500,
         elevation: 2,
         child: InkWell(
-          onTap: () => showProductDetail(context, user,
+          onTap: () => showUserDetail(context, user,
               image), //Get.to(ProductDetail(), arguments: product),
           child: Column(
             children: [
@@ -261,10 +280,9 @@ class CategoriesPage extends GetView<CategoriesCtrl> {
                               )
                             : Padding(
                                 padding: const EdgeInsets.all(8.0),
-                                child: CircularProgressIndicator(
-                                  backgroundColor: Colors.white,
-                                  valueColor: new AlwaysStoppedAnimation<Color>(
-                                      color500),
+                                child: SpinKitPulse(
+                                  color: color500,
+                                  size: 50.0,
                                 ),
                               );
                       },

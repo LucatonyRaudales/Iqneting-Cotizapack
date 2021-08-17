@@ -15,9 +15,9 @@ class QuotationsCtrl extends GetxController {
   bool haveProducts = true;
 
   @override
-  void onInit() {
+  void onReady() {
     getQuotations(Get.arguments);
-    super.onInit();
+    super.onReady();
   }
 
   Future getQuotations(int? status) async {

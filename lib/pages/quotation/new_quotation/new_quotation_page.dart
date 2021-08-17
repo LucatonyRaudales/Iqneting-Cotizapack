@@ -138,12 +138,22 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
               name: 'Siguiente',
               function: () {
                 if (ctrl.activeStep.value == 1) {
-                  if (ctrl.quotation.product!.products!.length == 0)
+                  if (ctrl.quotation.product!.products!.length == 0) {
+                    MyAlert.showMyDialog(
+                        title: 'Error',
+                        message: 'Seleccione un producto.',
+                        color: Colors.red);
                     return ctrl.btnController.reset();
+                  }
                 }
                 if (ctrl.activeStep.value == 3) {
-                  if (ctrl.quotation.customer?.name == null)
+                  if (ctrl.quotation.customer?.name == null) {
+                    MyAlert.showMyDialog(
+                        title: 'Error',
+                        message: 'Seleccione a un cliente.',
+                        color: Colors.red);
                     return ctrl.btnController.reset();
+                  }
                 }
                 if (!_formKey.currentState!.validate()) {
                   return ctrl.btnController.reset();
@@ -387,7 +397,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                     width: Get.width,
                     height: 200,
                     decoration: BoxDecoration(
-                        color: color100,
+                        color: color700,
                         borderRadius: BorderRadius.all(Radius.circular(30))),
                     child: Center(
                       child: ctrl.images.length > 0
@@ -402,7 +412,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                               child: Icon(
                                 Icons.add_circle_outline,
                                 size: 60,
-                                color: color300,
+                                color: color100,
                               ),
                             ),
                     ),
@@ -419,7 +429,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                     width: Get.width,
                     height: 200,
                     decoration: BoxDecoration(
-                        color: color100,
+                        color: color700,
                         borderRadius: BorderRadius.all(Radius.circular(30))),
                     child: Center(
                       child: ctrl.images.length > 1
@@ -434,7 +444,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                               child: Icon(
                                 Icons.add_circle_outline,
                                 size: 60,
-                                color: color300,
+                                color: color100,
                               ),
                             ),
                     ),
@@ -499,7 +509,7 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
         new Text('Ya todo está listo', style: subtitulo),
         SizedBox(height: 20),
         Button(
-            function: () {
+            function: () async {
               if (!_formKey.currentState!.validate()) {
                 return ctrl.btnController.reset();
               }
@@ -507,12 +517,19 @@ class _NewQuotationPageState extends State<NewQuotationPage> {
                   ctrl.customerSelected.id == null) {
                 ctrl.btnController.reset();
                 return MyAlert.showMyDialog(
-                    title: 'Datos vacíos',
-                    message:
-                        'Selecciona los datos requeridos para guardar tus datos',
-                    color: Colors.red);
+                  title: 'Datos vacíos',
+                  message:
+                      'Selecciona los datos requeridos para guardar tus datos',
+                  color: Colors.red,
+                );
               }
-              return ctrl.saveData();
+              if ((await ctrl.validatepackages())) return ctrl.saveData();
+              ctrl.btnController.error();
+              return MyAlert.showMyDialog(
+                title: 'Error',
+                message: 'No cuenta con cotizaciones Disponibles',
+                color: Colors.red,
+              );
             },
             btnController: ctrl.btnController,
             name: 'Generar'),

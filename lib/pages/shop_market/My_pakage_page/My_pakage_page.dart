@@ -84,7 +84,10 @@ class MyPakagePage extends GetResponsiveView<ListPakageController> {
                             fit: BoxFit.fill,
                           )
                         : Center(
-                            child: CircularProgressIndicator(),
+                            child: SpinKitPulse(
+                              color: color500,
+                              size: 50.0,
+                            ),
                           );
               },
             ),
@@ -213,7 +216,10 @@ class MyPakagePage extends GetResponsiveView<ListPakageController> {
                                     fit: BoxFit.fill,
                                   )
                                 : Center(
-                                    child: CircularProgressIndicator(),
+                                    child: SpinKitPulse(
+                                      color: color500,
+                                      size: 50.0,
+                                    ),
                                   );
                       },
                     ),

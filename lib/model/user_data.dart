@@ -93,7 +93,7 @@ class UserData {
             : List<dynamic>.from(packages!.map((e) => e.toMap()).toList()),
         "giro": paymentUrl,
         "create_at": createAt,
-        "quotations": createAt,
+        "quotations": quotations,
         "category": category.toJson(),
       };
 }

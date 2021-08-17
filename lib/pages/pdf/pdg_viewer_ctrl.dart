@@ -36,6 +36,6 @@ class PDFCtrl extends GetxController {
 
   void getBack(File file) async {
     if (isDeleted == false) await file.delete();
-    Get.offNamedUntil(Routes.INITIAL, (route) => false);
+    Get.offAllNamed(Routes.INITIAL);
   }
 }

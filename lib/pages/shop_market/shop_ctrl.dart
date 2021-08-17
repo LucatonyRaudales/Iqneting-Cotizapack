@@ -15,11 +15,13 @@ import 'package:cotizapack/repository/ProcessPay_Service.dart';
 import 'package:cotizapack/repository/account.dart';
 import 'package:cotizapack/repository/mypackage_repository.dart';
 import 'package:cotizapack/repository/packageRepository.dart';
+import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/encript.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:line_icons/line_icons.dart';
@@ -117,6 +119,27 @@ class ShopQuotationsCtrl extends GetxController
 
   processbuy(Pakageclass data) async {
     try {
+      Get.back();
+      Get.dialog(
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          children: [
+            WillPopScope(
+              onWillPop: () {
+                return Future.value(false);
+              },
+              child: Center(
+                child: SpinKitPulse(
+                  color: color500,
+                  size: 50.0,
+                ),
+              ),
+            ),
+          ],
+        ),
+        barrierDismissible: false,
+      );
       final conektaCard = ConektaCard(
         cardName: creditcard.cardHolderName,
         cardNumber: Encript().desencription(creditcard.cardNumber),
@@ -129,7 +152,15 @@ class ShopQuotationsCtrl extends GetxController
       final String token = await conektaFlutter.createCardToken(conektaCard);
 
       BuyProvider buyProvider = BuyProvider();
-      var user = await MyGetStorage().listenUserData();
+      var user = await MyGetStorage().listenUserData(actualizar: true);
+      if (user.id == null) {
+        Get.back();
+        return MyAlert.showMyDialog(
+          title: 'Error',
+          message: 'No hay data disponible',
+          color: Colors.red,
+        );
+      }
       var datauser = await readUserData();
       var resutl = await buyProvider.buyPackage(
           name: user.ceoName!,
@@ -143,12 +174,14 @@ class ShopQuotationsCtrl extends GetxController
               .toInt(),
           quantity: 1,
           tokenID: "$token");
-      if (resutl == null)
+      if (resutl == null) {
+        Get.back();
         return MyAlert.showMyDialog(
           title: 'Pago',
           message: 'Pago no realizado',
           color: Colors.red,
         );
+      }
       if (resutl.statusCode! >= 400) {
         Get.back();
         return MyAlert.showMyDialog(
@@ -163,19 +196,25 @@ class ShopQuotationsCtrl extends GetxController
             .onError((error, stackTrace) {
           printError(info: error.toString());
         });
+
         if (res == null) return;
 
         if (res.statusCode! > 400) return;
 
         if (res.statusCode! >= 200 && res.statusCode! < 300) {
+          await UserRepository().updateMyPackages(
+              data: user, quotation: (user.quotations! + data.quotations));
           3.delay(() => Get.offAllNamed(Routes.INITIAL));
+
           MyAlert.showMyDialog(
               title: 'Exito',
               message: 'Su compra se realizo con éxito',
               color: Colors.green);
         }
       }
-    } catch (e) {}
+    } catch (e) {
+      Get.back();
+    }
   }
 
   Future<MyAccount> readUserData() async {

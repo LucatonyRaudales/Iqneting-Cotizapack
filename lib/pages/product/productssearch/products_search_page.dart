@@ -442,10 +442,9 @@ class PorductSearchPage extends GetResponsiveView<ProductsSearchController> {
                               radius: 35,
                             ))
                         : Center(
-                            child: CircularProgressIndicator(
-                              backgroundColor: Colors.white,
-                              valueColor:
-                                  new AlwaysStoppedAnimation<Color>(color500),
+                            child: SpinKitPulse(
+                              color: color500,
+                              size: 50.0,
                             ),
                           );
                   },

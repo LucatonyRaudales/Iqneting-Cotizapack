@@ -10,17 +10,18 @@ import 'package:cotizapack/repository/customer.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/repository/quotation.dart';
 import 'package:cotizapack/repository/storage.dart';
+import 'package:cotizapack/repository/user.dart';
 import 'package:cotizapack/settings/generate_pdf.dart';
 import 'package:cotizapack/settings/get_image.dart';
 import 'package:cotizapack/settings/get_storage.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:rounded_loading_button/rounded_loading_button.dart';
-import 'package:pdf/widgets.dart' as pw;
 
 class NewQuotationCtrl extends GetxController with StateMixin {
   QuotationModel quotation = QuotationModel(
@@ -41,11 +42,10 @@ class NewQuotationCtrl extends GetxController with StateMixin {
   //     category: UserCategory(
   //         collection: '', description: '', name: '', enable: true, id: ''));
   late MyFile myFile;
-  final doc = pw.Document();
   RxInt activeStep = 0.obs;
   RxInt dotCount = 4.obs;
   List<File?> images = [];
-  ProductModel productModelTemp = ProductModel(category: ProductCategory());
+  ProductModel productModelTemp = new ProductModel(category: ProductCategory());
   TextEditingController priceController = TextEditingController();
   TextEditingController quantityController = TextEditingController();
 
@@ -62,11 +62,19 @@ class NewQuotationCtrl extends GetxController with StateMixin {
         .millisecondsSinceEpoch;
     _customerRepository.getMyCustomers().then((value) async {
       _customerList = value;
+      if (_customerList.customers!.isEmpty)
+        change(null, status: RxStatus.empty());
+      if (value.customers!.length == 0) {
+        Get.back();
+        return MyAlert.showMyDialog(
+          title: 'Error',
+          message: 'no hay clientes registrados.',
+          color: Colors.red,
+        );
+      }
       var data = (await MyGetStorage().listenUserData());
       quotation.userId = data.userID;
       getProducts();
-      if (_customerList.customers!.isEmpty)
-        change(null, status: RxStatus.empty());
     });
   }
 
@@ -81,6 +89,14 @@ class NewQuotationCtrl extends GetxController with StateMixin {
             status: RxStatus
                 .success()); // value.data["documents"].map((i)=>ProductModel.fromJson(i)).toList();
         update();
+        if (_productList.products!.isEmpty) {
+          Get.back();
+          return MyAlert.showMyDialog(
+            title: 'Error',
+            message: 'No hay productos primero registre un producto ',
+            color: Colors.red,
+          );
+        }
       });
     } catch (e) {
       change(null, status: RxStatus.error(e.toString()));
@@ -105,6 +121,14 @@ class NewQuotationCtrl extends GetxController with StateMixin {
       btnController.reset();
     });
     return false;
+  }
+
+  Future<bool> validatepackages() async {
+    var user = await UserRepository().chargeUserData(userID: quotation.userId!);
+    if (user.quotations! == 0) return false;
+    await UserRepository()
+        .updateMyPackages(data: user, quotation: (user.quotations! - 1));
+    return true;
   }
 
   saveData() async {
@@ -163,73 +187,75 @@ class NewQuotationCtrl extends GetxController with StateMixin {
           color: Color(0xFF737373),
           height: 300,
           child: this.obx(
-              (s) => Container(
-                    child: _productList.products!.isNotEmpty
-                        ? ListView.builder(
-                            itemCount: _productList.products?.length ?? 0,
-                            itemBuilder: (ctx, index) {
-                              return InkWell(
-                                onTap: () {
-                                  productModelTemp =
-                                      ProductModel(category: ProductCategory());
-                                  productModelTemp =
-                                      _productList.products![index];
-                                  if (quantityController.text != "") {
-                                    priceController.text =
-                                        (double.parse(quantityController.text) *
-                                                productModelTemp.price!
-                                                    .toDouble())
-                                            .toString();
+            (s) => Container(
+              child: _productList.products!.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: _productList.products?.length ?? 0,
+                      itemBuilder: (ctx, index) {
+                        return InkWell(
+                          onTap: () {
+                            productModelTemp = ProductModel.fromJson(
+                                _productList.products![index].toJson());
+                            if (quantityController.text != "") {
+                              priceController.text =
+                                  (double.parse(quantityController.text) *
+                                          productModelTemp.price!.toDouble())
+                                      .toString();
 
-                                    productModelTemp.quantity =
-                                        int.parse(quantityController.text);
-                                  }
-                                  update();
-                                  Get.back();
-                                },
-                                child: ListTile(
-                                  trailing: new Icon(
-                                    Icons.arrow_forward_ios,
-                                    color: color500,
-                                  ),
-                                  title: new Text(
-                                    _productList.products![index].name!,
-                                    style: subtitulo,
-                                  ),
-                                  subtitle: new Text(
-                                    _productList.products![index].description!,
-                                    style: body2,
-                                  ),
-                                ),
-                              );
-                            })
-                        : new Center(
-                            child: Column(
-                            children: [
-                              new Text('No se encontraron datos.'),
-                              SizedBox(
-                                height: 12,
-                              ),
-                              TextButton(
-                                child: Text(
-                                  "¿Buscar de nuevo?",
-                                  style: body1,
-                                ),
-                                onPressed: () => getCustomers(),
-                              ),
-                            ],
-                          )),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).canvasColor,
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(10),
-                        topRight: const Radius.circular(10),
-                      ),
-                    ),
-                  ),
-              onLoading: Center(
-                child: CircularProgressIndicator(),
-              )),
+                              productModelTemp.quantity =
+                                  int.parse(quantityController.text);
+                            }
+                            print(quotation.product);
+                            update();
+                            Get.back();
+                          },
+                          child: ListTile(
+                            trailing: new Icon(
+                              Icons.arrow_forward_ios,
+                              color: color500,
+                            ),
+                            title: new Text(
+                              _productList.products![index].name!,
+                              style: subtitulo,
+                            ),
+                            subtitle: new Text(
+                              _productList.products![index].description!,
+                              style: body2,
+                            ),
+                          ),
+                        );
+                      })
+                  : new Center(
+                      child: Column(
+                      children: [
+                        new Text('No se encontraron datos.'),
+                        SizedBox(
+                          height: 12,
+                        ),
+                        TextButton(
+                          child: Text(
+                            "¿Buscar de nuevo?",
+                            style: body1,
+                          ),
+                          onPressed: () => getCustomers(),
+                        ),
+                      ],
+                    )),
+              decoration: BoxDecoration(
+                color: Theme.of(context).canvasColor,
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                ),
+              ),
+            ),
+            onLoading: Center(
+              child: SpinKitPulse(
+                color: color500,
+                size: 50.0,
+              ),
+            ),
+          ),
         );
       },
     );
@@ -244,12 +270,15 @@ class NewQuotationCtrl extends GetxController with StateMixin {
   }
 
   addproductinList(ProductModel productModel) {
+    if (quotation.product!.products!.length == 4)
+      return MyAlert.showMyDialog(
+          title: 'Error',
+          message: 'Ha alcanzado el maximo numero de productos',
+          color: Colors.red);
     bool updateProduct = false;
     quotation.product?.products?.forEach((e) {
-      int quantity = e.quantity!;
       if (e.id == productModel.id) {
-        e.quantity = quantity + productModel.quantity!;
-
+        e.quantity = e.quantity! + productModel.quantity!;
         updateProduct = true;
       }
     });

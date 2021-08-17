@@ -1,3 +1,4 @@
+import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/model/categories.dart';
 import 'package:cotizapack/model/session_model.dart';
 import 'package:cotizapack/model/user_data.dart';
@@ -35,13 +36,13 @@ class MyGetStorage {
     }
   }
 
-  Future<UserData> listenUserData() async {
+  Future<UserData> listenUserData({bool actualizar = false}) async {
     Session _mySession = Session();
     UserData _userData = UserData(
         category: UserCategory(
             id: '', collection: '', enable: false, name: '', description: ''));
     try {
-      if (box.hasData('userData')) {
+      if (box.hasData('userData') && !actualizar) {
         _userData = UserData.fromJson(box.read("userData"));
         print('local db has user data: ${_userData.ceoName}');
         return _userData;
@@ -51,10 +52,11 @@ class MyGetStorage {
 
         _userData =
             await UserRepository().chargeUserData(userID: _mySession.userId!);
+        await replaceData(key: "userData", data: _userData.toJson());
         return _userData;
       }
-    } catch (err) {
-      print('Error listen User: $err');
+    } on AppwriteException catch (err) {
+      print('Error listen User: ${err.message}');
       return _userData;
     }
   }

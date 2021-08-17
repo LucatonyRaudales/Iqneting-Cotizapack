@@ -5,6 +5,7 @@ import 'package:cotizapack/common/alert.dart';
 import 'package:cotizapack/common/validators.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:line_icons/line_icons.dart';
@@ -158,7 +159,10 @@ class NewCustomerPage extends StatelessWidget {
                                                         ),
                                                         fit: BoxFit.cover)),
                                               )
-                                            : CircularProgressIndicator();
+                                            : SpinKitPulse(
+                                                color: color500,
+                                                size: 50.0,
+                                              );
                                       },
                                     )
                                   : _ctrl.image.path == ''

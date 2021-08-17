@@ -16,4 +16,5 @@ abstract class Routes {
   static const SHOPPACKAGE = '/shopquotations';
   static const MYPACKAGE = '/mypackage';
   static const CREDITCARD = '/creditcard';
+  static const GENERATEPDF = '/GeneratePdf';
 }
