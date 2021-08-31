@@ -61,8 +61,7 @@ class ProductsSearchController extends GetxController
   searchProduct() {
     change(null, status: RxStatus.loading());
     products.clear();
-    var order =
-        ordenprice.value == 'Mayor a menor' ? OrderType.desc : OrderType.asc;
+    var order = ordenprice.value == 'Mayor a menor' ? "desc" : "asc";
     var type = typeopcion.value == 'Servicio' ? 1 : 0;
     _repository.searchProduct(order: order, type: type).then((value) {
       if (value == null) {

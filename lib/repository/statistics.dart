@@ -53,7 +53,7 @@ class StatisticsRepository {
       this._userData = (await MyGetStorage().listenUserData(actualizar: true));
       Response res = await database.listDocuments(
           collectionId: collectionID,
-          orderType: OrderType.desc,
+          orderType: "desc",
           limit: 1,
           filters: ["userID=${_userData.userID}"]);
 

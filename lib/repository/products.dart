@@ -140,8 +140,7 @@ class ProductRepository {
     }
   }
 
-  Future<ProductList?> searchProduct(
-      {int? type, OrderType order = OrderType.asc}) async {
+  Future<ProductList?> searchProduct({int? type, String order = "asc"}) async {
     database = Database(AppwriteSettings.initAppwrite());
     ProductList searchProduct = ProductList();
     try {

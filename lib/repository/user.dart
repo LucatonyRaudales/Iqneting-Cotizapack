@@ -59,8 +59,8 @@ class UserRepository {
       Account account = Account(AppwriteSettings.initAppwrite());
       Response response = await account.get();
       return response;
-    } catch (e) {
-      print('Error getSessions: $e');
+    } on AppwriteException catch (e) {
+      print('Error getSessions: ${e.message}');
       throw e;
     }
   }

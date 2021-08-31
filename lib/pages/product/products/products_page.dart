@@ -12,7 +12,7 @@ import 'package:line_icons/line_icons.dart';
 import '../../../styles/colors.dart';
 import '../../../styles/typography.dart';
 
-class ProductsPage extends StatelessWidget {
+class ProductsPage extends GetResponsiveView<ProductsCtrl> {
   void showProductDetail(
       BuildContext context, ProductModel product, Uint8List image) {
     MyBottomSheet().show(
