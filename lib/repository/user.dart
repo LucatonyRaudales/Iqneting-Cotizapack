@@ -164,9 +164,9 @@ class UserRepository {
 
   Future<UserData> chargeUserData({required String userID}) async {
     try {
-      database = Database(AppwriteSettings.initAppwrite());
-      Response response = await database.listDocuments(
-          collectionId: userCollectionID, filters: ["userID=$userID"]);
+      database = Database(AppwriteSettings.initAppwrite());      
+      Response response = await database.listDocuments(collectionId: userCollectionID, filters: ["userID=$userID"]);
+      //Response response = await database.listDocuments(collectionId: userCollectionID);
       var data = response.data;
       userData = UserData.fromJson(data["documents"][0]);
       return userData;

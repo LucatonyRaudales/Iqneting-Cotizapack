@@ -2,6 +2,8 @@ import 'package:appwrite/appwrite.dart';
 
 class AppwriteSettings {
   // static const endPoint = 'http://137.184.6.58/v1';
+  
+  //static const endPoint = 'http://137.184.6.58';
   static const endPoint = 'https://cotizaweb.iqneting.com.mx/v1';
   static const projectID = '612d32add254f';
 
