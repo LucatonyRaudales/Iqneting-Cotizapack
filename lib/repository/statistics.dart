@@ -23,8 +23,8 @@ class StatisticsRepository {
           read: ['*'],
           write: ["user:$user"]);
       return res;
-    } catch (err) {
-      print('Error create quotation: .$err');
+    } on AppwriteException catch (err) {
+      print('Error create quotation: .${err.message}');
       return null;
     }
   }
@@ -53,7 +53,7 @@ class StatisticsRepository {
       this._userData = (await MyGetStorage().listenUserData(actualizar: true));
       Response res = await database.listDocuments(
           collectionId: collectionID,
-          orderType: "desc",
+          orderType: "DESC",
           limit: 1,
           filters: ["userID=${_userData.userID}"]);
 
@@ -65,8 +65,8 @@ class StatisticsRepository {
       _statistic = Statistic.fromJson(data);
       MyGetStorage().saveData(key: 'statistic', data: data);
       return _statistic;
-    } catch (err) {
-      print('Error create quotation: .$err');
+    } on AppwriteException catch (err) {
+      print('Error create quotation: .${err.message}');
       return _statistic;
     }
   }

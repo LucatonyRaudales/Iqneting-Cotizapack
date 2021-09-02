@@ -165,7 +165,7 @@ class NewQuotationCtrl extends GetxController with StateMixin {
               title: 'Cotización guardado correctamente!',
               message: 'Se generará un pdf y lo podrás visualizar',
               color: Colors.green);
-          PDF().generateFile(quotation: quotation);
+          PDF().generateFile(quotation: QuotationModel.fromJson(val.data));
           break;
         default:
           change(null, status: RxStatus.error(val.statusMessage));

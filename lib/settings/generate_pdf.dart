@@ -130,9 +130,7 @@ class PDF {
                               alignment: pw.Alignment.center,
                               child: textCuston(
                                   DateFormat.yMMMd("es_MX").format(
-                                    DateTime.fromMicrosecondsSinceEpoch(
-                                      quotation.createAt!,
-                                    ),
+                                    DateTime.now(),
                                   ),
                                   estilo),
                             ),
@@ -666,7 +664,9 @@ class PDF {
             ),
             pw.Text(
               DateFormat.yMMMd("es_MX").format(
-                DateTime.now(),
+                DateTime.fromMicrosecondsSinceEpoch(
+                  quotation.createAt ?? 0,
+                ),
               ),
               textAlign: pw.TextAlign.right,
             ),

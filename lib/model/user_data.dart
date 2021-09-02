@@ -88,12 +88,12 @@ class UserData {
         "businessName": businessName,
         "phone": phone,
         "address": address,
-        "packages": packages == null
-            ? []
-            : List<dynamic>.from(packages!.map((e) => e.toMap()).toList()),
+        // "packages": packages == null
+        //     ? []
+        //     : List<dynamic>.from(packages!.map((e) => e.toMap()).toList()),
         "giro": paymentUrl,
         "create_at": createAt,
-        "quotations": quotations,
+        "quotations": quotations ?? 0,
         "category": category.toJson(),
       };
 }

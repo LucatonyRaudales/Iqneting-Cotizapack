@@ -17,6 +17,7 @@ class CategoriesRepository {
       categories = UserCategoryList.fromJson(result.data["documents"]);
       return categories;
     } catch (e) {
+      print(e);
       return categories;
     }
   }

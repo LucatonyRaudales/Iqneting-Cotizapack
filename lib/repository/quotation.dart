@@ -27,8 +27,8 @@ class QuotationRepository {
         write: ["user:${quotation.userId}"],
       );
       return res;
-    } catch (err) {
-      print('Error create quotation: .$err');
+    } on AppwriteException catch (err) {
+      print('Error create quotation: .${err.message}');
       return null;
     }
   }

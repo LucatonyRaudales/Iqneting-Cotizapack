@@ -1,4 +1,3 @@
-import 'package:appwrite/appwrite.dart';
 import 'package:cotizapack/model/product.dart';
 import 'package:cotizapack/repository/products.dart';
 import 'package:cotizapack/routes/app_pages.dart';
