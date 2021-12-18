@@ -1,8 +1,8 @@
 import 'package:animate_do/animate_do.dart';
 import 'package:cotizapack/common/modalBottomSheet.dart';
-import 'package:cotizapack/model/quotation.dart';
-import 'package:cotizapack/pages/quotation/new_quotation/new_quotation_page.dart';
+import 'package:cotizapack/model/ModelPDF.dart';
 import 'package:cotizapack/pages/quotation/quotations/quotations_ctrl.dart';
+import 'package:cotizapack/routes/app_pages.dart';
 import 'package:cotizapack/settings/generate_pdf.dart';
 import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
@@ -13,7 +13,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:intl/intl.dart';
 import 'package:line_icons/line_icons.dart';
 
-class QuotationsPage extends StatelessWidget {
+class QuotationsPage extends GetView<QuotationsCtrl> {
   void showProductDetail(BuildContext context, QuotationModel quotation,
       QuotationsCtrl ctrl, int index) {
     MyBottomSheet().show(
@@ -34,55 +34,12 @@ class QuotationsPage extends StatelessWidget {
                 ],
               )),
           Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-              child: Column(
-                //crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  quotation.product == null
-                      ? SizedBox()
-                      : Column(
-                          children: [
-                            ListTile(
-                                leading: Icon(LineIcons.tag, color: color500),
-                                title: new Text(
-                                    quotation.product!.name.toString(),
-                                    style: body1),
-                                subtitle: new Text('producto', style: body2)),
-                            ListTile(
-                                leading:
-                                    Icon(LineIcons.moneyBill, color: color500),
-                                title: new Text(
-                                    quotation.product!.price.toString(),
-                                    style: body1),
-                                subtitle: new Text('precio del producto',
-                                    style: body2)),
-                          ],
-                        ),
-                  ListTile(
-                      leading: Icon(LineIcons.moneyBill, color: color500),
-                      title:
-                          new Text(quotation.subTotal.toString(), style: body1),
-                      subtitle: new Text('precio', style: body2)),
-                  ListTile(
-                      leading: Icon(LineIcons.moneyBill, color: color500),
-                      title: new Text(quotation.quantity.toString() + " unds",
-                          style: body1),
-                      subtitle: new Text('cantidad', style: body2)),
-                  ListTile(
-                      leading: Icon(LineIcons.tag, color: color500),
-                      title: new Text(
-                          DateFormat.yMMMMEEEEd('es_US')
-                              .format(DateTime.fromMillisecondsSinceEpoch(
-                                  quotation.expirationDate!))
-                              .toString(),
-                          style: body1),
-                      subtitle: new Text('creado el', style: body2)),
-                  ListTile(
-                      leading: Icon(LineIcons.locationArrow, color: color500),
-                      title: new Text(quotation.email!, style: body1),
-                      subtitle: new Text('Correo electrónico', style: body2)),
-                ],
-              )),
+            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+            child: Column(
+              //crossAxisAlignment: CrossAxisAlignment.start,
+              children: produsts(quotation: quotation),
+            ),
+          ),
           Divider(color: color700),
           Text(
             'gestionar cotización',
@@ -106,11 +63,6 @@ class QuotationsPage extends StatelessWidget {
               : new Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    /*new IconButton(
-                icon: Icon(LineIcons.backward, size: 30, color: color500),
-                onPressed:()=> Get.back(),
-              ),*/
-
                     TextButton.icon(
                         onPressed: () => ctrl.changeQuotationStatus(
                             status: "quotesCanceled",
@@ -128,14 +80,15 @@ class QuotationsPage extends StatelessWidget {
                             size: 20, color: Colors.greenAccent),
                         label: Text('Aceptado', style: body1)),
                     TextButton.icon(
-                        onPressed: () =>
-                            ctrl.shareQuotation(quotation: quotation),
-                        icon: Icon(LineIcons.share,
-                            size: 20, color: Colors.blueAccent),
-                        label: Text(
-                          'compartir',
-                          style: body1,
-                        )),
+                      onPressed: () =>
+                          ctrl.shareQuotation(quotation: quotation),
+                      icon: Icon(LineIcons.share,
+                          size: 20, color: Colors.blueAccent),
+                      label: Text(
+                        'compartir',
+                        style: body1,
+                      ),
+                    ),
                   ],
                 ),
           SizedBox(
@@ -179,8 +132,7 @@ class QuotationsPage extends StatelessWidget {
           child: Icon(Icons.add),
           backgroundColor: color500,
           onPressed: () {
-            Get.to(NewQuotationPage(),
-                transition: Transition.rightToLeftWithFade,
+            Get.toNamed(Routes.NEWQUOTATIONS,
                 arguments: {"editData": false, "data": null});
           },
         ),
@@ -196,7 +148,7 @@ class QuotationsPage extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        'No tienes productos o servicios almacenados, presiona (+) para agregar uno nuevo.',
+                        'No tienes cotizaciones realizadas, presiona (+) para agregar uno nueva.',
                         style: subtitulo,
                         textAlign: TextAlign.center,
                       )
@@ -208,16 +160,13 @@ class QuotationsPage extends StatelessWidget {
                   ? Center(child: spinkit)
                   : RefreshIndicator(
                       color: color700,
-                      onRefresh: _ctrl.getQuotations,
+                      onRefresh: () => _ctrl.getQuotations(null),
                       child: CustomScrollView(
                         slivers: <Widget>[
                           SliverGrid(
                             gridDelegate:
-                                SliverGridDelegateWithMaxCrossAxisExtent(
-                              maxCrossAxisExtent: 200,
-                              mainAxisSpacing: 14.0,
-                              crossAxisSpacing: 1.0,
-                              childAspectRatio: 1.0,
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
                             ),
                             delegate: SliverChildBuilderDelegate(
                               (BuildContext context, int index) {
@@ -250,6 +199,8 @@ class QuotationsPage extends StatelessWidget {
       child: Container(
         child: Card(
           color: Colors.white,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.0)),
           elevation: 4,
           child: InkWell(
             onTap: () => showProductDetail(context, quotation, ctrl, index),
@@ -265,7 +216,7 @@ class QuotationsPage extends StatelessWidget {
                   SizedBox(
                     height: 1,
                   ),
-                  Text(quotation.clientName!,
+                  Text(quotation.customer!.name ?? '',
                       style: body1,
                       overflow: TextOverflow.ellipsis,
                       textAlign: TextAlign.center),
@@ -302,5 +253,43 @@ class QuotationsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  produsts({QuotationModel? quotation}) {
+    List<Widget> _lista = [];
+    quotation!.product!.products!
+        .map(
+          (e) => _lista.add(
+            Column(
+              children: [
+                ListTile(
+                    leading: Icon(LineIcons.tag, color: color500),
+                    title: new Text(e.name.toString(), style: body1),
+                    subtitle: new Text('producto', style: body2)),
+                ListTile(
+                    leading: Icon(LineIcons.moneyBill, color: color500),
+                    title: new Text(e.price.toString(), style: body1),
+                    subtitle: new Text('precio del producto', style: body2)),
+              ],
+            ),
+          ),
+        )
+        .toList();
+    _lista.addAll([
+      ListTile(
+          leading: Icon(LineIcons.tag, color: color500),
+          title: new Text(
+              DateFormat.yMMMMEEEEd('es_US')
+                  .format(DateTime.fromMillisecondsSinceEpoch(
+                      quotation.expirationDate!))
+                  .toString(),
+              style: body1),
+          subtitle: new Text('creado el', style: body2)),
+      ListTile(
+          leading: Icon(LineIcons.locationArrow, color: color500),
+          title: new Text(quotation.customer!.email ?? '', style: body1),
+          subtitle: new Text('Correo electrónico', style: body2)),
+    ]);
+    return _lista;
   }
 }

@@ -1,10 +1,14 @@
 import 'package:animate_do/animate_do.dart';
+import 'package:cotizapack/styles/colors.dart';
 import 'package:cotizapack/styles/typography.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class InputText extends StatefulWidget {
+class InputText extends GetView {
+  final TextEditingController? controller;
   final String name;
   final Widget prefixIcon;
+  final Widget? suffixIcon;
   final String? Function(String?)? validator;
   final Iterable<String>? autofillHints;
   final void Function(String) onChanged;
@@ -13,6 +17,8 @@ class InputText extends StatefulWidget {
   final int? maxLines;
   final String? initialValue;
   final int? minLines;
+  final bool readOnly;
+  final void Function()? onEditingComplete;
   InputText(
       {Key? key,
       required this.name,
@@ -20,17 +26,15 @@ class InputText extends StatefulWidget {
       required this.onChanged,
       required this.textInputType,
       this.obscureText,
+      this.controller,
+      this.readOnly = false,
+      this.suffixIcon,
       this.validator,
       this.autofillHints,
       this.maxLines,
       this.initialValue,
+      this.onEditingComplete,
       this.minLines});
-
-  @override
-  _InputTextState createState() => _InputTextState();
-}
-
-class _InputTextState extends State<InputText> {
   @override
   Widget build(BuildContext context) {
     return FadeInLeft(
@@ -38,7 +42,7 @@ class _InputTextState extends State<InputText> {
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(30),
           boxShadow: [
-            if (widget.validator.toString().length == 0)
+            if (validator.toString().length == 0)
               BoxShadow(
                 spreadRadius: -2,
                 color: Colors.black.withOpacity(0.2),
@@ -54,24 +58,29 @@ class _InputTextState extends State<InputText> {
           ],
         ),
         child: TextFormField(
-          minLines: widget.minLines,
-          initialValue: widget.initialValue,
-          keyboardType: widget.textInputType,
-          maxLines: widget.maxLines,
-          obscureText: widget.obscureText ?? false,
-          validator: widget.validator,
-          autofillHints: widget.autofillHints,
-          onChanged: widget.onChanged,
+          controller: controller,
+          readOnly: readOnly,
+          onEditingComplete: onEditingComplete,
+          minLines: minLines,
+          initialValue: initialValue,
+          keyboardType: textInputType,
+          maxLines: maxLines,
+          obscureText: obscureText ?? false,
+          validator: validator,
+          autofillHints: autofillHints,
+          onChanged: onChanged,
+          style: TextStyle(color: azulObscuro),
           cursorColor: Colors.deepOrange,
           decoration: InputDecoration(
               filled: true,
               fillColor: Color(0xffFAFAFA),
-              hintText: widget.name,
+              hintText: name,
               hintStyle: body1,
+              suffixIcon: suffixIcon,
               prefixIcon: Material(
                 elevation: 0,
                 borderRadius: BorderRadius.circular(30),
-                child: widget.prefixIcon,
+                child: prefixIcon,
               ),
               border: OutlineInputBorder(
                 borderSide: BorderSide.none,

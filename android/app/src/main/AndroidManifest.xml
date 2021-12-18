@@ -64,7 +64,8 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="appwrite-callback-6080bf8f2d0d2" />
+            <data android:scheme="appwrite-callback-612d32add254f" />
+            <!-- <data android:scheme="appwrite-callback-60b55553c0bd4" /> -->
           </intent-filter>
         </activity>
         <activity
@@ -77,6 +78,6 @@
             android:name="flutterEmbedding"
             android:value="2" />
         <meta-data android:name="com.google.android.geo.API_KEY"
-              android:value="AIzaSyCEKW1ZjGXOBqYaa94nmddouzv_shllRz0"/>
+              android:value="AIzaSyCxyFsUuFODYNFkLSNabseR9_VAWX9u21Y"/>
     </application>
 </manifest>

@@ -1,4 +1,3 @@
 {
-          "git.ignoreLimitWarning": true,
-          "cSpell.enabled": true
+    "dart.flutterSdkPath": "\\Users\\NelsonJairChacon\\fvm\\versions\\2.2.3"
 }

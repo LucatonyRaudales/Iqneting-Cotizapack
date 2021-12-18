@@ -7,6 +7,7 @@ import 'package:cotizapack/model/user_data.dart';
 import 'package:cotizapack/repository/storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_card_swipper/flutter_card_swiper.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:line_icons/line_icons.dart';
@@ -14,14 +15,8 @@ import '../../styles/colors.dart';
 import '../../styles/typography.dart';
 import 'categories_ctrl.dart';
 
-class CategoriesPage extends StatefulWidget {
-  @override
-  _CategoriesPageState createState() => _CategoriesPageState();
-}
-
-class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAliveClientMixin{
-
-  void showProductDetail(BuildContext context, UserData user, Uint8List image) {
+class CategoriesPage extends GetView<CategoriesCtrl> {
+  void showUserDetail(BuildContext context, UserData user, Uint8List image) {
     MyBottomSheet().show(
       context,
       Get.height / 1.09,
@@ -33,6 +28,7 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
               width: Get.width,
               height: 290,
               decoration: BoxDecoration(
+                color: Colors.grey.shade200,
                 borderRadius: BorderRadius.only(
                   topLeft: const Radius.circular(25),
                   topRight: const Radius.circular(25),
@@ -57,11 +53,10 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
                 // crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  new Text(user.businessName!, style: subtitulo),
+                  new Text(user.businessName!, style: titulo),
                   SizedBox(
                     height: 10,
                   ),
-                  new Text(user.category.name, style: body1),
                 ],
               )),
           Padding(
@@ -70,10 +65,29 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
                 //crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   ListTile(
-                      leading: Icon(LineIcons.locationArrow, color: color500),
-                      title: new Text('Descripción', style: body1),
-                      subtitle: new Text('Descripción de la categoría',
-                          style: body2)),
+                    leading: Icon(LineIcons.list, color: color500),
+                    title: new Text(user.category.name, style: body1),
+                    subtitle: new Text(
+                      user.category.description,
+                      style: body2,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(LineIcons.locationArrow, color: color500),
+                    title: new Text(user.address!, style: body1),
+                    subtitle: new Text(
+                      'Dirección',
+                      style: body2,
+                    ),
+                  ),
+                  ListTile(
+                    leading: Icon(LineIcons.mobilePhone, color: color500),
+                    title: new Text(user.phone!, style: body1),
+                    subtitle: new Text(
+                      'Teléfono',
+                      style: body2,
+                    ),
+                  ),
                 ],
               )),
           InkWell(
@@ -103,104 +117,125 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-    return GetBuilder<CategoriesCtrl>(
-      init: CategoriesCtrl(),
-      builder: (_ctrl) {
-        return Scaffold(
-          body: SafeArea(
-            child: RefreshIndicator(
-              color: color700,
-              onRefresh: _ctrl.loadData,
-              child: CustomScrollView(
-                slivers: <Widget>[
-                  SliverAppBar(
-                    backgroundColor: Colors.white,
-                    pinned: false,
-                    // Allows the user to reveal the app bar if they begin scrolling
-                    // back up the list of items.
-                    floating: true,
-                    // Display a placeholder widget to visualize the shrinking size.
-                    flexibleSpace: Header(
-                      widgetToShow: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            
-                            child: SizedBox(height: 10.0),
-                          ),
-                          Text(
-                            'Negocios',
-                            style: tituloblanco,
-                          ),
-                          SizedBox(height: 10.0),
-                          Icon(
-                            LineIcons.tags,
-                            color: Colors.white,
-                            size: 40,
-                          )
-                        ],
+    return Scaffold(
+      backgroundColor: Colors.grey.shade200,
+      body: SafeArea(
+        child: RefreshIndicator(
+          color: color700,
+          onRefresh: controller.loadData,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                //backgroundColor: Colors.white,
+                backgroundColor: Colors.grey.shade200,
+                pinned: false,
+                // Allows the user to reveal the app bar if they begin scrolling
+                // back up the list of items.
+                floating: true,
+                // Display a placeholder widget to visualize the shrinking size.
+                flexibleSpace: Header(
+                  widgetToShow: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: SizedBox(height: 10.0),
                       ),
-                    ),
-                    // Make the initial height of the SliverAppBar larger than normal.
-                    expandedHeight: 200,
-                  ),
-                  SliverAppBar(
-                    pinned: true,
-                    // Allows the user to reveal the app bar if they begin scrolling
-                    // back up the list of items.
-                    floating: true,
-                    // Display a placeholder widget to visualize the shrinking size.
-                    flexibleSpace: Container(
-                      decoration: BoxDecoration(color: Colors.white),
-                      height: 200,
-                      width: Get.width,
-                      child: new Swiper(
-                        itemBuilder: (BuildContext context, int index) {
-                          return new Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(25),
-                              ),
-                              child: Image.network(
-                                "https://via.placeholder.com/288x188",
-                                fit: BoxFit.cover,
-                              ));
-                        },
-                        itemCount: 10,
-                        viewportFraction: 0.8,
-                        scale: 0.9,
-                        autoplay: true,
+                      Expanded(
+                        child: Text(
+                          'Negocios',
+                          style: tituloblanco,
+                        ),
                       ),
-                    ),
-                    // Make the initial height of the SliverAppBar larger than normal.
-                    expandedHeight: 200,
+                      Expanded(child: SizedBox(height: 10.0)),
+                      Expanded(
+                        child: Icon(
+                          LineIcons.tags,
+                          color: Colors.white,
+                          size: 40,
+                        ),
+                      )
+                    ],
                   ),
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                      maxCrossAxisExtent: 200,
-                      mainAxisSpacing: 14.0,
-                      crossAxisSpacing: 1.0,
-                      childAspectRatio: 1.0,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return myCards(
-                            user: _ctrl.userList.users![index],
-                            index: index,
-                            context: context,
-                            ctrl: _ctrl);
-                      },
-                      childCount: _ctrl.userList.users == null
-                          ? 0
-                          : _ctrl.userList.users!.length,
-                    ),
-                  )
-                ],
+                ),
+                // Make the initial height of the SliverAppBar larger than normal.
+                expandedHeight: 200,
               ),
-            ),
+              SliverAppBar(
+                backgroundColor: Colors.grey.shade200,
+                pinned: true,
+                // Allows the user to reveal the app bar if they begin scrolling
+                // back up the list of items.
+                floating: true,
+                // Display a placeholder widget to visualize the shrinking size.
+                flexibleSpace: Swiper(
+                  controller: controller.newController(),
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      decoration: BoxDecoration(
+                          color: Colors.grey.shade400,
+                          borderRadius: BorderRadius.circular(16),
+                          image: DecorationImage(
+                            fit: BoxFit.cover,
+                            image: MemoryImage(
+                              controller.bannersImges[index],
+                            ),
+                          )),
+                    );
+                  },
+                  itemCount: controller.bannersImges.length,
+                  viewportFraction: 0.8,
+                  scale: 0.9,
+                  autoplay: true,
+                ),
+                // Make the initial height of the SliverAppBar larger than normal.
+                expandedHeight: 200,
+                leadingWidth: MediaQuery.of(context).size.width,
+              ),
+              SliverPadding(
+                padding: EdgeInsets.all(8.0),
+                sliver: SliverGrid(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                  ),
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                      return myCards(
+                          user: controller.userList.users![index],
+                          index: index,
+                          context: context,
+                          ctrl: controller);
+                    },
+                    childCount: controller.userList.users == null
+                        ? 0
+                        : controller.userList.users!.length,
+                  ),
+                ),
+              ),
+              // SliverGrid(
+              //   gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+              //     maxCrossAxisExtent: 200,
+              //     mainAxisSpacing: 14.0,
+              //     crossAxisSpacing: 1.0,
+              //     childAspectRatio: 1.0,
+              //   ),
+              //   delegate: SliverChildBuilderDelegate(
+              //     (BuildContext context, int index) {
+              //       return myCards(
+              //           user: _ctrl.userList.users![index],
+              //           index: index,
+              //           context: context,
+              //           ctrl: _ctrl);
+              //     },
+              //     childCount: _ctrl.userList.users == null
+              //         ? 0
+              //         : _ctrl.userList.users!.length,
+              //   ),
+              // )
+            ],
           ),
-        );
-      },
+        ),
+      ),
     );
   }
 
@@ -212,88 +247,84 @@ class _CategoriesPageState extends State<CategoriesPage> with AutomaticKeepAlive
     Uint8List image = Uint8List(0);
     return FadeInLeft(
       delay: Duration(milliseconds: 200 * index),
-      child: Container(
-        child: Card(
-          color: Colors.white,
-          elevation: 4,
-          child: InkWell(
-            onTap: () => showProductDetail(context, user,
-                image), //Get.to(ProductDetail(), arguments: product),
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 10,
-                ),
-                user.logo != ''
-                    ? FutureBuilder<Uint8List>(
-                        future: MyStorage().getFilePreview(
-                          fileId: user.logo!,
-                        ), //works for both public file and private file, for private files you need to be logged in
-                        builder: (context, snapshot) {
-                          if (snapshot.data != null) image = snapshot.data!;
-                          return snapshot.hasData && snapshot.data != null
-                              ? CircleAvatar(
-                                  backgroundColor: color200,
-                                  backgroundImage: MemoryImage(
-                                    snapshot.data!,
-                                  ),
-                                  foregroundColor: Colors.white,
-                                  radius: 35,
-                                )
-                              : Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: CircularProgressIndicator(
-                                    backgroundColor: Colors.white,
-                                    valueColor:
-                                        new AlwaysStoppedAnimation<Color>(
-                                            color500),
-                                  ),
-                                );
-                        },
-                      )
-                    : CircleAvatar(
-                        backgroundColor: color200,
-                        backgroundImage:
-                            AssetImage('assets/images/logo_colors.png'),
-                        foregroundColor: Colors.white,
-                        radius: 35,
-                      ),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(user.businessName.toString(),
-                    style: subtitulo,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(user.address.toString(),
-                    style: body1,
-                    overflow: TextOverflow.ellipsis,
-                    textAlign: TextAlign.center),
-                SizedBox(
-                  height: 5,
-                ),
-                new Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(user.category.name.toString(),
-                        style: body1,
-                        overflow: TextOverflow.ellipsis,
-                        textAlign: TextAlign.center),
-                    Icon(LineIcons.appNet, color: color500, size: 15)
-                  ],
-                )
-              ],
-            ),
+      child: Card(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        color: Colors.white,
+        shadowColor: color500,
+        elevation: 2,
+        child: InkWell(
+          onTap: () => showUserDetail(context, user,
+              image), //Get.to(ProductDetail(), arguments: product),
+          child: Column(
+            children: [
+              SizedBox(
+                height: 10,
+              ),
+              user.logo != ''
+                  ? FutureBuilder<Uint8List?>(
+                      future: MyStorage().getFilePreview(
+                        fileId: user.logo!,
+                      ), //works for both public file and private file, for private files you need to be logged in
+                      builder: (context, snapshot) {
+                        if (snapshot.data != null) image = snapshot.data!;
+                        return snapshot.hasData && snapshot.data != null
+                            ? CircleAvatar(
+                                backgroundColor: color200,
+                                backgroundImage: MemoryImage(
+                                  snapshot.data!,
+                                ),
+                                foregroundColor: Colors.white,
+                                radius: 35,
+                              )
+                            : Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: SpinKitPulse(
+                                  color: color500,
+                                  size: 50.0,
+                                ),
+                              );
+                      },
+                    )
+                  : CircleAvatar(
+                      backgroundColor: color200,
+                      backgroundImage:
+                          AssetImage('assets/images/logo_colors.png'),
+                      foregroundColor: Colors.white,
+                      radius: 35,
+                    ),
+              SizedBox(
+                height: 5,
+              ),
+              Text(user.businessName.toString(),
+                  style: subtitulo,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center),
+              SizedBox(
+                height: 5,
+              ),
+              Text(user.address.toString(),
+                  style: body1,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center),
+              SizedBox(
+                height: 5,
+              ),
+              new Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(user.category.name.toString(),
+                      style: body1,
+                      overflow: TextOverflow.ellipsis,
+                      textAlign: TextAlign.center),
+                  Icon(LineIcons.appNet, color: color500, size: 15)
+                ],
+              )
+            ],
           ),
         ),
       ),
     );
   }
-
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
